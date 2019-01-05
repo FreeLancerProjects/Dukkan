@@ -1,4 +1,4 @@
-package com.appzone.dukkan.tags;
+package com.appzone.dukkan.fonts;
 
 import android.content.Context;
 import android.graphics.Typeface;

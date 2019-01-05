@@ -1,0 +1,108 @@
+package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+
+import java.util.Locale;
+
+import io.paperdb.Paper;
+
+public class Fragment_MyCart extends Fragment{
+
+    private ImageView image_basket,image_car,image_payment,image_arrow1,image_arrow2;
+    private TextView tv_basket,tv_car,tv_payment;
+    private HomeActivity activity;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_my_cart,container,false);
+        initView(view);
+        return view;
+    }
+
+    public static Fragment_MyCart newInstance()
+    {
+        return new Fragment_MyCart();
+    }
+    private void initView(View view) {
+        activity = (HomeActivity) getActivity();
+
+        image_arrow1 = view.findViewById(R.id.image_arrow1);
+        image_arrow2 = view.findViewById(R.id.image_arrow2);
+
+        Paper.init(getActivity());
+        String current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
+        if (current_lang.equals("ar"))
+        {
+            image_arrow1.setImageResource(R.drawable.arrow_gray_right);
+            image_arrow2.setImageResource(R.drawable.arrow_gray_right);
+
+        }else
+        {
+            image_arrow1.setImageResource(R.drawable.arrow_gray_left);
+            image_arrow2.setImageResource(R.drawable.arrow_gray_left);
+        }
+
+
+        image_basket = view.findViewById(R.id.image_basket);
+        image_car = view.findViewById(R.id.image_car);
+        image_payment = view.findViewById(R.id.image_payment);
+        tv_basket = view.findViewById(R.id.tv_basket);
+        tv_car = view.findViewById(R.id.tv_car);
+        tv_payment = view.findViewById(R.id.tv_payment);
+
+        DisplayFragmentReview_Purchases();
+
+
+    }
+
+    private void DisplayFragmentReview_Purchases() {
+        activity.DisplayFragmentReview_Purchases();
+    }
+
+
+    public void UpdateBasketUI()
+    {
+        image_basket.setImageResource(R.drawable.basket2);
+        tv_basket.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+    }
+
+    public void UpdateCarUI()
+    {
+        image_car.setImageResource(R.drawable.car_selected);
+        tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+    }
+
+    public void UpdatePaymentUI()
+    {
+        image_payment.setImageResource(R.drawable.payment_selected);
+        tv_payment.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+    }
+
+    public void clearUI()
+    {
+        image_basket.setImageResource(R.drawable.basket);
+        tv_basket.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+
+        image_payment.setImageResource(R.drawable.payment_unselected);
+        tv_payment.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+
+        image_car.setImageResource(R.drawable.car_address_unselected);
+        tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+    }
+
+
+}

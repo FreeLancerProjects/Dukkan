@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+<!--
+    AIzaSyBrIRDX4KdyhUhPyweQiaomxcaqpBFaHZs
+-->
     <string name="app_name">دكان كوم</string>
+    <string name="map_api_key">AIzaSyD2dtIHnb-B4RaFtsPb2dC7iMYCQjtBsg8</string>
     <string name="notifications">الاشعارات</string>
     <string name="si_su">قم بتسجيل الدخول أو إنشاء حساب جديد .</string>
     <string name="ok">حسنا</string>
@@ -52,4 +57,53 @@
     <string name="we_will_send_you_a_link_to_on_the_email_recover_your_password">سنرسل لك رابطا على البريد الالكتروني الخاص بك لاستعادة كلمة المرور</string>
     <string name="inv_email">البريد الالكتروني غير صحيح</string>
     <string name="wait">إنتظر قليلا...</string>
+    <string name="search">إبحث..</string>
+    <string name="departments">عرض جميع الاقسام</string>
+    <string name="home">الدكان</string>
+    <string name="offers">العروض</string>
+    <string name="cart">سلتي</string>
+    <string name="my_order">طلباتي</string>
+    <string name="me">حسابي</string>
+    <string name="discounts">الخصومات</string>
+    <string name="review_purchases">مراجعة المشتريات</string>
+    <string name="delivery_and_address">رسوم التوصيل والعنوان</string>
+    <string name="payment_and_confirmation">الدفع والتأكيد</string>
+    <string name="sales_tax">ضريبة المبيعات</string>
+    <string name="products_cost">سعر المنتجات</string>
+    <string name="total">الاجمالي</string>
+    <string name="continuee">المتابعة</string>
+    <string name="first_name">الاسم الاول</string>
+    <string name="last_name">اسم العائلة</string>
+    <string name="address">العنوان</string>
+    <string name="select_location_from_map">حدد الموقع عبر الخريطة </string>
+    <string name="building_number_street_name">الرجاء كتابة رقم المبنى واسم الشارع..</string>
+    <string name="any_feedback_for_delegate">هل لديك ملاحظات للمندوب ؟</string>
+    <string name="feedback">ملاحظات</string>
+    <string name="delivery_time">وقت التوصيل</string>
+    <string name="select_date_and_time">حدد الوقت والتاريخ</string>
+    <string name="discount_coupon">كوبون التخفيض</string>
+    <string name="active">تفعيل</string>
+    <string name="payment">طريقة الدفع</string>
+    <string name="order_summary">ملخص الطلب</string>
+    <string name="total2">إجمالي قيمة الطلب</string>
+    <string name="delivery_cost">تكلفة التوصيل</string>
+    <string name="card_number">رقم البطاقة</string>
+    <string name="expiration">الصلاحية</string>
+    <string name="password2">الرقم السري</string>
+    <string name="confirm">تأكيد الطلب</string>
+    <string name="type_your_address">إكتب عنوانك...</string>
+    <string name="select_location_on_map">حدد موقعك على الخريطة</string>
+    <string name="no_search_results">لا توجد نتائج البحث</string>
+    <string name="allow_dukkan_to_access_this_device_s_location">السماح لدكان للوصول لموقك ؟</string>
+    <string name="allow">السماح</string>
+    <string name="deny">الرفض</string>
+    <string name="gps_perm_denied">الوصول لتحديد موقع الجهاز مرفوض</string>
+    <string name="cnt_get_loc">لايمكن تحديد موقعك تحقق من الاتصال بالانترنت</string>
+    <string name="save_your_location">حفظ الموقع</string>
+    <string-array name="sort_array">
+        <item>ترتيب حسب</item>
+        <item>ترتيب حسب</item>
+        <item>ترتيب حسب</item>
+
+    </string-array>
 </resources>

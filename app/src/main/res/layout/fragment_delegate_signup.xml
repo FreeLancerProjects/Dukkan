@@ -289,21 +289,34 @@
                 android:src="@drawable/lock"
                 android:padding="8dp"
                 />
-            <EditText
-                android:id="@+id/edt_password"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
+                app:errorEnabled="false"
+                app:counterEnabled="false"
+                app:hintAnimationEnabled="false"
+                app:passwordToggleEnabled="true"
+                app:hintEnabled="false"
+                app:passwordToggleTint="@color/colorPrimary"
                 android:layout_gravity="center_vertical"
-                android:background="@color/white"
-                android:textColorHint="@color/gray_text"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:inputType="textPassword"
-                android:hint="********"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:gravity="center_vertical"
-                />
+                >
+                <EditText
+                    android:id="@+id/edt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/white"
+                    android:textColorHint="@color/gray_text"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:inputType="textPassword"
+                    android:hint="********"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:gravity="center_vertical"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
         <LinearLayout

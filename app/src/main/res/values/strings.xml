@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Dukkan</string>
+    <string name="map_api_key">AIzaSyD2dtIHnb-B4RaFtsPb2dC7iMYCQjtBsg8</string>
     <string name="notifications">Notifications</string>
     <string name="si_su">Please Sign in or sign up .</string>
     <string name="ok">Ok</string>
@@ -51,4 +52,54 @@
     <string name="we_will_send_you_a_link_to_on_the_email_recover_your_password">We will send you a link on the email to recover your password</string>
     <string name="inv_email">Invalid email</string>
     <string name="wait">Wait...</string>
+    <string name="search">Search...</string>
+    <string name="departments">Departments</string>
+    <string name="home">Home</string>
+    <string name="offers">Offers</string>
+    <string name="cart">Cart</string>
+    <string name="my_order">My orders</string>
+    <string name="me">Me</string>
+    <string name="discounts">Discounts</string>
+    <string name="review_purchases">Review purchases</string>
+    <string name="delivery_and_address">Delivery and address</string>
+    <string name="payment_and_confirmation">Payment and confirmation</string>
+    <string name="sales_tax">Sales tax</string>
+    <string name="products_cost">Products cost</string>
+    <string name="total">Total</string>
+    <string name="continuee">Continue</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="address">Address</string>
+    <string name="select_location_from_map">Select location from map</string>
+    <string name="building_number_street_name">Building number,Street name</string>
+    <string name="any_feedback_for_delegate">Any notes for delegate ?</string>
+    <string name="feedback">Notes</string>
+    <string name="delivery_time">Delivery time</string>
+    <string name="select_date_and_time">Select date and time</string>
+    <string name="discount_coupon">Discount Coupon</string>
+    <string name="active">Active</string>
+    <string name="payment">Payment</string>
+    <string name="order_summary">Order summary</string>
+    <string name="total2">Total</string>
+    <string name="delivery_cost">Delivery cost</string>
+    <string name="card_number">Card number</string>
+    <string name="expiration">Expiration</string>
+    <string name="password2">Password</string>
+    <string name="confirm">Confirm</string>
+    <string name="type_your_address">Type your address...</string>
+    <string name="select_location_on_map">Select location on map</string>
+    <string name="no_search_results">No search results</string>
+    <string name="allow_dukkan_to_access_this_device_s_location">Allow Dukkan to access this device\'s location ?</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="gps_perm_denied">Access device\'s location permission denied</string>
+    <string name="cnt_get_loc">Cannot get your location check internet connection</string>
+    <string name="save_your_location">Save your location</string>
+
+    <string-array name="sort_array">
+        <item>Sort by</item>
+        <item>Sort by</item>
+        <item>Sort by</item>
+
+    </string-array>
 </resources>
