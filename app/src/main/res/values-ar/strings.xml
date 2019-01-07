@@ -100,6 +100,11 @@
     <string name="gps_perm_denied">الوصول لتحديد موقع الجهاز مرفوض</string>
     <string name="cnt_get_loc">لايمكن تحديد موقعك تحقق من الاتصال بالانترنت</string>
     <string name="save_your_location">حفظ الموقع</string>
+    <string name="supermarket">هايبر ماركت</string>
+    <string name="something">خطأ تحقق من الاتصال بالانترنت</string>
+    <string name="undo">تراجع</string>
+    <string name="There_are_no_departments_to_display">لا يوجد اقسام لعرضها</string>
+    <string name="there_are_no_products_to_display">لا توجد منتجات لعرضها</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>

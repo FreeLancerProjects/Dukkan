@@ -95,6 +95,11 @@
     <string name="gps_perm_denied">Access device\'s location permission denied</string>
     <string name="cnt_get_loc">Cannot get your location check internet connection</string>
     <string name="save_your_location">Save your location</string>
+    <string name="supermarket">Supermarket</string>
+    <string name="something">Something went haywire</string>
+    <string name="undo">undo</string>
+    <string name="There_are_no_departments_to_display">There are no departments to display</string>
+    <string name="there_are_no_products_to_display">There are no products to display</string>
 
     <string-array name="sort_array">
         <item>Sort by</item>

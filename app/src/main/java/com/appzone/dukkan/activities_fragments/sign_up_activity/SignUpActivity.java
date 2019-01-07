@@ -18,6 +18,7 @@ import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up
 import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up.Fragment_Terms_Conditions;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up.Fragment_User_SignUp;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.share.Common;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +36,7 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
     private Fragment_Delegate_SignUp fragment_delegate_signUp;
     private Fragment_Terms_Conditions fragment_terms_conditions;
     private String type="";
+    private View root;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -52,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
 
     private void initView()
     {
-
+        root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
         image_back = findViewById(R.id.image_back);
         ll_back = findViewById(R.id.ll_back);
@@ -272,6 +274,12 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
             fragment_delegate_signUp.update_checkbox(true);
         }
         DisplayFragmentsSignUp(type);
+
+    }
+
+    public void CreateSnackBar(String msg)
+    {
+        Common.CreateSnackBar(this,root,msg);
 
     }
 }

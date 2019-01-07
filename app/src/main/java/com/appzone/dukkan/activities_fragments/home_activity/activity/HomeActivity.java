@@ -22,15 +22,20 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_Home;
+import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_SubCategory;
+import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.Fragment_Home;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_Offers;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Delivery_Address;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Map;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_MyCart;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Payment_Confirmation;
 import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Review_Purchases;
+import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
+import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
+import com.appzone.dukkan.share.Common;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
@@ -49,11 +54,17 @@ public class HomeActivity extends AppCompatActivity {
     private AHBottomNavigation ah_bottom_nav;
     private Fragment_Home fragment_home;
     private Fragment_Offers fragment_offers;
+    private Fragment_SubCategory fragment_subCategory;
     ////////////////////////////////////////
     private Fragment_MyCart fragment_myCart;
     private Fragment_Review_Purchases fragment_review_purchases;
     private Fragment_Delivery_Address fragment_delivery_address;
     private Fragment_Payment_Confirmation fragment_payment_confirmation;
+
+    ///////////////////////////////////////
+    private Fragment_Food_Department fragment_food_department;
+    private Fragment_Charging_Cards fragment_charging_cards;
+    ///////////////////////////////////////
     private Fragment_Map fragment_map;
     private final String fineLoc = Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -65,6 +76,7 @@ public class HomeActivity extends AppCompatActivity {
     private Intent intentService;
     private AlertDialog gpsDialog;
     private LocationManager locationManager;
+    private View root;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -81,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initView()
     {
+        root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
         ah_bottom_nav = findViewById(R.id.ah_bottom_nav);
 
@@ -140,7 +153,7 @@ public class HomeActivity extends AppCompatActivity {
         ah_bottom_nav.setCurrentItem(pos,false);
     }
 
-    private void DisplayFragmentHome()
+    public void DisplayFragmentHome()
     {
         if (fragment_home==null)
         {
@@ -152,11 +165,14 @@ public class HomeActivity extends AppCompatActivity {
             if (!fragment_home.isVisible())
             {
                 fragmentManager.beginTransaction().show(fragment_home).commit();
+                DisplayFragmentFood_Department();
                 UpdateBottomNavPos(0);
             }
         }else
             {
                 fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_home,"fragment_home").addToBackStack("fragment_home").commit();
+                DisplayFragmentFood_Department();
+
                 UpdateBottomNavPos(0);
             }
 
@@ -169,6 +185,11 @@ public class HomeActivity extends AppCompatActivity {
         if (fragment_myCart!=null&&fragment_myCart.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_myCart).commit();
+        }
+
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
     }
@@ -202,7 +223,10 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_myCart).commit();
         }
-
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
+        }
 
     }
 
@@ -335,6 +359,45 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    public void DisplayFragmentFood_Department()
+    {
+        if (fragment_food_department==null)
+        {
+            fragment_food_department = Fragment_Food_Department.newInstance();
+        }
+        if (fragment_food_department.isAdded())
+        {
+            fragmentManager.beginTransaction().show(fragment_food_department).commit();
+        }else
+            {
+                fragmentManager.beginTransaction().add(R.id.fragment_home_sub_fragment_container,fragment_food_department,"fragment_food_department").addToBackStack("fragment_food_department").commit();
+            }
+
+            if (fragment_charging_cards!=null && fragment_charging_cards.isAdded() && fragment_charging_cards.isVisible())
+            {
+                fragmentManager.beginTransaction().hide(fragment_charging_cards).commit();
+            }
+    }
+
+    public void DisplayFragmentCharging_Cards()
+    {
+        if (fragment_charging_cards==null)
+        {
+            fragment_charging_cards = Fragment_Charging_Cards.newInstance();
+        }
+        if (fragment_charging_cards.isAdded())
+        {
+            fragmentManager.beginTransaction().show(fragment_charging_cards).commit();
+        }else
+        {
+            fragmentManager.beginTransaction().add(R.id.fragment_home_sub_fragment_container,fragment_charging_cards,"fragment_charging_cards").addToBackStack("fragment_charging_cards").commit();
+        }
+
+        if (fragment_food_department!=null && fragment_food_department.isAdded() && fragment_food_department.isVisible())
+        {
+            fragmentManager.beginTransaction().hide(fragment_food_department).commit();
+        }
+    }
 
     public void DisplayFragmentMap()
     {
@@ -350,6 +413,28 @@ public class HomeActivity extends AppCompatActivity {
         checkLocationPermission();
 
     }
+
+    public void DisplayFragmentSubCategory(MainCategory.MainCategoryItems mainCategoryItems)
+    {
+        fragment_subCategory = Fragment_SubCategory.newInstance(mainCategoryItems);
+
+
+        if (fragment_subCategory.isAdded())
+            {
+                fragmentManager.beginTransaction().show(fragment_subCategory).commit();
+            }else
+                {
+                    fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_subCategory,"fragment_subCategory").addToBackStack("fragment_subCategory").commit();
+
+                }
+
+                if (fragment_home!=null&&fragment_home.isAdded())
+                {
+                    fragmentManager.beginTransaction().hide(fragment_home).commit();
+                }
+
+    }
+
 
     private void checkLocationPermission()
     {
@@ -506,6 +591,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void Back()
     {
+
         if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
         {
             fragmentManager.popBackStack();
@@ -525,6 +611,11 @@ public class HomeActivity extends AppCompatActivity {
     private void CreateToast(String msg)
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
+    }
+
+    public void CreateSnackBar(String msg)
+    {
+        Common.CreateSnackBar(this,root,msg);
     }
 
     @Override

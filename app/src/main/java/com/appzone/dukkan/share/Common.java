@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -38,6 +39,30 @@ public class Common {
     {
         InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(view.getWindowToken(),0);
+
+    }
+    public static void CreateSnackBar(Context context,View view_id,String msg)
+    {
+        final Snackbar snackbar = Snackbar.make(view_id,"",Snackbar.LENGTH_INDEFINITE);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.snack_layout,null);
+        TextView tv_msg = view.findViewById(R.id.tv_msg);
+        tv_msg.setText(msg);
+        Button btn_undo = view.findViewById(R.id.btn_undo);
+        btn_undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+
+        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setVisibility(View.INVISIBLE);
+        layout.setPadding(0,0,0,0);
+        layout.addView(view);
+        snackbar.show();
+
 
     }
     public static void CreateUserNotSignInAlertDialog(Context context,String msg)

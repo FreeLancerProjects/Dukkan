@@ -13,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
@@ -147,7 +146,7 @@ public class Fragment_User_SignUp extends Fragment{
 
                 if (!accept_rule)
                 {
-                    CreateToast(getString(R.string.cnt_sign_up));
+                    activity.CreateSnackBar(getString(R.string.cnt_sign_up));
                 }
 
             }
@@ -163,10 +162,9 @@ public class Fragment_User_SignUp extends Fragment{
         accept_rule = isChecked;
         checkbox_rule.setChecked(isChecked);
     }
-    private void CreateToast(String msg)
-    {
-        Toast.makeText(getActivity(),msg, Toast.LENGTH_LONG).show();
-    }
+
+
+
 
 
 }

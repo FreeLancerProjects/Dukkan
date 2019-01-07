@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
@@ -55,14 +54,6 @@ public class Fragment_Terms_Conditions extends Fragment{
 
 
 
-
-
-    private void CreateToast(String msg)
-    {
-        Toast.makeText(getActivity(),msg, Toast.LENGTH_LONG).show();
-    }
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -74,4 +65,6 @@ public class Fragment_Terms_Conditions extends Fragment{
     {
         void onChecked(boolean isChecked);
     }
+
+
 }

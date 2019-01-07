@@ -31,7 +31,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     private Button btn_recover_password;
     private String current_lang = "";
     private AlertDialog alertDialog;
-
+    private View root;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -47,6 +47,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        root = findViewById(R.id.root);
         image_back = findViewById(R.id.image_back);
         ll_back = findViewById(R.id.ll_back);
 
@@ -130,6 +131,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         //dialog.show();
         //CreateAlertDialog(this,getString(R.string.we_will_send_you_a_link_to_on_the_email_recover_your_password));
+        //Common.CreateSnackBar(this,root,getString(R.string.something));
     }
 
     public  void CreateAlertDialog(Context context,String msg)
@@ -155,4 +157,8 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         alertDialog.setView(view);
         alertDialog.show();
     }
+
+
+
+
 }

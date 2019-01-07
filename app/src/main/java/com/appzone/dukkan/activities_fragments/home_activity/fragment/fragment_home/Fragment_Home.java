@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment;
+package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -29,7 +30,8 @@ public class Fragment_Home extends Fragment {
     private ImageView image_collapse,image_arrow;
     private FrameLayout fl_departments;
     private ExpandableLayout expand_layout;
-
+    private FrameLayout fl_charging_card,fl_food_department;
+    private HomeActivity activity;
 
     @Nullable
     @Override
@@ -44,7 +46,11 @@ public class Fragment_Home extends Fragment {
         return new Fragment_Home();
     }
     private void initView(View view) {
+        activity = (HomeActivity) getActivity();
         ll_toolbar_container = view.findViewById(R.id.ll_toolbar_container);
+        fl_charging_card = view.findViewById(R.id.fl_charging_card);
+        fl_food_department = view.findViewById(R.id.fl_food_department);
+
         app_bar = view.findViewById(R.id.app_bar);
         image_back = view.findViewById(R.id.image_back);
         Paper.init(getActivity());
@@ -67,7 +73,7 @@ public class Fragment_Home extends Fragment {
             public void onClick(View v) {
                 if (!expand_layout.isExpanded())
                 {
-                    image_arrow.animate().rotation(-180f).setDuration(1500).start();
+                    image_arrow.animate().rotation(-180f).setDuration(1000).start();
                 }
                 expand_layout.setExpanded(true,true);
             }
@@ -76,7 +82,7 @@ public class Fragment_Home extends Fragment {
         image_collapse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                image_arrow.animate().rotation(0f).setDuration(1500).start();
+                image_arrow.animate().rotation(0f).setDuration(1000).start();
 
 
 
@@ -125,6 +131,24 @@ public class Fragment_Home extends Fragment {
             }
         });
 
+
+        fl_food_department.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fl_food_department.setBackgroundResource(R.drawable.btn_login_bg);
+                fl_charging_card.setBackgroundResource(R.drawable.btn_sign_up_bg);
+                activity.DisplayFragmentFood_Department();
+            }
+        });
+
+        fl_charging_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fl_charging_card.setBackgroundResource(R.drawable.btn_login_bg);
+                fl_food_department.setBackgroundResource(R.drawable.btn_sign_up_bg);
+                activity.DisplayFragmentCharging_Cards();
+            }
+        });
 
 
     }
