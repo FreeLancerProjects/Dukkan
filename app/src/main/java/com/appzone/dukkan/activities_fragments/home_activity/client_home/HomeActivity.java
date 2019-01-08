@@ -32,6 +32,7 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Review_Purchases;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_product_details.Fragment_Product_Details;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
@@ -55,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment_Home fragment_home;
     private Fragment_Offers fragment_offers;
     private Fragment_SubCategory fragment_subCategory;
+    private Fragment_Product_Details fragment_product_details;
     ////////////////////////////////////////
     private Fragment_MyCart fragment_myCart;
     private Fragment_Review_Purchases fragment_review_purchases;
@@ -435,6 +437,10 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    public void DisplayFragmentProductDetails()
+    {
+
+    }
 
     private void checkLocationPermission()
     {
