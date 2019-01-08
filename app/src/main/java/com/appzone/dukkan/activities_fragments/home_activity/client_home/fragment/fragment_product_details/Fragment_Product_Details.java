@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_product_details;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_product_details;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.adapters.ProductViewPagerAdapter;
 import com.appzone.dukkan.models.MainCategory;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class Fragment_Product_Details extends Fragment{
     private List<String> productImagesList;
     private Timer timer;
     private TimerTask timerTask;
+    private List<Fragment> fragmentList;
+    private ProductViewPagerAdapter productViewPagerAdapter;
+
 
 
     @Nullable
@@ -54,6 +58,7 @@ public class Fragment_Product_Details extends Fragment{
     }
 
     private void initView(View view) {
+        fragmentList = new ArrayList<>();
         productImagesList = new ArrayList<>();
         image_back = view.findViewById(R.id.image_back);
         image_increment = view.findViewById(R.id.image_increment);
@@ -78,7 +83,55 @@ public class Fragment_Product_Details extends Fragment{
 
     private void UpdateUi(MainCategory.Products product) {
         productImagesList.addAll(product.getImage());
+        if (productImagesList.size()>0)
+        {
+            for (String img : productImagesList)
+            {
+                fragmentList.add(Fragment_Pager_Images.newInstance(img));
+            }
 
+            productViewPagerAdapter = new ProductViewPagerAdapter(getChildFragmentManager());
+            productViewPagerAdapter.AddFragments(fragmentList);
+            pager.setAdapter(productViewPagerAdapter);
+            if (fragmentList.size()>1)
+            {
+                timer = new Timer();
+                timerTask = new MyTimerTask();
+                timer.scheduleAtFixedRate(timerTask,5000,6000);
+
+            }
+
+        }
+
+    }
+
+    private class MyTimerTask extends TimerTask{
+        @Override
+        public void run() {
+           getActivity().runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   if (pager.getCurrentItem()<productImagesList.size())
+                   {
+                       pager.setCurrentItem(pager.getCurrentItem()+1);
+                   }else
+                       {
+                           pager.setCurrentItem(0);
+                       }
+               }
+           });
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            timer.purge();
+            timer.cancel();
+            timerTask.cancel();
+        }catch (Exception e){}
+
+        super.onDestroy();
 
     }
 }

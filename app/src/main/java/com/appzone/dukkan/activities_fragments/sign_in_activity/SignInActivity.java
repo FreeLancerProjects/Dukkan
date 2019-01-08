@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.forget_password_activity.ForgetPasswordActivity;
-import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.share.Common;

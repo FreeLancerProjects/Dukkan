@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 

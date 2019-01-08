@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
 import com.appzone.dukkan.adapters.PlaceSearchAdapter;
 import com.appzone.dukkan.models.PlaceSearchModel;
 import com.appzone.dukkan.share.Common;

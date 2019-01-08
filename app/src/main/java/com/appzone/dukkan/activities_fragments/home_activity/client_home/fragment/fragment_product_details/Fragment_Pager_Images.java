@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_product_details;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_product_details;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +42,7 @@ public class Fragment_Pager_Images extends Fragment {
         {
             String image_endPoint = bundle.getString(TAG);
             UpdateUI(image_endPoint);
+
         }
     }
 

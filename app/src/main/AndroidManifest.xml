@@ -37,7 +37,7 @@
             android:name=".activities_fragments.sign_up_activity.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities_fragments.forget_password_activity.ForgetPasswordActivity" />
-        <activity android:name=".activities_fragments.home_activity.activity.HomeActivity"
+        <activity android:name=".activities_fragments.home_activity.client_home.HomeActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
             >
 

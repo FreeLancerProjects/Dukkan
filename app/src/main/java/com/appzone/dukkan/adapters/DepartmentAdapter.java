@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_SubCategory;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
 import com.appzone.dukkan.models.MainCategory;
 
 import java.util.List;

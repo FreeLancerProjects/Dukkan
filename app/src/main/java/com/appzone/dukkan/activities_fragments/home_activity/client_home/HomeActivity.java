@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.activity;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home;
 
 import android.Manifest;
 import android.content.Context;
@@ -22,16 +22,16 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_SubCategory;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.Fragment_Home;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.Fragment_Offers;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Delivery_Address;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Map;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_MyCart;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Payment_Confirmation;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_cart.Fragment_Review_Purchases;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
-import com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.Fragment_Home;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Delivery_Address;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Map;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_MyCart;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Payment_Confirmation;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Review_Purchases;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.services.ServiceUpdateLocation;

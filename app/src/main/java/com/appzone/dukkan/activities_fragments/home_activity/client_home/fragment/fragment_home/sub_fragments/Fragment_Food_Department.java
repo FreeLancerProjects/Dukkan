@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment.fragment_home.sub_fragments;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
 import com.appzone.dukkan.adapters.MainCategoryAdapter;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.remote.Api;

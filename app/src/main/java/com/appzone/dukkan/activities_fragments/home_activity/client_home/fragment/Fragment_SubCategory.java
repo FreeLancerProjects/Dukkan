@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.fragment;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
 import com.appzone.dukkan.adapters.DepartmentAdapter;
 import com.appzone.dukkan.adapters.ProductsAdapter;
 import com.appzone.dukkan.models.MainCategory;
