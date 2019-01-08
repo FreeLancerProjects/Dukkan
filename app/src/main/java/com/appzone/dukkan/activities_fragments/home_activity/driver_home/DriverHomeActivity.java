@@ -49,9 +49,9 @@ public class DriverHomeActivity extends AppCompatActivity {
         ahBottomNavigation.setAccentColor(ContextCompat.getColor(this,R.color.colorPrimary));
         ahBottomNavigation.setInactiveColor(ContextCompat.getColor(this,R.color.gray_text));
 
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.my_order),R.drawable.bottom_nav_home,R.color.gray_text);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.profile),R.drawable.bottom_nav_offer,R.color.gray_text);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.bottom_nav_cart,R.color.gray_text);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.my_order),R.drawable.bottom_nav_cart,R.color.gray_text);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.profile),R.drawable.bottom_nav_user,R.color.gray_text);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.nav_bottom_notfication,R.color.gray_text);
       
         ahBottomNavigation.addItem(item1);
         ahBottomNavigation.addItem(item2);
