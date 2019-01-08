@@ -165,7 +165,6 @@ public class DriverHomeActivity extends AppCompatActivity {
         {
             fragment_myNotification = fragment_myNotification.newInstance();
         }
-
         if (fragment_myNotification.isAdded())
         {
             if (!fragment_myNotification.isVisible())
