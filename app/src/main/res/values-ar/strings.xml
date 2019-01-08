@@ -108,6 +108,8 @@
     <string name="discount">خصم</string>
     <string name="rsa">ر.س</string>
     <string name="add_to_cart">أضف للسلة</string>
+    <string name="profile">الصفحة الشخصية</string>
+    <string name="my_notification">اشعاراتى </string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>
