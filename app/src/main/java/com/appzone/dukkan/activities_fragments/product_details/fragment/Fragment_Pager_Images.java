@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_product_details;
+package com.appzone.dukkan.activities_fragments.product_details.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;

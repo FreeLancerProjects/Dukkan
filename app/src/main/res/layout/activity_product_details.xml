@@ -52,6 +52,7 @@
                     app:tabMaxWidth="15dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
+                    app:tabBackground="@drawable/viewpager_tab_indicator"
                     >
 
                 </android.support.design.widget.TabLayout>
@@ -86,7 +87,18 @@
                     android:textSize="15sp"
                     />
                 <TextView
-                    android:id="@+id/tv_price"
+                    android:id="@+id/tv_price_before_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:textColor="@color/gray3"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:layout_marginTop="8dp"
+                    />
+                <TextView
+                    android:id="@+id/tv_price_after_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -94,7 +106,6 @@
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
                     android:textSize="13sp"
-                    android:layout_marginTop="8dp"
                     />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recView"
@@ -134,8 +145,8 @@
                 >
                 <ImageView
                     android:id="@+id/image_increment"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/add_bg_gradient"
                     android:src="@drawable/add"
                     android:padding="8dp"
@@ -158,8 +169,8 @@
                     tools:ignore="RtlCompat" />
                 <ImageView
                     android:id="@+id/image_decrement"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/minus_bg"
                     android:layout_alignParentEnd="true"
                     tools:ignore="RtlCompat"

@@ -22,17 +22,16 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.Fragment_Home;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Delivery_Address;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Map;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_MyCart;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Payment_Confirmation;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Review_Purchases;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.Fragment_Home;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_product_details.Fragment_Product_Details;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
@@ -56,7 +55,6 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment_Home fragment_home;
     private Fragment_Offers fragment_offers;
     private Fragment_SubCategory fragment_subCategory;
-    private Fragment_Product_Details fragment_product_details;
     ////////////////////////////////////////
     private Fragment_MyCart fragment_myCart;
     private Fragment_Review_Purchases fragment_review_purchases;
@@ -194,6 +192,9 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+
+
+
     }
 
     private void DisplayFragmentOffer()
@@ -229,6 +230,8 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
         }
+
+
 
     }
 
@@ -266,7 +269,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
     public void DisplayFragmentReview_Purchases()
     {
         if (fragment_review_purchases==null)
@@ -360,7 +362,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
     public void DisplayFragmentFood_Department()
     {
         if (fragment_food_department==null)
@@ -380,7 +381,6 @@ public class HomeActivity extends AppCompatActivity {
                 fragmentManager.beginTransaction().hide(fragment_charging_cards).commit();
             }
     }
-
     public void DisplayFragmentCharging_Cards()
     {
         if (fragment_charging_cards==null)
@@ -437,10 +437,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void DisplayFragmentProductDetails()
-    {
 
-    }
 
     private void checkLocationPermission()
     {
@@ -602,13 +599,13 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.popBackStack();
             finish();
-        }else if (fragment_map!=null&&fragment_map.isVisible())
-        {
-            fragmentManager.popBackStack("fragment_map",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }else if (fragment_map!=null&&fragment_map.isVisible()) {
+            fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().show(fragment_myCart).commit();
             fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
 
-        }else
+        }
+        else
             {
                 DisplayFragmentHome();
             }

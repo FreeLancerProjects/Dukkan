@@ -1,5 +1,6 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
+import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.adapters.DepartmentAdapter;
 import com.appzone.dukkan.adapters.ProductsAdapter;
 import com.appzone.dukkan.models.MainCategory;
@@ -214,5 +216,11 @@ public class Fragment_SubCategory extends Fragment{
         productsList.clear();
         productsList.addAll(itemForDepartment.getProducts());
         productsAdapter.notifyDataSetChanged();
+    }
+
+    public void setItemForDetails(MainCategory.Products product) {
+        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
+        intent.putExtra("product",product);
+        startActivity(intent);
     }
 }

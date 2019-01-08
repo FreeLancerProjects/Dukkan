@@ -32,7 +32,6 @@ public class ProductsAdapter extends RecyclerView.Adapter{
     private Context context;
     private List<MainCategory.Products> productsList;
     private Fragment_SubCategory fragment_subCategory;
-    private RecyclerView recView;
     private boolean canLoadMore = true;
     private int threshold = 5;
     private int lastVisibleItem , totalItemCount;
@@ -43,7 +42,6 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         this.context = context;
         this.productsList = productsList;
         this.fragment_subCategory = fragment_subCategory;
-        this.recView = recView;
 
         recView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -96,8 +94,16 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         if (holder instanceof MyHolder)
         {
             MyHolder myHolder = (MyHolder) holder;
-            MainCategory.Products products = productsList.get(myHolder.getAdapterPosition());
+            final MainCategory.Products products = productsList.get(myHolder.getAdapterPosition());
             myHolder.BindData(products);
+
+            myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragment_subCategory.setItemForDetails(products);
+                }
+            });
+
         }else if (holder instanceof ProgressHolder)
         {
             ProgressHolder progressHolder = (ProgressHolder) holder;

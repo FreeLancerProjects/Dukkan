@@ -40,8 +40,9 @@
         <activity android:name=".activities_fragments.forget_password_activity.ForgetPasswordActivity" />
         <activity
             android:name=".activities_fragments.home_activity.client_home.HomeActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
-        <activity android:name=".activities_fragments.home_activity.driver_home.DriverHomeActivity"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".activities_fragments.home_activity.driver_home.DriverHomeActivity" />
+        <activity android:name=".activities_fragments.product_details.activity.ProductDetailsActivity"></activity>
     </application>
 
 </manifest>
