@@ -42,7 +42,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull final MyHolder holder, int position) {
-        MainCategory.SubCategory subCategory = subCategoryList.get(position);
+        final MainCategory.SubCategory subCategory = subCategoryList.get(position);
         holder.BindData(subCategory);
 
         if (sparseBooleanArray.get(position))
@@ -62,6 +62,12 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.My
                 sparseBooleanArray.clear();
                 sparseBooleanArray.put(lastSelectedItem,true);
                 notifyDataSetChanged();
+
+                fragment_subCategory.setItemForDepartment(subCategory);
+
+
+
+
             }
         });
 

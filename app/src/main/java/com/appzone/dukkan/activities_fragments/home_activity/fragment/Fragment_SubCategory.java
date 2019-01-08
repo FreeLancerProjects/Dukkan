@@ -19,13 +19,21 @@ import android.widget.TextView;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.activity.HomeActivity;
 import com.appzone.dukkan.adapters.DepartmentAdapter;
+import com.appzone.dukkan.adapters.ProductsAdapter;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.ProductPaginationModel;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_SubCategory extends Fragment{
     private static final String TAG = "DATA";
@@ -39,6 +47,10 @@ public class Fragment_SubCategory extends Fragment{
     private MainCategory.MainCategoryItems mainCategoryItems;
     private String current_lang;
     private HomeActivity activity;
+    private List<MainCategory.Products> productsList;
+    private ProductsAdapter productsAdapter;
+    private String sub_category_id;
+    private int current_page_index = 1;
 
 
     @Nullable
@@ -58,6 +70,7 @@ public class Fragment_SubCategory extends Fragment{
         return fragment_subCategory;
     }
     private void initView(View view) {
+        productsList = new ArrayList<>();
         activity = (HomeActivity) getActivity();
         ll_back = view.findViewById(R.id.ll_back);
         image_back = view.findViewById(R.id.image_back);
@@ -80,6 +93,7 @@ public class Fragment_SubCategory extends Fragment{
         recView = view.findViewById(R.id.recView);
         manager = new GridLayoutManager(getActivity(),2);
         recView.setLayoutManager(manager);
+        recView.setNestedScrollingEnabled(true);
         managerDepartment = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         recViewDepartment.setLayoutManager(managerDepartment);
 
@@ -97,13 +111,13 @@ public class Fragment_SubCategory extends Fragment{
             UpdateUI(mainCategoryItems);
         }
 
+
+
+
+
     }
 
-    public void SetSubCategoryItem(MainCategory.MainCategoryItems mainCategoryItems)
-    {
-        this.mainCategoryItems = mainCategoryItems;
-        UpdateUI(mainCategoryItems);
-    }
+
     private void UpdateUI(MainCategory.MainCategoryItems mainCategoryItems) {
         Picasso.with(getActivity()).load(Uri.parse(Tags.IMAGE_URL+mainCategoryItems.getImage())).into(image);
         if (current_lang.equals("ar"))
@@ -116,5 +130,89 @@ public class Fragment_SubCategory extends Fragment{
         }
         departmentAdapter = new DepartmentAdapter(getActivity(),mainCategoryItems.getSub_categories(),this);
         recViewDepartment.setAdapter(departmentAdapter);
+
+        ///////////////////////////////////////////////////
+        if (mainCategoryItems.getSub_categories().size()>0)
+        {
+            if (mainCategoryItems.getSub_categories().get(0).getProducts().size()>0)
+            {
+                recView.setVisibility(View.VISIBLE);
+                tv_no_products.setVisibility(View.GONE);
+
+                sub_category_id = mainCategoryItems.getSub_categories().get(0).getId();
+                UpdateSubCategoryAdapter(mainCategoryItems.getSub_categories().get(0).getProducts());
+
+            }else
+                {
+                    recView.setVisibility(View.GONE);
+                    tv_no_products.setVisibility(View.VISIBLE);
+                }
+
+        }else
+            {
+                recView.setVisibility(View.GONE);
+                tv_no_products.setVisibility(View.VISIBLE);
+            }
+
+
+    }
+
+    private void UpdateSubCategoryAdapter(final List<MainCategory.Products> products) {
+        productsList.addAll(products);
+        productsAdapter = new ProductsAdapter(getActivity(),productsList,this,recView);
+        recView.setAdapter(productsAdapter);
+
+
+        productsAdapter.setOnLoadMoreListener(new ProductsAdapter.LoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                LoadMore(current_page_index);
+            }
+        });
+
+
+    }
+
+    private void LoadMore(final int current_page_index)
+    {
+        int next_page = current_page_index+1;
+
+        productsList.add(null);
+        productsAdapter.notifyDataSetChanged();
+
+        Api.getService()
+                .getProductPaganation(sub_category_id,next_page)
+                .enqueue(new Callback<ProductPaginationModel>() {
+                    @Override
+                    public void onResponse(Call<ProductPaginationModel> call, Response<ProductPaginationModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null)
+                            {
+                                Fragment_SubCategory.this.current_page_index = response.body().getCurrent_page();
+                                productsList.remove(productsList.size()-1);
+                                productsAdapter.notifyItemRemoved(productsList.size()-1);
+
+                                productsList.addAll(response.body().getData());
+                                productsAdapter.setLoaded();
+                                productsAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductPaginationModel> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    public void setItemForDepartment(MainCategory.SubCategory itemForDepartment)
+    {
+        current_page_index = 1;
+        sub_category_id = itemForDepartment.getId();
+        productsList.clear();
+        productsList.addAll(itemForDepartment.getProducts());
+        productsAdapter.notifyDataSetChanged();
     }
 }

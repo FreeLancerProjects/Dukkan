@@ -76,6 +76,8 @@ public class MainCategory implements Serializable {
         private String name_ar;
         private String name_en;
         private List<String> image;
+        private List<Prices_Sizes>  size_prices;
+        private List<Features> features;
 
         public String getId() {
             return id;
@@ -91,6 +93,66 @@ public class MainCategory implements Serializable {
 
         public List<String> getImage() {
             return image;
+        }
+
+        public List<Prices_Sizes> getSize_prices() {
+            return size_prices;
+        }
+
+        public List<Features> getFeatures() {
+            return features;
+        }
+    }
+
+    public class Prices_Sizes implements Serializable
+    {
+        private String id;
+        private String net_price;
+        private String size_ar;
+        private String size_en;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getNet_price() {
+            return net_price;
+        }
+
+        public String getSize_ar() {
+            return size_ar;
+        }
+
+        public String getSize_en() {
+            return size_en;
+        }
+    }
+
+    public class Features implements Serializable
+    {
+        private String discount;
+        private OldPrice old_price;
+
+        public String getDiscount() {
+            return discount;
+        }
+
+        public OldPrice getOld_price() {
+            return old_price;
+        }
+    }
+
+    public class OldPrice implements Serializable
+    {
+        private String id;
+        private String net_price;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getNet_price() {
+            return net_price;
         }
     }
 }

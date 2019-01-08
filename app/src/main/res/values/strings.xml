@@ -100,6 +100,9 @@
     <string name="undo">undo</string>
     <string name="There_are_no_departments_to_display">There are no departments to display</string>
     <string name="there_are_no_products_to_display">There are no products to display</string>
+    <string name="discount">Discount</string>
+    <string name="rsa">RSA</string>
+    <string name="add_to_cart">Add to cart</string>
 
     <string-array name="sort_array">
         <item>Sort by</item>

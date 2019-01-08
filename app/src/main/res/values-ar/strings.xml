@@ -105,6 +105,9 @@
     <string name="undo">تراجع</string>
     <string name="There_are_no_departments_to_display">لا يوجد اقسام لعرضها</string>
     <string name="there_are_no_products_to_display">لا توجد منتجات لعرضها</string>
+    <string name="discount">خصم</string>
+    <string name="rsa">ر.س</string>
+    <string name="add_to_cart">أضف للسلة</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>
