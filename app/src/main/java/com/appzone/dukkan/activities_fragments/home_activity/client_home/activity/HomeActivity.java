@@ -201,7 +201,6 @@ public class HomeActivity extends AppCompatActivity {
             {
                 fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_home,"fragment_home").addToBackStack("fragment_home").commit();
                 DisplayFragmentFood_Department();
-
                 UpdateBottomNavPos(0);
             }
 

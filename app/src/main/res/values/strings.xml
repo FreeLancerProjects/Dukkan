@@ -112,4 +112,9 @@
         <item>Sort by</item>
 
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile">profile</string>
+    <string name="my_notification">my notification</string>
 </resources>
