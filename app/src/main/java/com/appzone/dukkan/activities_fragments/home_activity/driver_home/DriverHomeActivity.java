@@ -8,9 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_MyOrder;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Profile;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_myNotification;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Orders;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Profile;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Notification;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
@@ -23,9 +23,9 @@ public class DriverHomeActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private AHBottomNavigation ahBottomNavigation;
-    private Fragment_myNotification fragment_myNotification;
-    private Fragment_MyOrder fragment_myOrder;
-    private Fragment_Profile fragment_profile;
+    private Fragment_Driver_Notification fragment_driver_notification;
+    private Fragment_Driver_Orders fragment_driver_orders;
+    private Fragment_Driver_Profile fragment_driver_profile;
     private String current_lang = "";
     private View root;
 
@@ -65,13 +65,13 @@ public class DriverHomeActivity extends AppCompatActivity {
                 switch (position)
                 {
                     case 0:
-                        DisplayFragmentMyorder();
+                        DisplayFragmentDriverOrders();
                         break;
                     case 1:
-                        DisplayFragmentProfile();
+                        DisplayFragmentDriverProfile();
                         break;
                     case 2:
-                        DisplayFragmentMynotification();
+                        DisplayFragmentDriverNotification();
                         break;
                    
                 }
@@ -79,7 +79,7 @@ public class DriverHomeActivity extends AppCompatActivity {
             }
         });
 
-        DisplayFragmentMyorder();
+        DisplayFragmentDriverOrders();
 
     }
 
@@ -96,95 +96,95 @@ public class DriverHomeActivity extends AppCompatActivity {
     {
         ahBottomNavigation.setCurrentItem(pos,false);
     }
-    public void DisplayFragmentMyorder()
+    public void DisplayFragmentDriverOrders()
     {
-        if (fragment_myOrder==null)
+        if (fragment_driver_orders == null)
         {
-            fragment_myOrder = Fragment_MyOrder.newInstance();
+            fragment_driver_orders = Fragment_Driver_Orders.newInstance();
         }
 
-        if (fragment_myOrder.isAdded())
+        if (fragment_driver_orders.isAdded())
         {
-            if (!fragment_myOrder.isVisible())
+            if (!fragment_driver_orders.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_myOrder).commit();
+                fragmentManager.beginTransaction().show(fragment_driver_orders).commit();
                 UpdateBottomNavPos(0);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container,fragment_myOrder,"fragment_myOrder").addToBackStack("fragment_myOrder").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_orders,"fragment_driver_orders").addToBackStack("fragment_driver_orders").commit();
 
             UpdateBottomNavPos(0);
         }
 
 
-        if (fragment_profile!=null&&fragment_profile.isAdded())
+        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_profile).commit();
+            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
         }
 
-        if (fragment_myNotification!=null&&fragment_myNotification.isAdded())
+        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_myNotification).commit();
+            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
         }
 
     }
-    private void DisplayFragmentProfile()
+    private void DisplayFragmentDriverProfile()
     {
-        if (fragment_profile==null)
+        if (fragment_driver_profile ==null)
         {
-            fragment_profile = Fragment_Profile.newInstance();
+            fragment_driver_profile = Fragment_Driver_Profile.newInstance();
         }
 
-        if (fragment_profile.isAdded())
+        if (fragment_driver_profile.isAdded())
         {
-            if (!fragment_profile.isVisible())
+            if (!fragment_driver_profile.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_profile).commit();
+                fragmentManager.beginTransaction().show(fragment_driver_profile).commit();
                 UpdateBottomNavPos(1);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container,fragment_profile,"fragment_profile").addToBackStack("fragment_profile").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_profile,"fragment_driver_profile").addToBackStack("fragment_driver_profile").commit();
             UpdateBottomNavPos(1);
         }
 
 
-        if (fragment_myOrder!=null&&fragment_myOrder.isAdded())
+        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_myOrder).commit();
+            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
         }
-        if (fragment_myNotification!=null&&fragment_myNotification.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_myNotification).commit();
+        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
         }
 
     }
-    private void DisplayFragmentMynotification()
+    private void DisplayFragmentDriverNotification()
     {
-        if (fragment_myNotification==null)
+        if (fragment_driver_notification ==null)
         {
-            fragment_myNotification = fragment_myNotification.newInstance();
+            fragment_driver_notification = fragment_driver_notification.newInstance();
         }
-        if (fragment_myNotification.isAdded())
+        if (fragment_driver_notification.isAdded())
         {
-            if (!fragment_myNotification.isVisible())
+            if (!fragment_driver_notification.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_myNotification).commit();
+                fragmentManager.beginTransaction().show(fragment_driver_notification).commit();
                 UpdateBottomNavPos(2);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container,fragment_myNotification,"fragment_notfy").addToBackStack("fragment_notfy").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_notification,"fragment_driver_notification").addToBackStack("fragment_driver_notification").commit();
             UpdateBottomNavPos(2);
         }
 
 
-        if (fragment_myOrder!=null&&fragment_myOrder.isAdded())
+        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_myOrder).commit();
+            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
         }
-        if (fragment_profile!=null&&fragment_profile.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_profile).commit();
+        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
         }
 
     }

@@ -29,7 +29,7 @@ public class OrderItemsSingleTone {
             OrderItem item = orderItemList.get(pos);
             int product_new_quantity = orderItem.getProduct_quantity() + item.getProduct_quantity();
             item.setProduct_quantity(product_new_quantity);
-            int product_total_price = item.getProduct_price() * orderItem.getProduct_quantity();
+            double product_total_price = item.getProduct_price() * product_new_quantity;
             item.setProduct_total_price(product_total_price);
             orderItemList.set(pos,item);
 
@@ -51,6 +51,10 @@ public class OrderItemsSingleTone {
     {
         int pos = getItemPosition(orderItem);
         orderItemList.remove(pos);
+        if (orderItemList.size()==0)
+        {
+            ClearCart();
+        }
     }
 
     private int getItemPosition(OrderItem orderItem)
@@ -59,9 +63,12 @@ public class OrderItemsSingleTone {
 
         for (int i = 0 ; i< orderItemList.size() ; i++)
         {
+
             OrderItem item = orderItemList.get(i);
-            if (item.getProduct_id().equals(orderItem.getProduct_id()))
+
+            if (item.getProduct_id().equals(orderItem.getProduct_id()) && orderItem.getProduct_price_id().equals(item.getProduct_price_id()))
             {
+
                 pos = i;
                 break;
             }
@@ -69,6 +76,7 @@ public class OrderItemsSingleTone {
 
         return pos;
     }
+
 
     public List<OrderItem> getOrderItemList() {
         return orderItemList;

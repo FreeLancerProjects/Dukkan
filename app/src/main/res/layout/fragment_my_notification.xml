@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities_fragments.home_activity.driver_home.fragment.Fragment_myNotification">
+    tools:context=".activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Notification">
 
 
 

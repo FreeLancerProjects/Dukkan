@@ -117,4 +117,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile">profile</string>
     <string name="my_notification">my notification</string>
+    <string name="empty_cart">Empty cart</string>
+    <string name="wait_our_offers">Wait our offers</string>
 </resources>

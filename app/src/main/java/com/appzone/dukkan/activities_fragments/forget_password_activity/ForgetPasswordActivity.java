@@ -159,6 +159,11 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     }
 
 
+    private void CreateSnackBar(String msg)
+    {
+        Common.CreateSnackBar(this,root,msg);
+    }
+
 
 
 }

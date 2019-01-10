@@ -76,6 +76,7 @@ public class Fragment_Food_Department extends Fragment {
                                 mainCategoryItemsList.clear();
                                 mainCategoryItemsList.addAll(response.body().getData());
                                 adapter.notifyDataSetChanged();
+                                activity.setMainCategory(response.body());
                             }else
                                 {
                                     activity.CreateSnackBar(getString(R.string.There_are_no_departments_to_display));

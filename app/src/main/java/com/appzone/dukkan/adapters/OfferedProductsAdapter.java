@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
@@ -26,23 +26,23 @@ import java.util.Locale;
 
 import io.paperdb.Paper;
 
-public class ProductsAdapter extends RecyclerView.Adapter{
+public class OfferedProductsAdapter extends RecyclerView.Adapter{
     private final int ITEM_DATA = 1;
     private final int ITEM_PROGRESS = 2;
     private Context context;
     private List<MainCategory.Products> productsList;
-    private Fragment_SubCategory fragment_subCategory;
+    private Fragment_Offers fragment_offers;
     private boolean canLoadMore = true;
     private int threshold = 5;
     private int lastVisibleItem , totalItemCount;
-    private ProductsAdapter.LoadMoreListener loadMoreListener;
+    private OfferedProductsAdapter.LoadMoreListener loadMoreListener;
     private MainCategory.Products products;
 
 
-    public ProductsAdapter(Context context, List<MainCategory.Products> productsList, Fragment_SubCategory fragment_subCategory, final RecyclerView recView) {
+    public OfferedProductsAdapter(Context context, List<MainCategory.Products> productsList, Fragment_Offers fragment_offers, final RecyclerView recView) {
         this.context = context;
         this.productsList = productsList;
-        this.fragment_subCategory = fragment_subCategory;
+        this.fragment_offers = fragment_offers;
 
         recView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -109,7 +109,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
 
                     if (products!=null)
                     {
-                        fragment_subCategory.setItemForDetails(products);
+                        fragment_offers.setItemForDetails(products);
 
                     }
                 }

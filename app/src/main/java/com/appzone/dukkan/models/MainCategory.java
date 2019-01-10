@@ -75,6 +75,8 @@ public class MainCategory implements Serializable {
         private String id;
         private String name_ar;
         private String name_en;
+        private String main_category_id;
+        private String sub_category_id;
         private List<String> image;
         private List<Prices_Sizes>  size_prices;
         private List<Features> features;
@@ -101,6 +103,14 @@ public class MainCategory implements Serializable {
 
         public List<Features> getFeatures() {
             return features;
+        }
+
+        public String getMain_category_id() {
+            return main_category_id;
+        }
+
+        public String getSub_category_id() {
+            return sub_category_id;
         }
     }
 

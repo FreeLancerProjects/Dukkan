@@ -121,7 +121,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -132,89 +132,61 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1"
-                android:layout_marginTop="15dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:layout_marginBottom="5dp"
+                android:layout_margin="8dp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="@string/discounts"
+                />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
                 >
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight=".3"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:text="@string/discounts"
-                    />
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight=".3"
-                    android:layout_height="wrap_content"/>
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_weight=".40"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn_female_bg"
-                    android:paddingRight="5dp"
-                    android:paddingLeft="5dp"
 
-                    >
-                    <Spinner
-                        android:id="@+id/spinner_arrangement"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        app:backgroundTint="@color/colorPrimary"
-                        >
-
-                    </Spinner>
-                </FrameLayout>
-
-
-            </LinearLayout>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        <LinearLayout
+            android:id="@+id/ll_no_offers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+
+            >
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/blue_offer"
+                android:padding="10dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/wait_our_offers"
+                />
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            />
+    </FrameLayout>
+
+
 </android.support.design.widget.CoordinatorLayout>

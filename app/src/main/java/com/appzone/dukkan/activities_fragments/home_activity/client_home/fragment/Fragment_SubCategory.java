@@ -181,7 +181,7 @@ public class Fragment_SubCategory extends Fragment{
         productsAdapter.notifyDataSetChanged();
 
         Api.getService()
-                .getProductPaganation(sub_category_id,next_page)
+                .getProductPagination(sub_category_id,next_page)
                 .enqueue(new Callback<ProductPaginationModel>() {
                     @Override
                     public void onResponse(Call<ProductPaginationModel> call, Response<ProductPaginationModel> response) {
@@ -192,8 +192,8 @@ public class Fragment_SubCategory extends Fragment{
                                 Fragment_SubCategory.this.current_page_index = response.body().getCurrent_page();
                                 productsList.remove(productsList.size()-1);
                                 productsAdapter.notifyItemRemoved(productsList.size()-1);
-
                                 productsList.addAll(response.body().getData());
+                                productsAdapter.UpdateListData(response.body().getData());
                                 productsAdapter.setLoaded();
                                 productsAdapter.notifyDataSetChanged();
                             }
@@ -228,10 +228,19 @@ public class Fragment_SubCategory extends Fragment{
 
         for (MainCategory.Products product : productList)
         {
-            if (!product.getId().equals(selectedProductId))
+            if (product!=null)
             {
-                products.add(product);
+                if (product.getId()!=null&&selectedProductId!=null)
+                {
+                    if (!product.getId().equals(selectedProductId))
+                    {
+                        products.add(product);
+                    }
+                }
             }
+
+
+
         }
 
         return products;

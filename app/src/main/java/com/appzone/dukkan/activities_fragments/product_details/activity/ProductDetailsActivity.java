@@ -153,7 +153,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     if (productSize_offerModel!=null)
                     {
                         int total_price = Integer.parseInt(productSize_offerModel.getPrice_after_discount())*counter;
-                        orderItem = new OrderItem(product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                        if (product.getImage().size()>0)
+                        {
+                            orderItem = new OrderItem(product.getImage().get(0),product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),product.getName_ar(),product.getName_en(),productSize_offerModel.getAr_name(),productSize_offerModel.getEn_name(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                        }else
+                            {
+                                orderItem = new OrderItem("",product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),product.getName_ar(),product.getName_en(),productSize_offerModel.getAr_name(),productSize_offerModel.getEn_name(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                            }
                         addProductToCard(orderItem);
 
                     }else
@@ -163,7 +172,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }else
                     {
                         int total_price = Integer.parseInt(productSize_offerModel.getPrice_after_discount())*counter;
-                        orderItem = new OrderItem(product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                        if (product.getImage().size()>0)
+                        {
+                            orderItem = new OrderItem(product.getImage().get(0),product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),product.getName_ar(),product.getName_en(),productSize_offerModel.getAr_name(),productSize_offerModel.getEn_name(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                        }else
+                        {
+                            orderItem = new OrderItem("",product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),product.getName_ar(),product.getName_en(),productSize_offerModel.getAr_name(),productSize_offerModel.getEn_name(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
+
+                        }
+
                         addProductToCard(orderItem);
 
                     }

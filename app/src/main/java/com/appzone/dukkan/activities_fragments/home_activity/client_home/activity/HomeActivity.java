@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Client_Profile;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Delivery_Address;
@@ -32,9 +33,12 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.Fragment_Home;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_my_order.Fragment_Client_Orders;
 import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.SimilarProductModel;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
@@ -47,10 +51,14 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
@@ -59,6 +67,8 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment_Home fragment_home;
     private Fragment_Offers fragment_offers;
     private Fragment_SubCategory fragment_subCategory;
+    private Fragment_Client_Orders fragment_client_orders;
+    private Fragment_Client_Profile fragment_client_profile;
     ////////////////////////////////////////
     private Fragment_MyCart fragment_myCart;
     private Fragment_Review_Purchases fragment_review_purchases;
@@ -71,12 +81,11 @@ public class HomeActivity extends AppCompatActivity {
     ///////////////////////////////////////
     private Fragment_Map fragment_map;
     private final String fineLoc = Manifest.permission.ACCESS_FINE_LOCATION;
-
     private final int loc_req = 11;
     private final int gps_req = 12;
-
-    OrderItemsSingleTone orderItemsSingleTone;
-
+    private OrderItemsSingleTone orderItemsSingleTone;
+    ////////////////////////////////////////
+    private MainCategory mainCategory;
     ////////////////////////////////////////
     private Intent intentService;
     private AlertDialog gpsDialog;
@@ -140,8 +149,10 @@ public class HomeActivity extends AppCompatActivity {
                         DisplayFragmentMyCart();
                         break;
                     case 3:
+                        DisplayFragmentClientOrders();
                         break;
                     case 4:
+                        DisplayFragmentClientProfile();
                         break;
                 }
                 return false;
@@ -154,7 +165,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void UpdateCartNotification(int count)
+    public void UpdateCartNotification(int count)
     {
         if (count > 0 )
         {
@@ -179,10 +190,15 @@ public class HomeActivity extends AppCompatActivity {
     {
         ah_bottom_nav.setCurrentItem(pos,false);
     }
-
     public void DisplayFragmentHome()
     {
 
+
+        //add to my order and profile
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
         if (fragment_home==null)
         {
@@ -215,20 +231,30 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_myCart).commit();
         }
 
-
-
-        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        if (fragment_client_orders!=null&&fragment_client_orders.isAdded())
         {
-            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().hide(fragment_client_orders).commit();
+        }
+
+        if (fragment_client_profile!=null&&fragment_client_profile.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
         }
 
 
 
 
-    }
 
+
+
+    }
     private void DisplayFragmentOffer()
     {
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         if (fragment_offers==null)
         {
             fragment_offers = Fragment_Offers.newInstance();
@@ -256,17 +282,109 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_myCart).commit();
         }
-        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        if (fragment_client_orders!=null&&fragment_client_orders.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_orders).commit();
+        }
+        if (fragment_client_profile!=null&&fragment_client_profile.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
+        }
+        /*if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
+        }*/
+
+
+
+
+    }
+    public void DisplayFragmentClientOrders()
+    {
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        if (fragment_client_orders==null)
+        {
+            fragment_client_orders = Fragment_Client_Orders.newInstance();
+        }
+
+        if (fragment_client_orders.isAdded())
+        {
+            if (!fragment_client_orders.isVisible())
+            {
+                fragmentManager.beginTransaction().show(fragment_client_orders).commit();
+                UpdateBottomNavPos(3);
+            }
+        }else
+        {
+            fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_client_orders,"fragment_client_orders").addToBackStack("fragment_client_orders").commit();
+            UpdateBottomNavPos(3);
         }
 
 
+        if (fragment_offers!=null&&fragment_offers.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_offers).commit();
+        }
+
+        if (fragment_myCart!=null&&fragment_myCart.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_myCart).commit();
+        }
+        if (fragment_client_profile!=null&&fragment_client_profile.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
+        }
+
+    }
+    public void DisplayFragmentClientProfile()
+    {
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        if (fragment_client_profile==null)
+        {
+            fragment_client_profile = Fragment_Client_Profile.newInstance();
+        }
+
+        if (fragment_client_profile.isAdded())
+        {
+            if (!fragment_client_profile.isVisible())
+            {
+                fragmentManager.beginTransaction().show(fragment_client_profile).commit();
+                UpdateBottomNavPos(4);
+            }
+        }else
+        {
+            fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_client_profile,"fragment_client_profile").addToBackStack("fragment_client_profile").commit();
+            UpdateBottomNavPos(4);
+        }
+
+
+        if (fragment_offers!=null&&fragment_offers.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_offers).commit();
+        }
+
+        if (fragment_myCart!=null&&fragment_myCart.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_myCart).commit();
+        }
 
     }
     ////////////////////////////////////
     private void DisplayFragmentMyCart()
     {
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         if (fragment_myCart==null)
         {
             fragment_myCart = Fragment_MyCart.newInstance();
@@ -285,6 +403,7 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_myCart,"fragment_myCart").addToBackStack("fragment_myCart").commit();
             DisplayFragmentReview_Purchases();
+
             UpdateBottomNavPos(2);
         }
 
@@ -299,20 +418,26 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_offers).commit();
         }
 
+        if (fragment_client_orders!=null&&fragment_client_orders.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_orders).commit();
+        }
+        if (fragment_client_profile!=null&&fragment_client_profile.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
+        }
+
         //add to my order and profile
-        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        /*if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
-        }
+        }*/
+
 
     }
     public void DisplayFragmentReview_Purchases()
     {
-        if (fragment_review_purchases == null)
-        {
-            fragment_review_purchases = Fragment_Review_Purchases.newInstance(orderItemsSingleTone.getOrderItemList());
-
-        }
+        fragment_review_purchases = Fragment_Review_Purchases.newInstance(orderItemsSingleTone.getOrderItemList());
 
         if (fragment_review_purchases.isAdded())
         {
@@ -325,7 +450,6 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().add(R.id.fragment_my_cart_container,fragment_review_purchases,"fragment_review_purchases").addToBackStack("fragment_review_purchases").commit();
         }
 
-        fragment_review_purchases.setOrderItemList(orderItemsSingleTone.getOrderItemList());
 
 
         if (fragment_delivery_address!=null&&fragment_delivery_address.isAdded())
@@ -455,7 +579,7 @@ public class HomeActivity extends AppCompatActivity {
         checkLocationPermission();
 
     }
-
+    ///////////////////////////////////////////////////
     public void DisplayFragmentSubCategory(MainCategory.MainCategoryItems mainCategoryItems)
     {
         fragment_subCategory = Fragment_SubCategory.newInstance(mainCategoryItems);
@@ -516,8 +640,79 @@ public class HomeActivity extends AppCompatActivity {
             stopService(intentService);
         }
     }
+    ///////////////////////////////////
+    public void setMainCategory (MainCategory mainCategory)
+    {
+        this.mainCategory = mainCategory;
+
+    }
+    public List<MainCategory.Products> getSimilarProducts(String main_category_id,String sub_category_id,String product_id)
+    {
+        final List<MainCategory.Products> productsList = new ArrayList<>();
+
+        if (mainCategory!=null&&mainCategory.getData().size()>0)
+        {
+            for (MainCategory.MainCategoryItems mainCategoryItems : mainCategory.getData())
+            {
+                if (mainCategoryItems!=null)
+                {
+                    if (mainCategoryItems.getId().equals(main_category_id))
+                    {
+                        for (MainCategory.SubCategory subCategory : mainCategoryItems.getSub_categories())
+                        {
+                            if (sub_category_id!=null)
+                            {
+                                if (subCategory.getId().equals(sub_category_id))
+                                {
+                                    for (MainCategory.Products products : subCategory.getProducts())
+                                    {
+                                        if (products!=null)
+                                        {
+                                            if (!products.getId().equals(product_id))
+                                            {
+                                                productsList.add(products);
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+
+                }
+            }
+        }else
+        {
+            Api.getService()
+                    .getSimilarProducts(product_id,main_category_id,sub_category_id)
+                    .enqueue(new Callback<SimilarProductModel>() {
+                        @Override
+                        public void onResponse(Call<SimilarProductModel> call, Response<SimilarProductModel> response) {
+                            if (response.isSuccessful())
+                            {
+                                productsList.addAll(response.body().getProducts());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SimilarProductModel> call, Throwable t) {
+                            try {
+                                CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+                            }catch (Exception e){
+
+                            }
+                        }
+                    });
+        }
+
+        return productsList;
+    }
 
     ///////////////////////////////////
+
     private void CreateGpsDialog()
     {
         gpsDialog = new AlertDialog.Builder(this)
