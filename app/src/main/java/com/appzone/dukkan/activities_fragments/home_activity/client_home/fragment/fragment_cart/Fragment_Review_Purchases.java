@@ -14,14 +14,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
+import com.appzone.dukkan.models.OrderItem;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
 
 public class Fragment_Review_Purchases extends Fragment {
-
+    private static String TAG = "ListData";
     private ImageView image_arrow;
     private RecyclerView recView;
     private RecyclerView.LayoutManager manager;
@@ -29,6 +33,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private TextView tv_tax,tv_product_cost,tv_total;
     private FrameLayout fl_continue;
     private HomeActivity activity;
+    private List<OrderItem> orderItemList;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,9 +42,13 @@ public class Fragment_Review_Purchases extends Fragment {
         return view;
     }
 
-    public static Fragment_Review_Purchases newInstance()
+    public static Fragment_Review_Purchases newInstance(List<OrderItem> orderItemList)
     {
-        return new Fragment_Review_Purchases();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TAG, (Serializable) orderItemList);
+        Fragment_Review_Purchases fragment_review_purchases = new Fragment_Review_Purchases();
+        fragment_review_purchases.setArguments(bundle);
+        return fragment_review_purchases;
     }
     private void initView(View view) {
         activity = (HomeActivity) getActivity();
@@ -70,6 +79,41 @@ public class Fragment_Review_Purchases extends Fragment {
             }
         });
 
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+        {
+            this.orderItemList = (List<OrderItem>) bundle.getSerializable(TAG);
+            UpdateUI(orderItemList);
+        }
+
+    }
+
+    private void UpdateUI(List<OrderItem> orderItemList) {
+
+        int total = getTotalOrderPrice(orderItemList);
+        tv_product_cost.setText(String.valueOf(total));
+
+    }
+
+    private int getTotalOrderPrice(List<OrderItem> orderItemList)
+    {
+        int total = 0;
+        for (OrderItem orderItem :orderItemList)
+        {
+            total+= orderItem.getProduct_total_price();
+        }
+
+        return total;
+    }
+
+    public void setOrderItemList(List<OrderItem> orderItemList)
+    {
+        this.orderItemList = new ArrayList<>();
+        this.orderItemList.addAll(orderItemList);
+        UpdateAdapter(this.orderItemList);
+    }
+
+    private void UpdateAdapter(List<OrderItem> orderItemList) {
 
     }
 }

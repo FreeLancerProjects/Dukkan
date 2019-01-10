@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.client_home;
+package com.appzone.dukkan.activities_fragments.home_activity.client_home.activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -32,17 +32,21 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.Fragment_Home;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
+import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
@@ -71,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
     private final int loc_req = 11;
     private final int gps_req = 12;
 
+    OrderItemsSingleTone orderItemsSingleTone;
 
     ////////////////////////////////////////
     private Intent intentService;
@@ -95,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
     {
         root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
+        orderItemsSingleTone = OrderItemsSingleTone.newInstance();
         ah_bottom_nav = findViewById(R.id.ah_bottom_nav);
 
         ah_bottom_nav.setDefaultBackgroundColor(ContextCompat.getColor(this,R.color.white));
@@ -148,6 +154,27 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void UpdateCartNotification(int count)
+    {
+        if (count > 0 )
+        {
+            AHNotification.Builder builder = new AHNotification.Builder();
+            builder.setBackgroundColor(ContextCompat.getColor(this,R.color.green_text));
+            builder.setTextColor(ContextCompat.getColor(this,R.color.white));
+            builder.setText(String.valueOf(count));
+
+            ah_bottom_nav.setNotification(builder.build(),2);
+
+
+        }else
+            {
+                AHNotification.Builder builder = new AHNotification.Builder();
+                builder.setBackgroundColor(ContextCompat.getColor(this,R.color.green_text));
+                builder.setTextColor(ContextCompat.getColor(this,R.color.white));
+                builder.setText("");
+                ah_bottom_nav.setNotification(builder.build(),2);
+            }
+    }
     private void UpdateBottomNavPos(int pos)
     {
         ah_bottom_nav.setCurrentItem(pos,false);
@@ -155,6 +182,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public void DisplayFragmentHome()
     {
+
+
         if (fragment_home==null)
         {
             fragment_home = Fragment_Home.newInstance();
@@ -186,6 +215,8 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_myCart).commit();
         }
+
+
 
         if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
@@ -234,13 +265,13 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
     ////////////////////////////////////
     private void DisplayFragmentMyCart()
     {
         if (fragment_myCart==null)
         {
             fragment_myCart = Fragment_MyCart.newInstance();
+
         }
 
         if (fragment_myCart.isAdded())
@@ -248,11 +279,13 @@ public class HomeActivity extends AppCompatActivity {
             if (!fragment_myCart.isVisible())
             {
                 fragmentManager.beginTransaction().show(fragment_myCart).commit();
+                DisplayFragmentReview_Purchases();
                 UpdateBottomNavPos(2);
             }
         }else
         {
             fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_myCart,"fragment_myCart").addToBackStack("fragment_myCart").commit();
+            DisplayFragmentReview_Purchases();
             UpdateBottomNavPos(2);
         }
 
@@ -267,13 +300,19 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_offers).commit();
         }
 
+        //add to my order and profile
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
+        }
 
     }
     public void DisplayFragmentReview_Purchases()
     {
-        if (fragment_review_purchases==null)
+        if (fragment_review_purchases == null)
         {
-            fragment_review_purchases = Fragment_Review_Purchases.newInstance();
+            fragment_review_purchases = Fragment_Review_Purchases.newInstance(orderItemsSingleTone.getOrderItemList());
+
         }
 
         if (fragment_review_purchases.isAdded())
@@ -286,6 +325,8 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().add(R.id.fragment_my_cart_container,fragment_review_purchases,"fragment_review_purchases").addToBackStack("fragment_review_purchases").commit();
         }
+
+        fragment_review_purchases.setOrderItemList(orderItemsSingleTone.getOrderItemList());
 
 
         if (fragment_delivery_address!=null&&fragment_delivery_address.isAdded())
@@ -437,8 +478,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
-
     private void checkLocationPermission()
     {
         if (ContextCompat.checkSelfPermission(this,fineLoc)== PackageManager.PERMISSION_GRANTED
@@ -540,6 +579,16 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
     ///////////////////////////////////
+    public void NavigateToProductDetailsActivity(MainCategory.Products product, List<MainCategory.Products> similarProducts)
+    {
+        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra("product",product);
+        intent.putExtra("similar_products", (Serializable) similarProducts);
+        startActivityForResult(intent,1122);
+    }
+    ////////////////////////////////////
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -558,9 +607,17 @@ public class HomeActivity extends AppCompatActivity {
             {
                 CreateGpsDialog();
             }
+        }else if (requestCode == 1122 && resultCode == RESULT_OK)
+        {
+            Log.e("125555",orderItemsSingleTone.getItemsCount()+"dddd");
+            UpdateCartNotification(orderItemsSingleTone.getItemsCount());
         }
 
+
+
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -632,6 +689,9 @@ public class HomeActivity extends AppCompatActivity {
         {
             StopLocationUpdate();
         }
+
+        orderItemsSingleTone.ClearCart();
+
         super.onDestroy();
 
     }

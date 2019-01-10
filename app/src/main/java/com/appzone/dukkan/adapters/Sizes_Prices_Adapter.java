@@ -63,11 +63,10 @@ public class Sizes_Prices_Adapter extends RecyclerView.Adapter<Sizes_Prices_Adap
             @Override
             public void onClick(View v) {
                 lastSelectedItem = holder.getAdapterPosition();
-                sparseBooleanArray.clear();
-                sparseBooleanArray.put(lastSelectedItem,true);
+                UpdateSelectedItem(lastSelectedItem);
                 notifyDataSetChanged();
 
-                activity.setItemForSize(productSize_offerModel);
+                activity.setItemForSize(productSize_offerModel,lastSelectedItem);
 
 
 
@@ -76,6 +75,12 @@ public class Sizes_Prices_Adapter extends RecyclerView.Adapter<Sizes_Prices_Adap
             }
         });
 
+    }
+
+    public void UpdateSelectedItem(int lastSelectedItem)
+    {
+        sparseBooleanArray.clear();
+        sparseBooleanArray.put(lastSelectedItem,true);
     }
 
     @Override

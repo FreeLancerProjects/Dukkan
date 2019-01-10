@@ -1,6 +1,5 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,8 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
-import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.adapters.DepartmentAdapter;
 import com.appzone.dukkan.adapters.ProductsAdapter;
 import com.appzone.dukkan.models.MainCategory;
@@ -219,8 +217,23 @@ public class Fragment_SubCategory extends Fragment{
     }
 
     public void setItemForDetails(MainCategory.Products product) {
-        Intent intent = new Intent(getActivity(), ProductDetailsActivity.class);
-        intent.putExtra("product",product);
-        startActivity(intent);
+        List<MainCategory.Products> similarProducts = getSimilarProducts(productsList, product.getId());
+        activity.NavigateToProductDetailsActivity(product,similarProducts );
+
+    }
+
+    private List<MainCategory.Products> getSimilarProducts(List<MainCategory.Products> productList,String selectedProductId)
+    {
+        List<MainCategory.Products> products = new ArrayList<>();
+
+        for (MainCategory.Products product : productList)
+        {
+            if (!product.getId().equals(selectedProductId))
+            {
+                products.add(product);
+            }
+        }
+
+        return products;
     }
 }

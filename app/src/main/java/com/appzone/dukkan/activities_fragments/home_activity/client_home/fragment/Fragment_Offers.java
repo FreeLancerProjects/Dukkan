@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 
 import java.util.Locale;
 

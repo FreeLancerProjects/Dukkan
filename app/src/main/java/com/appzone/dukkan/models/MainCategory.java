@@ -132,6 +132,7 @@ public class MainCategory implements Serializable {
     {
         private String discount;
         private OldPrice old_price;
+        private int feature_id;
 
         public String getDiscount() {
             return discount;
@@ -139,6 +140,10 @@ public class MainCategory implements Serializable {
 
         public OldPrice getOld_price() {
             return old_price;
+        }
+
+        public int getFeature_id() {
+            return feature_id;
         }
     }
 

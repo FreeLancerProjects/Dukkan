@@ -8,6 +8,7 @@ public class ProductSize_OfferModel implements Serializable {
     private String discount;
     private String price_before_discount;
     private String price_after_discount;
+    private String feature_id;
     private String ar_name;
     private String en_name;
 
@@ -35,6 +36,14 @@ public class ProductSize_OfferModel implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFeature_id() {
+        return feature_id;
+    }
+
+    public void setFeature_id(String feature_id) {
+        this.feature_id = feature_id;
     }
 
     public void setOffer(boolean offer) {

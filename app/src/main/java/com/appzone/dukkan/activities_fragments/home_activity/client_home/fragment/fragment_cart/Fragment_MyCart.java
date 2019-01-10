@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 
 import java.util.Locale;
 
@@ -23,6 +23,7 @@ public class Fragment_MyCart extends Fragment{
     private ImageView image_basket,image_car,image_payment,image_arrow1,image_arrow2;
     private TextView tv_basket,tv_car,tv_payment;
     private HomeActivity activity;
+
 
     @Nullable
     @Override
@@ -39,6 +40,7 @@ public class Fragment_MyCart extends Fragment{
     }
     private void initView(View view) {
         activity = (HomeActivity) getActivity();
+
 
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
@@ -64,14 +66,10 @@ public class Fragment_MyCart extends Fragment{
         tv_car = view.findViewById(R.id.tv_car);
         tv_payment = view.findViewById(R.id.tv_payment);
 
-        DisplayFragmentReview_Purchases();
 
 
     }
 
-    private void DisplayFragmentReview_Purchases() {
-        activity.DisplayFragmentReview_Purchases();
-    }
 
 
     public void UpdateBasketUI()
@@ -103,6 +101,8 @@ public class Fragment_MyCart extends Fragment{
         image_car.setImageResource(R.drawable.car_address_unselected);
         tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
     }
+
+
 
 
 }
