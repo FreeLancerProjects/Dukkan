@@ -41,7 +41,7 @@ public class Common {
         manager.hideSoftInputFromWindow(view.getWindowToken(),0);
 
     }
-    public static void CreateSnackBar(Context context,View view_id,String msg)
+    public static Snackbar CreateSnackBar(Context context,View view_id,String msg)
     {
         final Snackbar snackbar = Snackbar.make(view_id,"",Snackbar.LENGTH_INDEFINITE);
 
@@ -61,8 +61,7 @@ public class Common {
         textView.setVisibility(View.INVISIBLE);
         layout.setPadding(0,0,0,0);
         layout.addView(view);
-        snackbar.show();
-
+        return snackbar;
 
     }
     public static void CreateUserNotSignInAlertDialog(Context context,String msg)
@@ -74,6 +73,7 @@ public class Common {
         View view = LayoutInflater.from(context).inflate(R.layout.custom_dialog,null);
         Button doneBtn = view.findViewById(R.id.doneBtn);
         TextView tv_msg = view.findViewById(R.id.tv_msg);
+        tv_msg.setText(msg);
         doneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,6 +3,7 @@ package com.appzone.dukkan.activities_fragments.forget_password_activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -161,7 +162,8 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void CreateSnackBar(String msg)
     {
-        Common.CreateSnackBar(this,root,msg);
+        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();
     }
 
 

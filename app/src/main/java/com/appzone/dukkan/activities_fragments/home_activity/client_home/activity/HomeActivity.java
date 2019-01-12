@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,13 +36,16 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_my_order.Fragment_Client_Orders;
 import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
+import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.SimilarProductModel;
+import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
+import com.appzone.dukkan.singletone.UserSingleTone;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
@@ -91,6 +95,8 @@ public class HomeActivity extends AppCompatActivity {
     private AlertDialog gpsDialog;
     private LocationManager locationManager;
     private View root;
+    private UserSingleTone userSingleTone;
+    private UserModel userModel;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -107,6 +113,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initView()
     {
+        Paper.init(this);
+        current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
+        LanguageHelper.setLocality(this,current_lang);
+
+        userSingleTone =  UserSingleTone.getInstance();
+        userModel = userSingleTone.getUserModel();
         root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
         orderItemsSingleTone = OrderItemsSingleTone.newInstance();
@@ -153,6 +165,15 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case 4:
                         DisplayFragmentClientProfile();
+
+                        /*if (userModel!=null)
+                        {
+                            DisplayFragmentClientProfile();
+
+                        }else
+                            {
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+                            }*/
                         break;
                 }
                 return false;
@@ -164,7 +185,10 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
+    public void UpdateUserData(UserModel userModel)
+    {
+        this.userModel = userModel;
+    }
     public void UpdateCartNotification(int count)
     {
         if (count > 0 )
@@ -342,6 +366,7 @@ public class HomeActivity extends AppCompatActivity {
     }
     public void DisplayFragmentClientProfile()
     {
+
         if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -803,7 +828,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }else if (requestCode == 1122 && resultCode == RESULT_OK)
         {
-            Log.e("125555",orderItemsSingleTone.getItemsCount()+"dddd");
             UpdateCartNotification(orderItemsSingleTone.getItemsCount());
         }
 
@@ -849,7 +873,7 @@ public class HomeActivity extends AppCompatActivity {
         if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
         {
             fragmentManager.popBackStack();
-            finish();
+            NavigateToSignInActivity();
         }else if (fragment_map!=null&&fragment_map.isVisible()) {
             fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().show(fragment_myCart).commit();
@@ -862,6 +886,12 @@ public class HomeActivity extends AppCompatActivity {
             }
     }
 
+    private void NavigateToSignInActivity() {
+        Intent intent  = new Intent(HomeActivity.this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void CreateToast(String msg)
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
@@ -869,7 +899,25 @@ public class HomeActivity extends AppCompatActivity {
 
     public void CreateSnackBar(String msg)
     {
-        Common.CreateSnackBar(this,root,msg);
+        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();
+    }
+
+    public void ChangeLanguage(String lang)
+    {
+        Log.e("lng",lang);
+        Paper.book().write("lang",lang);
+        current_lang = lang;
+        LanguageHelper.setLocality(this,lang);
+        refreshActivity();
+    }
+
+    private void refreshActivity()
+    {
+
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     @Override

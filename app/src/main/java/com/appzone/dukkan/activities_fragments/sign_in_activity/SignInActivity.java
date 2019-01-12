@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,6 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     private Button btn_sign_in,btn_new_account,btn_forget_password,btn_change_language;
     private LinearLayout ll_skip,ll_add_delegate;
     private String current_lang = "";
+    private View root;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -47,11 +49,13 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        Paper.init(this);
+        current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
+        LanguageHelper.setLocality(this,current_lang);
 
         image_back = findViewById(R.id.image_back);
         ll_back = findViewById(R.id.ll_back);
 
-        LanguageHelper.setLocality(this,current_lang);
 
         if (current_lang.equals("ar"))
         {
@@ -62,6 +66,7 @@ public class SignInActivity extends AppCompatActivity {
                 image_back.setImageResource(R.drawable.arrow_left);
 
             }
+        root = findViewById(R.id.root);
 
         edt_phone = findViewById(R.id.edt_phone);
         edt_password = findViewById(R.id.edt_password);
@@ -145,6 +150,7 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -202,6 +208,11 @@ public class SignInActivity extends AppCompatActivity {
         //dialog.show();
         String phone = "00966"+m_phone;
     }
+
+    private void CreateSnackBar(String msg)
+    {
+        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();    }
 
     private void Refresh()
     {

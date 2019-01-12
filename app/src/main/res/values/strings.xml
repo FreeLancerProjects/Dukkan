@@ -119,4 +119,22 @@
     <string name="my_notification">my notification</string>
     <string name="empty_cart">Empty cart</string>
     <string name="wait_our_offers">Wait our offers</string>
+    <string name="cur_order">Current orders</string>
+    <string name="prv_order">Previous orders</string>
+    <string name="password">Password</string>
+    <string name="contact_us">contact us</string>
+    <string name="about_dukkan">About Dukkan</string>
+    <string name="share">Share</string>
+    <string name="change_language">Change language</string>
+    <string name="lang">Language</string>
+    <string name="update_password">Update password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
+    <string name="update_phone">Update phone</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
+    <string name="succ">Success</string>
+    <string name="failed">Failed try again later</string>
 </resources>

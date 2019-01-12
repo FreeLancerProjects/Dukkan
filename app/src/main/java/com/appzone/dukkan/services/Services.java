@@ -2,11 +2,16 @@ package com.appzone.dukkan.services;
 
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.ProductPaginationModel;
+import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.TaxModel;
+import com.appzone.dukkan.models.Terms_Condition_Model;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -29,5 +34,15 @@ public interface Services {
                                                  @Query("main_category_id") String main_category_id,
                                                  @Query("sub_category_id") String sub_category_id
                                                  );
+
+    @GET("api/get-terms-and-conditions")
+    Call<Terms_Condition_Model> getTermsConditions();
+
+    @FormUrlEncoded
+    @POST("api/send-contact")
+    Call<ResponseModel> sendContactUs(@Field("name") String name,
+                                      @Field("phone") String phone,
+                                      @Field("message") String message
+                                      );
 
 }

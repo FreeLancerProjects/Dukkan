@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +45,10 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         super.attachBaseContext(LanguageHelper.onAttach(base,current_lang));
     }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +60,10 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
 
     private void initView()
     {
+        Paper.init(this);
+        current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
+        LanguageHelper.setLocality(this,current_lang);
+
         root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
         image_back = findViewById(R.id.image_back);
@@ -279,7 +289,7 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
 
     public void CreateSnackBar(String msg)
     {
-        Common.CreateSnackBar(this,root,msg);
-
+        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();
     }
 }

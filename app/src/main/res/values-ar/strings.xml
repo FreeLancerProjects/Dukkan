@@ -112,6 +112,24 @@
     <string name="ch_size">إختر الحجم</string>
     <string name="empty_cart">السلة فارغة</string>
     <string name="wait_our_offers">إنتظر عروضنا</string>
+    <string name="cur_order">الطلبات الحالية</string>
+    <string name="prv_order">الطلبات السابقة</string>
+    <string name="password">كلمة المرور</string>
+    <string name="contact_us">إتصل بنا</string>
+    <string name="about_dukkan">عن التطبيق</string>
+    <string name="share">شارك التطبيق</string>
+    <string name="change_language">تغيير اللغة</string>
+    <string name="lang">اللغة</string>
+    <string name="update_password">تعديل كلمة المرور</string>
+    <string name="current_password">كلمة المرور الحالية</string>
+    <string name="new_password">كلمة المرور الجديدة</string>
+    <string name="update">تعديل</string>
+    <string name="cancel">إلغاء</string>
+    <string name="update_phone">تعديل رقم الهاتف</string>
+    <string name="message">الرسالة</string>
+    <string name="send">إرسال</string>
+    <string name="succ">تم بنجاح</string>
+    <string name="failed">فشل حاول مرة اخرى لاحقا</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>
