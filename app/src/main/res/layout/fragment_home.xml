@@ -47,6 +47,7 @@
                         />
 
                     <LinearLayout
+                        android:id="@+id/ll_search"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginBottom="12dp"
@@ -56,12 +57,15 @@
                         android:layoutDirection="ltr"
                         android:orientation="horizontal"
 
-                        >
+                        tools:ignore="UnusedAttribute">
 
                         <FrameLayout
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:background="@drawable/edt_search_bg_cover">
+                            android:background="@drawable/edt_search_bg_cover"
+                            android:clickable="false"
+                            android:longClickable="false"
+                            >
 
                             <ImageView
                                 android:layout_width="35dp"
@@ -69,12 +73,12 @@
                                 android:layout_gravity="center"
                                 android:padding="8dp"
                                 android:src="@drawable/search"
-
+                                android:clickable="false"
+                                android:longClickable="false"
                                 />
                         </FrameLayout>
 
-                        <EditText
-                            android:id="@+id/edt_search_toolbar"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="33dp"
                             android:layout_gravity="center_vertical"
@@ -86,7 +90,11 @@
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textSize="14sp"
-                            tools:ignore="RtlCompat" />
+                            tools:ignore="RtlCompat"
+                            android:gravity="center_vertical"
+                            android:clickable="false"
+                            android:longClickable="false"
+                            />
 
                     </LinearLayout>
 

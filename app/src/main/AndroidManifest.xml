@@ -42,9 +42,12 @@
             android:name=".activities_fragments.home_activity.client_home.activity.HomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity android:name=".activities_fragments.home_activity.driver_home.DriverHomeActivity" />
         <activity android:name=".activities_fragments.product_details.activity.ProductDetailsActivity" />
-        <activity android:name=".activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity"></activity>
+        <activity android:name=".activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity"
+            android:screenOrientation="landscape"
+            />
     </application>
 
 </manifest>

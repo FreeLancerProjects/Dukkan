@@ -130,6 +130,9 @@
     <string name="send">إرسال</string>
     <string name="succ">تم بنجاح</string>
     <string name="failed">فشل حاول مرة اخرى لاحقا</string>
+    <string name="recent_search">آخر ماقمت بالبحث عنة</string>
+    <string name="search2">إبحث</string>
+    <string name="no_products_searched_for_recently">لم يتم البحث عن منتجات مؤخرا</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>

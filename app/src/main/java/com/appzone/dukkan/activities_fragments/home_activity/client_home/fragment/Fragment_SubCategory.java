@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,9 +36,8 @@ import retrofit2.Response;
 
 public class Fragment_SubCategory extends Fragment{
     private static final String TAG = "DATA";
-    private LinearLayout ll_back;
+    private LinearLayout ll_back,ll_search;
     private ImageView image_back,image;
-    private EditText edt_search_toolbar;
     private TextView tv_no_products,tv_name;
     private RecyclerView recViewDepartment,recView;
     private RecyclerView.LayoutManager manager,managerDepartment;
@@ -85,7 +83,7 @@ public class Fragment_SubCategory extends Fragment{
 
         }
         image = view.findViewById(R.id.image);
-        edt_search_toolbar = view.findViewById(R.id.edt_search_toolbar);
+        ll_search = view.findViewById(R.id.ll_search);
         tv_name = view.findViewById(R.id.tv_name);
 
         tv_no_products = view.findViewById(R.id.tv_no_products);
@@ -103,7 +101,12 @@ public class Fragment_SubCategory extends Fragment{
                 activity.DisplayFragmentHome();
             }
         });
-
+        ll_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.DisplayFragmentSearch();
+            }
+        });
         Bundle bundle = getArguments();
         if (bundle!=null)
         {

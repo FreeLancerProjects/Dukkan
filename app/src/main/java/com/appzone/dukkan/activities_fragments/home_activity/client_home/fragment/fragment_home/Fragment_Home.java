@@ -25,8 +25,7 @@ public class Fragment_Home extends Fragment {
 
     private ImageView image_back;
     private AppBarLayout app_bar;
-    private LinearLayout ll_toolbar_container;
-
+    private LinearLayout ll_toolbar_container,ll_search;
     private ImageView image_collapse,image_arrow;
     private FrameLayout fl_departments;
     private ExpandableLayout expand_layout;
@@ -50,6 +49,7 @@ public class Fragment_Home extends Fragment {
         ll_toolbar_container = view.findViewById(R.id.ll_toolbar_container);
         fl_charging_card = view.findViewById(R.id.fl_charging_card);
         fl_food_department = view.findViewById(R.id.fl_food_department);
+        ll_search = view.findViewById(R.id.ll_search);
 
         app_bar = view.findViewById(R.id.app_bar);
         image_back = view.findViewById(R.id.image_back);
@@ -150,6 +150,13 @@ public class Fragment_Home extends Fragment {
             }
         });
 
+
+        ll_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.DisplayFragmentSearch();
+            }
+        });
 
     }
 }
