@@ -154,11 +154,12 @@ public class Fragment_User_SignUp extends Fragment{
     }
 
     private void Sign_Up(String m_name, String m_phone, String m_password) {
-
+        //activity.dismissSnackBar();
     }
 
     public void update_checkbox(boolean isChecked)
     {
+        activity.dismissSnackBar();
         accept_rule = isChecked;
         checkbox_rule.setChecked(isChecked);
     }

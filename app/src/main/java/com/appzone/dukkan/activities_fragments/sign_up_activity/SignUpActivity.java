@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
     private Fragment_Terms_Conditions fragment_terms_conditions;
     private String type="";
     private View root;
+    private Snackbar snackbar;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -289,7 +289,16 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
 
     public void CreateSnackBar(String msg)
     {
-        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
+
+    }
+
+    public void dismissSnackBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+        }
     }
 }

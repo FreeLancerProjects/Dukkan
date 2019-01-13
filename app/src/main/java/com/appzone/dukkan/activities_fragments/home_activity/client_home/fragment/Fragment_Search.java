@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,12 @@ import android.widget.TextView;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.adapters.RecentSearchQueryAdapter;
+import com.appzone.dukkan.adapters.SearchProductsAdapter;
+import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.ProductPaginationModel;
 import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -32,9 +38,12 @@ import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Search extends Fragment {
-    private TextView tv_no_searched_products;
+    private TextView tv_no_searched_products,tv_recent_visited;
     private LinearLayout ll_back;
     private ImageView image_back,image_logo,image_cancel;
     private EditText edt_search;
@@ -42,12 +51,16 @@ public class Fragment_Search extends Fragment {
     private RecyclerView recViewRecentSearch,recView;
     private RecyclerView.LayoutManager manager,managerRecentSearch;
     private RecentSearchQueryAdapter recentSearchQueryAdapter;
+    private SearchProductsAdapter searchProductsAdapter;
+    private List<MainCategory.Products> normal_productsList;
+    private List<MainCategory.Products> productsList;
     private ProgressBar progBar;
     private Button btn_search;
     private String currentLang;
     private List<String> queryList;
     private Preferences preferences;
     private HomeActivity activity;
+    private int current_page = 1;
 
     @Nullable
     @Override
@@ -61,9 +74,14 @@ public class Fragment_Search extends Fragment {
     {
         return new Fragment_Search();
     }
-    private void initView(View view) {
+    private void initView(View view)
+    {
         activity = (HomeActivity) getActivity();
         queryList = new ArrayList<>();
+        productsList = new ArrayList<>();
+        normal_productsList = new ArrayList<>();
+        tv_recent_visited = view.findViewById(R.id.tv_recent_visited);
+
         preferences = Preferences.getInstance();
         Paper.init(getActivity());
         currentLang = Paper.book().read("lang", Locale.getDefault().getLanguage());
@@ -97,6 +115,9 @@ public class Fragment_Search extends Fragment {
         recentSearchQueryAdapter = new RecentSearchQueryAdapter(getActivity(),queryList,this);
         recViewRecentSearch.setAdapter(recentSearchQueryAdapter);
 
+        searchProductsAdapter = new SearchProductsAdapter(getActivity(),productsList,this,recView);
+        recView.setAdapter(searchProductsAdapter);
+
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -116,13 +137,34 @@ public class Fragment_Search extends Fragment {
                     image_logo.setVisibility(View.GONE);
                     image_cancel.setVisibility(View.VISIBLE);
                     btn_search.setVisibility(View.VISIBLE);
-                    expand_layout.setExpanded(true,true);
+                    if (queryList.size()>0)
+                    {
+                        expand_layout.setExpanded(true,true);
+
+                    }
+
                 }else
                     {
+
+                        if (normal_productsList.size()>0)
+                        {
+                            tv_recent_visited.setVisibility(View.VISIBLE);
+                            tv_no_searched_products.setVisibility(View.GONE);
+                        }else
+                            {
+                                tv_no_searched_products.setText(getString(R.string.no_products_searched_for_recently));
+                                tv_no_searched_products.setVisibility(View.VISIBLE);
+                                tv_recent_visited.setVisibility(View.GONE);
+
+
+                            }
                         image_logo.setVisibility(View.VISIBLE);
                         image_cancel.setVisibility(View.GONE);
                         btn_search.setVisibility(View.GONE);
                         expand_layout.collapse(true);
+                        productsList.clear();
+                        productsList.addAll(normal_productsList);
+                        searchProductsAdapter.notifyDataSetChanged();
 
                     }
 
@@ -142,6 +184,7 @@ public class Fragment_Search extends Fragment {
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Common.CloseKeyBoard(getActivity(),edt_search);
                 String query = edt_search.getText().toString().trim();
                 Search(query);
             }
@@ -154,35 +197,181 @@ public class Fragment_Search extends Fragment {
         });
         getSavedQueries();
         getSavedVisitedProductsIds();
+        searchProductsAdapter.setOnLoadMoreListener(new SearchProductsAdapter.LoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                String q = edt_search.getText().toString().trim();
+                int next_page = current_page+1;
+                productsList.add(null);
+                searchProductsAdapter.notifyDataSetChanged();
+
+                LoadMore(q,next_page);
+            }
+        });
 
     }
+    public void Search(final String query)
+    {
+        tv_recent_visited.setVisibility(View.GONE);
+        edt_search.setText(query);
+        Common.CloseKeyBoard(getActivity(),edt_search);
 
-    private void Search(String query) {
+        if (expand_layout.isExpanded())
+        {
+            expand_layout.collapse(true);
+        }
+        progBar.setVisibility(View.VISIBLE);
+        recView.setAlpha(.5f);
+        Api.getService()
+                .search(query,1)
+                .enqueue(new Callback<ProductPaginationModel>() {
+                    @Override
+                    public void onResponse(Call<ProductPaginationModel> call, Response<ProductPaginationModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            activity.dismissSnackBar();
+                            progBar.setVisibility(View.GONE);
+                            recView.setAlpha(1.0f);
+                            if (response.body().getData().size()>0)
+                            {
+                                tv_no_searched_products.setVisibility(View.GONE);
+                                preferences.addRecentSearchQuery(getActivity(),query);
+                                productsList.clear();
+                                productsList.addAll(response.body().getData());
+                                searchProductsAdapter.setLoaded();
+                                searchProductsAdapter.notifyDataSetChanged();
 
+                            }else
+                                {
+                                    tv_no_searched_products.setText(R.string.no_ser_res);
+                                    tv_no_searched_products.setVisibility(View.VISIBLE);
+
+                                }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductPaginationModel> call, Throwable t) {
+                        try {
+                            progBar.setVisibility(View.GONE);
+                            recView.setAlpha(1.0f);
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
 
+    private void LoadMore(String query , int page_index)
+    {
 
-    private void getSavedQueries() {
+        Api.getService()
+                .search(query,page_index)
+                .enqueue(new Callback<ProductPaginationModel>() {
+                    @Override
+                    public void onResponse(Call<ProductPaginationModel> call, Response<ProductPaginationModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            progBar.setVisibility(View.GONE);
+                            recView.setAlpha(1.0f);
+                            if (response.body().getData().size()>0)
+                            {
+                                current_page = response.body().getCurrent_page();
+                                productsList.remove(productsList.size()-1);
+                                productsList.addAll(response.body().getData());
+                                searchProductsAdapter.setLoaded();
+                                searchProductsAdapter.notifyDataSetChanged();
+
+                            }else
+                            {
+                                productsList.remove(productsList.size()-1);
+                                searchProductsAdapter.setLoaded();
+                                searchProductsAdapter.notifyDataSetChanged();
+
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductPaginationModel> call, Throwable t) {
+                        try {
+                            progBar.setVisibility(View.GONE);
+                            recView.setAlpha(1.0f);
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+
+    private void getSavedQueries()
+    {
+        for (String q : preferences.getAllQueries(getActivity()))
+        {
+            Log.e("query",q+"_");
+        }
         queryList.addAll(preferences.getAllQueries(getActivity()));
         recentSearchQueryAdapter.notifyDataSetChanged();
 
     }
-    private void getSavedVisitedProductsIds() {
+
+    private void getSavedVisitedProductsIds()
+    {
         List<String> productsIdsList = preferences.getAllVisitedIds(getActivity());
         if (productsIdsList.size()>0)
         {
+            tv_recent_visited.setVisibility(View.VISIBLE);
             progBar.setVisibility(View.VISIBLE);
             getVisitedProducts(productsIdsList);
-        }
+        }else
+            {
+                tv_recent_visited.setVisibility(View.GONE);
+                progBar.setVisibility(View.GONE);
+            }
     }
 
-    private void getVisitedProducts(List<String> productsIdsList) {
+    private void getVisitedProducts(List<String> productsIdsList)
+    {
         if (productsIdsList.size()>0)
         {
 
             tv_no_searched_products.setVisibility(View.GONE);
+            Api.getService()
+                    .getRecentSearchProducts(productsIdsList)
+                    .enqueue(new Callback<ProductPaginationModel>() {
+                        @Override
+                        public void onResponse(Call<ProductPaginationModel> call, Response<ProductPaginationModel> response) {
+                            if (response.isSuccessful())
+                            {
+                                progBar.setVisibility(View.GONE);
+                                activity.dismissSnackBar();
 
+                                if (response.body().getData().size()>0)
+                                {
+                                    productsList.clear();
+                                    productsList.addAll(response.body().getData());
+                                    normal_productsList.clear();
+                                    normal_productsList.addAll(response.body().getData());
+                                    searchProductsAdapter.notifyDataSetChanged();
+                                    tv_no_searched_products.setVisibility(View.GONE);
+                                }else
+                                    {
+                                        tv_no_searched_products.setVisibility(View.VISIBLE);
 
+                                    }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ProductPaginationModel> call, Throwable t) {
+                            try {
+                                progBar.setVisibility(View.GONE);
+                                activity.CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+                            }catch (Exception e){}
+                        }
+                    });
 
         }else
             {
@@ -191,7 +380,23 @@ public class Fragment_Search extends Fragment {
             }
     }
 
-    private void DisplayNormalList() {
+    private void DisplayNormalList()
+    {
+        productsList.clear();
+        productsList.addAll(normal_productsList);
+        searchProductsAdapter.notifyDataSetChanged();
 
+    }
+
+    public void setItemForDetails(MainCategory.Products products)
+    {
+        if (products!=null)
+        {
+
+            preferences.saveVisitedProductIds(getActivity(),products.getId());
+
+            activity.NavigateToProductDetailsActivity(products,activity.getSimilarProducts(products.getMain_category_id(),products.getSub_category_id(),products.getId()));
+
+        }
     }
 }

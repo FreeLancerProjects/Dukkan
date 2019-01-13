@@ -33,6 +33,7 @@ public class SignInActivity extends AppCompatActivity {
     private LinearLayout ll_skip,ll_add_delegate;
     private String current_lang = "";
     private View root;
+    private Snackbar snackbar;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -211,7 +212,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void CreateSnackBar(String msg)
     {
-        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();    }
 
     private void Refresh()

@@ -32,9 +32,20 @@ public class RecentSearchQueryAdapter extends RecyclerView.Adapter <RecentSearch
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyHolder holder, int position) {
         String query = queriesList.get(position);
         holder.BindData(query);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String q = queriesList.get(holder.getAdapterPosition());
+                if (q!=null)
+                {
+                    fragment_search.Search(q);
+
+                }
+            }
+        });
     }
 
     @Override

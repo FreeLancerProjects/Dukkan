@@ -96,10 +96,11 @@
 
             >
             <FrameLayout
-                android:id="@+id/fl_details"
                 android:layout_width="0dp"
                 android:layout_weight=".25"
                 android:layout_height="45dp"
+                android:clickable="false"
+                android:longClickable="false"
                 >
                 <ImageView
                     android:layout_width="match_parent"

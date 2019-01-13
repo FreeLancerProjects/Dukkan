@@ -93,6 +93,7 @@ public class HomeActivity extends AppCompatActivity {
     ////////////////////////////////////////
     private MainCategory mainCategory;
     ////////////////////////////////////////
+    private Snackbar snackbar;
     private Intent intentService;
     private AlertDialog gpsDialog;
     private LocationManager locationManager;
@@ -874,15 +875,14 @@ public class HomeActivity extends AppCompatActivity {
     ///////////////////////////////////
     public void NavigateToProductDetailsActivity(MainCategory.Products product, List<MainCategory.Products> similarProducts)
     {
-        if (fragment_search!=null&&fragment_search.isAdded())
-        {
-            fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+
 
         Intent intent = new Intent(this, ProductDetailsActivity.class);
         intent.putExtra("product",product);
         intent.putExtra("similar_products", (Serializable) similarProducts);
         startActivityForResult(intent,1122);
+
+        DisplayFragmentHome();
     }
     ////////////////////////////////////
 
@@ -977,8 +977,17 @@ public class HomeActivity extends AppCompatActivity {
 
     public void CreateSnackBar(String msg)
     {
-        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
+    }
+
+    public void dismissSnackBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+
+        }
     }
 
     public void ChangeLanguage(String lang)

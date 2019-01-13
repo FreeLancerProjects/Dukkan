@@ -117,6 +117,8 @@ public class Fragment_Offers extends Fragment {
                         if (response.isSuccessful())
                         {
                             progBar.setVisibility(View.GONE);
+                            homeActivity.dismissSnackBar();
+
                             if (response.body()!=null)
                             {
                                 if (response.body().getData().size()>0)

@@ -7,6 +7,8 @@ import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.models.Terms_Condition_Model;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -44,5 +46,12 @@ public interface Services {
                                       @Field("phone") String phone,
                                       @Field("message") String message
                                       );
+
+    @FormUrlEncoded
+    @POST("api/get-recent-search")
+    Call<ProductPaginationModel> getRecentSearchProducts(@Field("ids[]") List<String> ids);
+
+    @GET("api/search-products")
+    Call<ProductPaginationModel> search(@Query("q") String query,@Query("page") int page_index);
 
 }

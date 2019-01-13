@@ -8,9 +8,9 @@ import android.util.Log;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.tags.Tags;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Preferences {
@@ -73,12 +73,11 @@ public class Preferences {
         {
 
             try {
-                String [] resultList = new Gson().fromJson(queries,String [].class);
+                List<String> queriesResults = new Gson().fromJson(queries,new TypeToken<List<String>>(){}.getType());
 
-                List<String> queriesResults = Arrays.asList(resultList);
                 if (!queriesResults.contains(query))
                 {
-                    queriesResults.add(0,queries);
+                    queriesResults.add(0,query);
 
                     if (queriesResults.size()>10)
                     {
@@ -100,19 +99,30 @@ public class Preferences {
                 SaveQueryList(queriesList,preferences);
             }
 
+
     }
     private void SaveQueryList(List<String> queryList,SharedPreferences preferences)
     {
         SharedPreferences.Editor editor = preferences.edit();
-        String gson = new Gson().toJson(queryList.toArray());
+        String gson = new Gson().toJson(queryList);
         editor.putString("queries",gson);
         editor.apply();
     }
     public List<String> getAllQueries(Context context)
     {
+        List<String> queriesList = new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences("search",Context.MODE_PRIVATE);
         String queries = preferences.getString("queries","");
-        return Arrays.asList(new Gson().fromJson(queries,String[].class));
+        if (!TextUtils.isEmpty(queries))
+        {
+            List<String> qList = new Gson().fromJson(queries,new TypeToken<List<String>>(){}.getType());
+            queriesList.addAll(qList);
+            return queriesList;
+
+        }
+
+        return queriesList;
+
 
     }
     public void saveVisitedProductIds(Context context,String id)
@@ -121,16 +131,18 @@ public class Preferences {
         String gson = preferences.getString("ids","");
         if (!TextUtils.isEmpty(gson))
         {
-            List<String> visitedIds = Arrays.asList(new Gson().fromJson(gson,String[].class));
+            List<String> visitedIds = new Gson().fromJson(gson,new TypeToken<List<String>>(){}.getType());
+
+
             if (!visitedIds.contains(id))
             {
-                visitedIds.add(0,id);
+                visitedIds.add(id);
                 if (visitedIds.size()>10)
                 {
                     visitedIds.remove(visitedIds.size()-1);
                 }
 
-                String gsonArray = new Gson().toJson(visitedIds.toArray());
+                String gsonArray = new Gson().toJson(visitedIds);
                 SaveVisitedIds(gsonArray,preferences);
 
             }
@@ -143,9 +155,15 @@ public class Preferences {
     }
     public List<String> getAllVisitedIds(Context context)
     {
+        List<String> idsList = new ArrayList<>();
         SharedPreferences preferences = context.getSharedPreferences("visited",Context.MODE_PRIVATE);
         String gson = preferences.getString("ids","");
-        return Arrays.asList(new Gson().fromJson(gson,String[].class));
+        if (!TextUtils.isEmpty(gson))
+        {
+            List<String> ids = new Gson().fromJson(gson,new TypeToken<List<String>>(){}.getType());
+            idsList.addAll(ids);
+        }
+        return idsList;
     }
     private void SaveVisitedIds(String gsonArray, SharedPreferences preferences) {
         SharedPreferences.Editor editor = preferences.edit();

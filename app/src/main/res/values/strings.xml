@@ -140,4 +140,6 @@
     <string name="recent_search">Recent search</string>
     <string name="search2">Search</string>
     <string name="no_products_searched_for_recently">No products searched for recently</string>
+    <string name="no_ser_res">No search results</string>
+    <string name="recently_visited">Recently visited</string>
 </resources>

@@ -33,6 +33,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     private String current_lang = "";
     private AlertDialog alertDialog;
     private View root;
+    private Snackbar snackbar;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -133,6 +134,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         //dialog.show();
         //CreateAlertDialog(this,getString(R.string.we_will_send_you_a_link_to_on_the_email_recover_your_password));
         //Common.CreateSnackBar(this,root,getString(R.string.something));
+        //snackbar.dismiss();
     }
 
     public  void CreateAlertDialog(Context context,String msg)
@@ -162,9 +164,10 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     private void CreateSnackBar(String msg)
     {
-        Snackbar snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
     }
+
 
 
 
