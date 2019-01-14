@@ -5,6 +5,8 @@ public class Tags {
     public static final String IMAGE_URL = base_url+"storage/";
     public static final String session_login = "login";
     public static final String session_logout = "logout";
+    public static final String less_2 = "1";
+    public static final String more_2 = "2";
 
 
 

@@ -16,12 +16,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.tags.Tags;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -91,7 +93,15 @@ public class Fragment_Date_Time extends Fragment{
         fl_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                date_time_listener.onDate_Time_Set(time_type,delivery_cost);
+
+                if (!TextUtils.isEmpty(time_type))
+                {
+                    date_time_listener.onDate_Time_Set(time_type,delivery_cost);
+
+                }else
+                    {
+                        Toast.makeText(activity, R.string.sel_delv_time, Toast.LENGTH_LONG).show();
+                    }
             }
         });
 
@@ -105,6 +115,8 @@ public class Fragment_Date_Time extends Fragment{
         tv_less.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                time_type = Tags.less_2;
                 tv_less.setBackgroundResource(R.drawable.tv_selected_delivery_cost);
                 tv_less.setTextColor(ContextCompat.getColor(activity,R.color.white));
                 tv_more.setBackgroundResource(R.drawable.ll_from_to);
@@ -126,6 +138,9 @@ public class Fragment_Date_Time extends Fragment{
         tv_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                time_type = Tags.more_2;
+
                 tv_more.setBackgroundResource(R.drawable.tv_selected_delivery_cost);
                 tv_more.setTextColor(ContextCompat.getColor(activity,R.color.white));
 

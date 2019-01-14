@@ -153,4 +153,5 @@
     <string name="within_2_hour">Within 2 hour</string>
     <string name="delivered_order_to_your_current_location">Delivered order to your current address ?</string>
     <string name="sel_delv_loc">Select delivered address</string>
+    <string name="sel_delv_time">Select delivery time</string>
 </resources>

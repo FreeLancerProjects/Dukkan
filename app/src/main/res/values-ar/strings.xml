@@ -146,6 +146,7 @@
     <string name="within_2_hour">خلال ساعتين</string>
     <string name="delivered_order_to_your_current_location">هل تريد توصيل طلبك لعنوانك الحالى ؟</string>
     <string name="sel_delv_loc">إختر عنوان توصيل طلبك.</string>
+    <string name="sel_delv_time">إختر وقت التوصيل</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>
