@@ -135,6 +135,17 @@
     <string name="no_products_searched_for_recently">لم يتم البحث عن منتجات مؤخرا</string>
     <string name="no_ser_res">لا توجد نتائج للبحث</string>
     <string name="recently_visited">زرت مؤخرا</string>
+    <string name="delivery_time2">وقت التوصيل</string>
+    <string name="choose_delivery_time">إختر وقت التوصيل :</string>
+    <string name="from">من :</string>
+    <string name="to">الى :</string>
+    <string name="save_delivery_time">حفظ وقت التوصيل</string>
+    <string name="the_arrival_time_will_be_determined_when_the_delegate_accepts_your_order">سيتم تحديد وقت التوصل عند قبول المندوب لطلبك.</string>
+    <string name="delv_cost">تكلفة التوصيل :</string>
+    <string name="less_than_2_hour">أقل من ساعتين</string>
+    <string name="within_2_hour">خلال ساعتين</string>
+    <string name="delivered_order_to_your_current_location">هل تريد توصيل طلبك لعنوانك الحالى ؟</string>
+    <string name="sel_delv_loc">إختر عنوان توصيل طلبك.</string>
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>

@@ -46,7 +46,7 @@
         <activity android:name=".activities_fragments.home_activity.driver_home.DriverHomeActivity" />
         <activity android:name=".activities_fragments.product_details.activity.ProductDetailsActivity" />
         <activity android:name=".activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             />
     </application>
 

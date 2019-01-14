@@ -405,6 +405,7 @@
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="14sp"
+                android:inputType="number"
                 tools:ignore="RtlCompat" />
 
         </LinearLayout>
@@ -448,6 +449,8 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@drawable/un_selected_payment"
+                android:visibility="invisible"
+
                 >
                 <ImageView
                     android:id="@+id/image_visa"
@@ -471,6 +474,7 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@drawable/un_selected_payment"
+                android:visibility="invisible"
                 >
 
                 <ImageView
@@ -493,7 +497,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/un_selected_payment"
+                android:background="@drawable/selected_payment"
 
                 >
                 <ImageView

@@ -1,5 +1,6 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,6 +70,7 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     private RecyclerView.LayoutManager manager;
     private PlaceSearchAdapter adapter;
     private LinearLayout ll_search_no_result;
+    private FrameLayout fl_save;
     private List<PlaceSearchModel> placeSearchModelList;
     private HomeActivity activity;
     public boolean isMapReady = false;
@@ -75,6 +79,10 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     private TextView tv_title;
     private String current_lang;
     private FrameLayout fl_address_container;
+    private AddressListener addressListener;
+    private String myAddress_title="",order_address_title="";
+    private double order_lat=0.0,order_lng=0.0;
+    private double current_lat=0.0,current_lng=0.0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,6 +116,7 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
         }
 
         ll_back = view.findViewById(R.id.ll_back);
+        fl_save = view.findViewById(R.id.fl_save);
         tv_search = view.findViewById(R.id.tv_search);
         ll_search_no_result = view.findViewById(R.id.ll_search_no_result);
         recView = view.findViewById(R.id.recView);
@@ -146,12 +155,34 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        fl_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (order_lat !=0.0 && order_lng !=0.0)
+                {
+                    addressListener.onAddressSet(order_address_title,order_lat,order_lng);
+                }else
+                    {
+                        if (current_lat!=0.0 && current_lng!=0.0)
+                        {
+                            CreateLocationDialog();
+                        }else
+                            {
+                                Toast.makeText(activity, R.string.sel_delv_loc, Toast.LENGTH_LONG).show();
+                            }
+                    }
+            }
+        });
+
+
         initMap();
 
     }
 
+
     private void updateTitle(String title)
     {
+        myAddress_title = title;
         fl_address_container.setVisibility(View.VISIBLE);
         tv_title.setText(title);
     }
@@ -188,6 +219,35 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private void CreateLocationDialog()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setCancelable(false)
+                .create();
+        View view = LayoutInflater.from(activity).inflate(R.layout.dialog_location_order,null);
+        Button btn_ok = view.findViewById(R.id.btn_ok);
+        Button btn_cancel = view.findViewById(R.id.btn_cancel);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                addressListener.onAddressSet(myAddress_title,current_lat,current_lng);
+
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.custom_dialog_animation;
+        dialog.show();
+    }
     /////////////////////////Search///////////////////////////
     private void search(String query)
     {
@@ -281,6 +341,9 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     {
         if (location!=null)
         {
+            order_lat = location.getLatitude();
+            order_lng = location.getLongitude();
+
             getTitleFromLatLng(location);
             AddMarker(location);
 
@@ -292,6 +355,8 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     }
     private void AddMarker(Location location)
     {
+
+
         if (marker == null)
         {
             marker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(getBitmapIcon())).position(new LatLng(location.getLatitude(),location.getLongitude())));
@@ -307,6 +372,10 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
 
     public void setItem(PlaceSearchModel placeSearchModel)
     {
+        order_lat = placeSearchModel.getLat();
+        order_lng = placeSearchModel.getLng();
+        order_address_title = placeSearchModel.getName();
+
         Common.CloseKeyBoard(getActivity(),tv_search);
         placeSearchModelList.clear();
         adapter.notifyDataSetChanged();
@@ -372,5 +441,18 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     private void CreateToast(String msg)
     {
         Toast.makeText(activity,msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (HomeActivity) context;
+        addressListener = activity;
+
+    }
+
+    public interface AddressListener
+    {
+        void onAddressSet(String address,double lat,double lng);
     }
 }

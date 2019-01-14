@@ -27,6 +27,7 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Search;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_SubCategory;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Date_Time;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Delivery_Address;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Map;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_MyCart;
@@ -65,7 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements Fragment_Date_Time.Date_Time_Listener,Fragment_Map.AddressListener{
     private FragmentManager fragmentManager;
     private String current_lang = "";
     private AHBottomNavigation ah_bottom_nav;
@@ -80,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment_Review_Purchases fragment_review_purchases;
     private Fragment_Delivery_Address fragment_delivery_address;
     private Fragment_Payment_Confirmation fragment_payment_confirmation;
-
+    private Fragment_Date_Time fragment_date_time;
     ///////////////////////////////////////
     private Fragment_Food_Department fragment_food_department;
     private Fragment_Charging_Cards fragment_charging_cards;
@@ -100,6 +101,8 @@ public class HomeActivity extends AppCompatActivity {
     private View root;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
+    private String time_type="",delivery_cost="";
+    private double order_lat=0.0,order_lng=0.0;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -192,6 +195,7 @@ public class HomeActivity extends AppCompatActivity {
     {
         this.userModel = userModel;
     }
+
     public void UpdateCartNotification(int count)
     {
         if (count > 0 )
@@ -217,11 +221,11 @@ public class HomeActivity extends AppCompatActivity {
     {
         ah_bottom_nav.setCurrentItem(pos,false);
     }
+
     public void DisplayFragmentHome()
     {
 
 
-        //add to my order and profile
         if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -229,6 +233,15 @@ public class HomeActivity extends AppCompatActivity {
         if (fragment_search!=null&&fragment_search.isAdded())
         {
             fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        if (fragment_map!=null&&fragment_map.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_map",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_date_time!=null&&fragment_date_time.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_date_time",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         if (fragment_home==null)
@@ -291,6 +304,14 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+        if (fragment_map!=null&&fragment_map.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_map",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_date_time!=null&&fragment_date_time.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_date_time",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
         if (fragment_offers==null)
         {
@@ -346,6 +367,15 @@ public class HomeActivity extends AppCompatActivity {
         {
             fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+        if (fragment_map!=null&&fragment_map.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_map",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_date_time!=null&&fragment_date_time.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_date_time",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         if (fragment_client_orders==null)
         {
             fragment_client_orders = Fragment_Client_Orders.newInstance();
@@ -390,6 +420,19 @@ public class HomeActivity extends AppCompatActivity {
         if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_search!=null&&fragment_search.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        if (fragment_map!=null&&fragment_map.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_map",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_date_time!=null&&fragment_date_time.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_date_time",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         if (fragment_client_profile==null)
@@ -493,12 +536,10 @@ public class HomeActivity extends AppCompatActivity {
 
         if (fragment_myCart.isAdded())
         {
-            if (!fragment_myCart.isVisible())
-            {
-                fragmentManager.beginTransaction().show(fragment_myCart).commit();
-                DisplayFragmentReview_Purchases();
-                UpdateBottomNavPos(2);
-            }
+            fragmentManager.beginTransaction().show(fragment_myCart).commit();
+            DisplayFragmentReview_Purchases();
+            UpdateBottomNavPos(2);
+
         }else
         {
             fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_myCart,"fragment_myCart").addToBackStack("fragment_myCart").commit();
@@ -527,11 +568,7 @@ public class HomeActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
         }
 
-        //add to my order and profile
-        /*if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
-        }*/
+
 
 
     }
@@ -679,6 +716,20 @@ public class HomeActivity extends AppCompatActivity {
         checkLocationPermission();
 
     }
+
+    public void DisplayFragmentDateTime()
+    {
+        fragment_date_time = Fragment_Date_Time.newInstance();
+
+        fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_date_time,"fragment_date_time").addToBackStack("fragment_date_time").commit();
+
+        if (fragment_delivery_address!=null&&fragment_delivery_address.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_delivery_address).commit();
+        }
+
+
+    }
     ///////////////////////////////////////////////////
     public void DisplayFragmentSubCategory(MainCategory.MainCategoryItems mainCategoryItems)
     {
@@ -703,13 +754,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private void checkLocationPermission()
     {
-        if (ContextCompat.checkSelfPermission(this,fineLoc)== PackageManager.PERMISSION_GRANTED
-                )
+        if (ContextCompat.checkSelfPermission(this,fineLoc)== PackageManager.PERMISSION_GRANTED)
         {
 
             if (isGpsOpen())
             {
                 StartLocationUpdate();
+
             }else
                 {
                     CreateGpsDialog();
@@ -721,6 +772,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 ActivityCompat.requestPermissions(this,perm,loc_req);
             }
+
     }
 
     private void StartLocationUpdate()
@@ -864,7 +916,7 @@ public class HomeActivity extends AppCompatActivity {
     public void ListenToLocationUpdate(Location location)
     {
         Log.e("ddd",location.getLatitude()+"_");
-        if (fragment_map != null && fragment_map.isAdded() && fragment_map.isVisible())
+        if (fragment_map != null && fragment_map.isAdded())
         {
             if (fragment_map.isMapReady)
             {
@@ -913,8 +965,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -954,6 +1004,11 @@ public class HomeActivity extends AppCompatActivity {
             NavigateToSignInActivity();
         }else if (fragment_map!=null&&fragment_map.isVisible()) {
             fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().show(fragment_myCart).commit();
+            fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+
+        }else if (fragment_date_time!=null&&fragment_date_time.isVisible()) {
+            fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().show(fragment_myCart).commit();
             fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
 
@@ -1008,6 +1063,30 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onDate_Time_Set(String time_type , String delivery_cost) {
+
+        this.time_type = time_type;
+        this.delivery_cost = delivery_cost;
+
+        fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction().show(fragment_myCart).commit();
+        fragment_delivery_address.UpdateDate_Time(time_type,delivery_cost);
+        fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+
+
+    }
+    @Override
+    public void onAddressSet(String address, double lat, double lng) {
+        this.order_lat = lat;
+        this.order_lng = lng;
+
+        fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction().show(fragment_myCart).commit();
+        fragment_delivery_address.UpdateAddress(address);
+        fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+    }
+
+    @Override
     public void onBackPressed() {
         Back();
     }
@@ -1024,4 +1103,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
 
     }
+
+
+
 }

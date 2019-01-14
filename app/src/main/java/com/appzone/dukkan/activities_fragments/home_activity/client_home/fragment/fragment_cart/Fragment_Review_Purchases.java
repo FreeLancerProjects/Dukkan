@@ -1,10 +1,13 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart;
 
 import android.app.ProgressDialog;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +28,6 @@ import com.appzone.dukkan.adapters.CartAdapter;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.remote.Api;
-import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 
 import java.io.Serializable;
@@ -50,6 +53,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private int tax = 0;
     private OrderItemsSingleTone orderItemsSingleTone;
     private LinearLayout ll_empty_cart;
+
 
     @Nullable
     @Override
@@ -98,6 +102,7 @@ public class Fragment_Review_Purchases extends Fragment {
         fl_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 activity.DisplayFragmentDelivery_Address();
             }
         });
@@ -180,7 +185,7 @@ public class Fragment_Review_Purchases extends Fragment {
     }
     private void getTax()
     {
-        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+        final ProgressDialog dialog = createProgressDialog(getString(R.string.wait));
         dialog.show();
         Api.getService()
                 .getTax()
@@ -216,7 +221,6 @@ public class Fragment_Review_Purchases extends Fragment {
         cartAdapter = new CartAdapter(getActivity(),orderItemList,this);
         recView.setAdapter(cartAdapter);
     }
-
     public void Increment_Decrement(OrderItem orderItem,int counter)
     {
 
@@ -229,9 +233,6 @@ public class Fragment_Review_Purchases extends Fragment {
         this.orderItemList = orderItemsSingleTone.getOrderItemList();
         UpdateTaxUI(tax);
     }
-
-
-
     public void RemoveItem(OrderItem orderItem)
     {
         orderItemsSingleTone.RemoveProduct(orderItem);
@@ -251,6 +252,19 @@ public class Fragment_Review_Purchases extends Fragment {
                 activity.UpdateCartNotification(0);
                 ll_empty_cart.setVisibility(View.VISIBLE);
             }
+    }
+
+    private ProgressDialog createProgressDialog(String msg)
+    {
+        ProgressDialog  dialog = new ProgressDialog(activity);
+        dialog.setMessage(msg);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        ProgressBar bar = new ProgressBar(activity);
+        Drawable drawable = bar.getIndeterminateDrawable().mutate();
+        drawable.setColorFilter(ContextCompat.getColor(activity, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        dialog.setIndeterminateDrawable(drawable);
+        return dialog;
     }
 
 }

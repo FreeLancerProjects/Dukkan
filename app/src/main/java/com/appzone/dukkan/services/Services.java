@@ -1,5 +1,6 @@
 package com.appzone.dukkan.services;
 
+import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.ProductPaginationModel;
 import com.appzone.dukkan.models.ResponseModel;
@@ -53,5 +54,8 @@ public interface Services {
 
     @GET("api/search-products")
     Call<ProductPaginationModel> search(@Query("q") String query,@Query("page") int page_index);
+
+    @GET("api/get-delivery-cost")
+    Call<DeliveryCostModel> getDeliveryCost();
 
 }

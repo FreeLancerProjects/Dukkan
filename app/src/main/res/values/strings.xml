@@ -142,4 +142,15 @@
     <string name="no_products_searched_for_recently">No products searched for recently</string>
     <string name="no_ser_res">No search results</string>
     <string name="recently_visited">Recently visited</string>
+    <string name="delivery_time2">Delivery time</string>
+    <string name="choose_delivery_time">Choose delivery time :</string>
+    <string name="from">From :</string>
+    <string name="to">To :</string>
+    <string name="save_delivery_time">Save delivery time</string>
+    <string name="the_arrival_time_will_be_determined_when_the_delegate_accepts_your_order">The arrival time will be determined when the delegate accepts your order.</string>
+    <string name="delv_cost">Delivery cost :</string>
+    <string name="less_than_2_hour">Less than 2 hour</string>
+    <string name="within_2_hour">Within 2 hour</string>
+    <string name="delivered_order_to_your_current_location">Delivered order to your current address ?</string>
+    <string name="sel_delv_loc">Select delivered address</string>
 </resources>

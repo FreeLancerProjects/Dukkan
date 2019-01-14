@@ -48,11 +48,7 @@ public class ServiceUpdateLocation extends Service implements LocationListener, 
         googleApiClient.connect();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
-    }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -85,7 +81,7 @@ public class ServiceUpdateLocation extends Service implements LocationListener, 
 
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000*5*60);
+        locationRequest.setInterval(1000*5);
         locationRequest.setFastestInterval(1000*5);
 
     }
