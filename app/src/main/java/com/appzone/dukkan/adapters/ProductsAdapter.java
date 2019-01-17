@@ -43,7 +43,6 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         this.context = context;
         this.productsList = productsList;
         this.fragment_subCategory = fragment_subCategory;
-
         recView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -96,6 +95,8 @@ public class ProductsAdapter extends RecyclerView.Adapter{
         {
             MyHolder myHolder = (MyHolder) holder;
             products = productsList.get(position);
+
+
             myHolder.BindData(products);
 
             myHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +104,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
                 public void onClick(View v) {
                     products = productsList.get(position);
 
-                    Log.e("pos",position+"P");
-                    Log.e("pos1",holder.getAdapterPosition()+"P");
+
 
 
                     if (products!=null)
@@ -134,19 +134,17 @@ public class ProductsAdapter extends RecyclerView.Adapter{
     }
 
     public class MyHolder extends RecyclerView.ViewHolder {
-        private FrameLayout fl_discount_container,fl_details;
+        private FrameLayout fl_discount_container;
         private ImageView image;
         private TextView tv_discount,tv_name,tv_before_discount,tv_after_discount;
         public MyHolder(View itemView) {
             super(itemView);
             fl_discount_container = itemView.findViewById(R.id.fl_discount_container);
-            fl_details = itemView.findViewById(R.id.fl_details);
             image = itemView.findViewById(R.id.image);
             tv_discount = itemView.findViewById(R.id.tv_discount);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_before_discount = itemView.findViewById(R.id.tv_before_discount);
             tv_after_discount = itemView.findViewById(R.id.tv_after_discount);
-
         }
 
         public void BindData(MainCategory.Products products)
@@ -164,7 +162,8 @@ public class ProductsAdapter extends RecyclerView.Adapter{
 
             if (products.getImage().size()>0)
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).into(image);
+
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
 
             }
 
@@ -201,7 +200,7 @@ public class ProductsAdapter extends RecyclerView.Adapter{
                         tv_after_discount.setText(products.getSize_prices().get(0).getNet_price()+" "+context.getString(R.string.rsa));
 
                     }
-                    fl_discount_container.setVisibility(View.GONE);
+                    fl_discount_container.setVisibility(View.INVISIBLE);
 
                 }
         }
@@ -243,4 +242,11 @@ public class ProductsAdapter extends RecyclerView.Adapter{
     {
         this.canLoadMore = true;
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+
 }

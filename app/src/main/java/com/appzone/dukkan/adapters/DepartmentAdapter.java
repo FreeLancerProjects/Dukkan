@@ -58,6 +58,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.My
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                 MainCategory.SubCategory subCategory = subCategoryList.get(holder.getAdapterPosition());
                 lastSelectedItem = holder.getAdapterPosition();
                 sparseBooleanArray.clear();
                 sparseBooleanArray.put(lastSelectedItem,true);

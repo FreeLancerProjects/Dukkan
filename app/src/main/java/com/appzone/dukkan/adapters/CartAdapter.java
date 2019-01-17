@@ -125,7 +125,7 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
             tv_price.setText(String.valueOf(orderItem.getProduct_total_price())+" " + context.getString(R.string.rsa));
             if (!TextUtils.isEmpty(orderItem.getProduct_image()))
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+orderItem.getProduct_image())).into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+orderItem.getProduct_image())).fit().into(image);
             }
         }
     }

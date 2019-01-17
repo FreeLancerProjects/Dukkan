@@ -154,7 +154,7 @@ public class SearchProductsAdapter extends RecyclerView.Adapter{
 
             if (products.getImage().size()>0)
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
 
             }
 

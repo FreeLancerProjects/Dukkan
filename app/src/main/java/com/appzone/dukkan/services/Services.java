@@ -1,5 +1,6 @@
 package com.appzone.dukkan.services;
 
+import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.ProductPaginationModel;
@@ -58,4 +59,6 @@ public interface Services {
     @GET("api/get-delivery-cost")
     Call<DeliveryCostModel> getDeliveryCost();
 
+    @GET("api/coupons/{coupon_id}")
+    Call<CouponModel> isCouponAvailable(@Path("coupon_id") String coupon_id);
 }

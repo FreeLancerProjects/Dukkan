@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -175,6 +175,8 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/btn_login_bg"
             android:layout_marginBottom="8dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
 
             >
             <LinearLayout
@@ -198,14 +200,16 @@
                 <TextView
                     android:id="@+id/tv_address"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:clickable="false"
                     android:longClickable="false"
                     android:paddingStart="5dp"
                     android:text="@string/select_location_from_map"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
+                    android:maxLines="2"
+                    android:gravity="center_vertical"
                     tools:ignore="RtlCompat" />
             </LinearLayout>
         </FrameLayout>
@@ -333,12 +337,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:textSize="13sp"
                     android:paddingStart="5dp"
                     android:text="@string/select_date_and_time"
                     tools:ignore="RtlCompat"
                     android:clickable="false"
+                    android:gravity="center_vertical"
                     android:longClickable="false"
+                    android:maxLines="2"
                     />
             </LinearLayout>
         </FrameLayout>
@@ -374,39 +380,74 @@
             android:background="@drawable/edt_signup_bg"
             android:layoutDirection="ltr"
             android:orientation="horizontal"
+            android:weightSum="3"
 
             >
 
-            <FrameLayout
-                android:layout_width="85dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/edt_coupon_bg_cover">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/btn_active"
+                    android:layout_width="0dp"
+                    android:layout_weight=".7"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/edt_coupon_bg_cover"
                     android:textColor="@color/white"
                     android:text="@string/active"
                     android:gravity="center"
+                    android:visibility="invisible"
                     />
 
-            </FrameLayout>
 
             <EditText
                 android:id="@+id/edt_coupon"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1.95"
                 android:layout_height="35dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="15dp"
                 android:background="@color/white"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:inputType="number"
-                tools:ignore="RtlCompat" />
+                tools:ignore="RtlCompat"
+
+                />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".35"
+                >
+                <ProgressBar
+                    android:id="@+id/progBar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:id="@+id/image_correct"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/correct"
+                    android:padding="5dp"
+                    android:visibility="gone"
+
+                    />
+                <ImageView
+                    android:id="@+id/image_in_correct"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/close2"
+                    android:padding="5dp"
+                    android:visibility="gone"
+
+                    />
+            </FrameLayout>
 
         </LinearLayout>
 
@@ -504,7 +545,7 @@
                     android:id="@+id/image_cash"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/payment_gray"
+                    android:src="@drawable/payment_white"
                     android:padding="8dp"
                     android:clickable="false"
                     android:longClickable="false"
@@ -513,7 +554,7 @@
                     android:id="@+id/tv_cash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/gray2"
+                    android:textColor="@color/white"
                     android:text="نقدا Cash"
                     android:clickable="false"
                     android:longClickable="false"
@@ -616,4 +657,4 @@
 
         </LinearLayout>
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

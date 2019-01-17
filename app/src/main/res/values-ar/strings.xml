@@ -147,6 +147,16 @@
     <string name="delivered_order_to_your_current_location">هل تريد توصيل طلبك لعنوانك الحالى ؟</string>
     <string name="sel_delv_loc">إختر عنوان توصيل طلبك.</string>
     <string name="sel_delv_time">إختر وقت التوصيل</string>
+    <string name="congratulation">تهانينا</string>
+    <string name="you_have_received_a_discount_of">تم حصولك على خصم</string>
+    <string name="on_the_price_of_the_products">على سعر المنتجات</string>
+    <string name="get_it">إحصل عليها الان</string>
+    <string name="coup_not_active">الكوبون غير فعال</string>
+    <string name="coupon_value">قيمة الكوبون</string>
+    <string name="your_order_successfully_confirmed_your_order_number_is">تم تأكيد الطلب بنجاح! رقم الطلب هو</string>
+    <string name="follow_order">تتبع طلبك</string>
+    <string name="back2">عودة للدكان</string>
+
     <string-array name="sort_array">
         <item>ترتيب حسب</item>
         <item>ترتيب حسب</item>

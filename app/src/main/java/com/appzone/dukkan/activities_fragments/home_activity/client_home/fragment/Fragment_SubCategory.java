@@ -92,6 +92,11 @@ public class Fragment_SubCategory extends Fragment{
         manager = new GridLayoutManager(getActivity(),2);
         recView.setLayoutManager(manager);
         recView.setNestedScrollingEnabled(true);
+        recView.setHasFixedSize(true);
+        recView.setItemViewCacheSize(15);
+        recView.setDrawingCacheEnabled(true);
+        recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        
         managerDepartment = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         recViewDepartment.setLayoutManager(managerDepartment);
 
@@ -212,11 +217,32 @@ public class Fragment_SubCategory extends Fragment{
 
     public void setItemForDepartment(MainCategory.SubCategory itemForDepartment)
     {
-        current_page_index = 1;
-        sub_category_id = itemForDepartment.getId();
-        productsList.clear();
-        productsList.addAll(itemForDepartment.getProducts());
-        productsAdapter.notifyDataSetChanged();
+        if (itemForDepartment.getProducts().size()>0)
+        {
+            recView.setVisibility(View.VISIBLE);
+            tv_no_products.setVisibility(View.GONE);
+
+            current_page_index = 1;
+            sub_category_id = itemForDepartment.getId();
+            productsList.clear();
+            productsList.addAll(itemForDepartment.getProducts());
+
+            if (productsAdapter==null)
+            {
+                productsAdapter = new ProductsAdapter(getActivity(),productsList,this,recView);
+                recView.setAdapter(productsAdapter);
+            }else
+                {
+                    productsAdapter.notifyDataSetChanged();
+
+                }
+
+        }else
+            {
+                recView.setVisibility(View.GONE);
+                tv_no_products.setVisibility(View.VISIBLE);
+            }
+
     }
 
     public void setItemForDetails(MainCategory.Products product) {

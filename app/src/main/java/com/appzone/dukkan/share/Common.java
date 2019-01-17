@@ -37,8 +37,17 @@ public class Common {
 
     public static void CloseKeyBoard(Context context, View view)
     {
-        InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(view.getWindowToken(),0);
+        if (context!=null&&view!=null)
+        {
+            InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (manager!=null){
+                manager.hideSoftInputFromWindow(view.getWindowToken(),0);
+
+            }
+
+        }
+
 
     }
     public static Snackbar CreateSnackBar(Context context,View view_id,String msg)

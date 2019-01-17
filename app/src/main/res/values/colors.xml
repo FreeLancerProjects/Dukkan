@@ -26,5 +26,7 @@
 
     <color name="color_press">#6b3895</color>
     <color name="perm_color">#4d9cf9</color>
+    <color name="congratulation">#FFD15C</color>
+    <color name="gray_black">#212121</color>
 
 </resources>

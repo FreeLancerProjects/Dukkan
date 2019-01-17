@@ -13,30 +13,16 @@ public class OrderToUploadModel implements Serializable {
     private double lng;
     private String client_street;
     private String notes;
-    private double date;
-    private double time;
+    private String time_type;
+    private String coupon_code;
+    private String coupon_value;
     private String payment_method;
-    private int order_total_price;
+    private double order_total_price;
     private List<OrderItem> orderItemList;
 
     public OrderToUploadModel() {
     }
 
-    public OrderToUploadModel(String client_id, String client_name, String client_Phone, String client_address, double lat, double lng, String client_street, String notes, double date, double time, String payment_method, int order_total_price, List<OrderItem> orderItemList) {
-        this.client_id = client_id;
-        this.client_name = client_name;
-        this.client_Phone = client_Phone;
-        this.client_address = client_address;
-        this.lat = lat;
-        this.lng = lng;
-        this.client_street = client_street;
-        this.notes = notes;
-        this.date = date;
-        this.time = time;
-        this.payment_method = payment_method;
-        this.order_total_price = order_total_price;
-        this.orderItemList = orderItemList;
-    }
 
     public String getClient_id() {
         return client_id;
@@ -102,20 +88,28 @@ public class OrderToUploadModel implements Serializable {
         this.notes = notes;
     }
 
-    public double getDate() {
-        return date;
+    public String getTime_type() {
+        return time_type;
     }
 
-    public void setDate(double date) {
-        this.date = date;
+    public void setTime_type(String time_type) {
+        this.time_type = time_type;
     }
 
-    public double getTime() {
-        return time;
+    public String getCoupon_value() {
+        return coupon_value;
     }
 
-    public void setTime(double time) {
-        this.time = time;
+    public void setCoupon_value(String coupon_value) {
+        this.coupon_value = coupon_value;
+    }
+
+    public String getCoupon_code() {
+        return coupon_code;
+    }
+
+    public void setCoupon_code(String coupon_code) {
+        this.coupon_code = coupon_code;
     }
 
     public String getPayment_method() {
@@ -126,11 +120,11 @@ public class OrderToUploadModel implements Serializable {
         this.payment_method = payment_method;
     }
 
-    public int getOrder_total_price() {
+    public double getOrder_total_price() {
         return order_total_price;
     }
 
-    public void setOrder_total_price(int order_total_price) {
+    public void setOrder_total_price(double order_total_price) {
         this.order_total_price = order_total_price;
     }
 

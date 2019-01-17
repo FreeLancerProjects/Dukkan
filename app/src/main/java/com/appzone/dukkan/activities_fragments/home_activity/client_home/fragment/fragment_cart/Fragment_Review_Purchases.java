@@ -53,6 +53,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private int tax = 0;
     private OrderItemsSingleTone orderItemsSingleTone;
     private LinearLayout ll_empty_cart;
+    private double total_order_cost_after_tax=0.0;
 
 
     @Nullable
@@ -93,6 +94,11 @@ public class Fragment_Review_Purchases extends Fragment {
         manager = new LinearLayoutManager(getActivity());
         recView.setNestedScrollingEnabled(false);
         recView.setLayoutManager(manager);
+        recView.setHasFixedSize(true);
+        recView.setItemViewCacheSize(15);
+        recView.setDrawingCacheEnabled(true);
+        recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
         tv_tax = view.findViewById(R.id.tv_tax);
         tv_product_cost = view.findViewById(R.id.tv_product_cost);
         tv_total = view.findViewById(R.id.tv_total);
@@ -103,6 +109,7 @@ public class Fragment_Review_Purchases extends Fragment {
             @Override
             public void onClick(View v) {
 
+                activity.SaveListOf_Order_Order_Total_Cost(orderItemList,total_order_cost_after_tax);
                 activity.DisplayFragmentDelivery_Address();
             }
         });
@@ -152,12 +159,14 @@ public class Fragment_Review_Purchases extends Fragment {
             card_bill.setVisibility(View.VISIBLE);
             fl_continue.setVisibility(View.VISIBLE);
             ll_empty_cart.setVisibility(View.GONE);
+            activity.updateUIToolBarFragmentCart(1);
 
         }else
             {
                 ll_empty_cart.setVisibility(View.VISIBLE);
                 card_bill.setVisibility(View.GONE);
                 fl_continue.setVisibility(View.GONE);
+                activity.updateUIToolBarFragmentCart(0);
             }
     }
     private double getTotalOrderPrice(List<OrderItem> orderItemList)
@@ -175,12 +184,11 @@ public class Fragment_Review_Purchases extends Fragment {
         tv_tax.setText(String.valueOf(tax)+" %");
 
         double total_items_prices = getTotalOrderPrice(orderItemList);
-        Log.e("total_items_prices",total_items_prices+"ddd");
         double price_after_tax = total_items_prices*((double) tax/100.0);
 
-        double total = getTotalOrderPrice(orderItemList) - price_after_tax;
+        total_order_cost_after_tax = getTotalOrderPrice(orderItemList) - price_after_tax;
 
-        tv_total.setText(String.valueOf(total));
+        tv_total.setText(String.valueOf(total_order_cost_after_tax));
 
     }
     private void getTax()
@@ -248,6 +256,7 @@ public class Fragment_Review_Purchases extends Fragment {
 
         }else
             {
+                activity.Clear_Order_Object();
                 updateCard_ContinueUI(false);
                 activity.UpdateCartNotification(0);
                 ll_empty_cart.setVisibility(View.VISIBLE);

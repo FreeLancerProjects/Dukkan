@@ -96,7 +96,7 @@ public class Fragment_Date_Time extends Fragment{
 
                 if (!TextUtils.isEmpty(time_type))
                 {
-                    date_time_listener.onDate_Time_Set(time_type,delivery_cost);
+                    date_time_listener.onDate_Time_Set(time_type,delivery_cost,current_date);
 
                 }else
                     {
@@ -215,7 +215,7 @@ public class Fragment_Date_Time extends Fragment{
     {
         Calendar calendar = Calendar.getInstance(new Locale(current_lang));
         long timeInMillis = calendar.getTimeInMillis();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE - dd/MM/yyyy -",new Locale(current_lang));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE - yyyy/MM/dd -",new Locale(current_lang));
         current_date = dateFormat.format(new Date(timeInMillis));
         return current_date;
     }
@@ -228,6 +228,6 @@ public class Fragment_Date_Time extends Fragment{
     }
     public interface Date_Time_Listener
     {
-        void onDate_Time_Set(String time_type , String delivery_cost);
+        void onDate_Time_Set(String time_type , String delivery_cost,String current_date);
     }
 }

@@ -108,9 +108,18 @@ public class Fragment_Search extends Fragment {
         recView = view.findViewById(R.id.recView);
         manager = new LinearLayoutManager(getActivity());
         recView.setLayoutManager(manager);
+        recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recView.setDrawingCacheEnabled(true);
+        recView.setHasFixedSize(true);
+        recView.setItemViewCacheSize(25);
         recViewRecentSearch = view.findViewById(R.id.recViewRecentSearch);
         managerRecentSearch = new LinearLayoutManager(getActivity());
+
         recViewRecentSearch.setLayoutManager(managerRecentSearch);
+        recViewRecentSearch.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recViewRecentSearch.setDrawingCacheEnabled(true);
+        recViewRecentSearch.setHasFixedSize(true);
+        recViewRecentSearch.setItemViewCacheSize(25);
 
         recentSearchQueryAdapter = new RecentSearchQueryAdapter(getActivity(),queryList,this);
         recViewRecentSearch.setAdapter(recentSearchQueryAdapter);

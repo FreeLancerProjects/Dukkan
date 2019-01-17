@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -22,10 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.product_details.fragment.Fragment_Pager_Images;
 import com.appzone.dukkan.adapters.ProductViewPagerAdapter;
 import com.appzone.dukkan.adapters.SimilarProductsAdapter;
 import com.appzone.dukkan.adapters.Sizes_Prices_Adapter;
+import com.appzone.dukkan.adapters.SliderPagerAdapter;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.OrderItem;
@@ -55,8 +54,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private List<String> productImagesList;
     private Timer timer;
     private TimerTask timerTask;
-    private List<Fragment> fragmentList;
+    //private List<Fragment> fragmentList;
+    private List<String> imgsEndPointList;
     private ProductViewPagerAdapter productViewPagerAdapter;
+    private SliderPagerAdapter sliderPagerAdapter;
     private String current_lang;
     private List<ProductSize_OfferModel> productSize_offerModelList;
     private String product_name="";
@@ -89,7 +90,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     {
         orderItemsSingleTone= OrderItemsSingleTone.newInstance();
         productSize_offerModelList = new ArrayList<>();
-        fragmentList = new ArrayList<>();
+        //fragmentList = new ArrayList<>();
+        imgsEndPointList = new ArrayList<>();
+
         productImagesList = new ArrayList<>();
         scaleAnimation = new ScaleAnimation(.7f,1f,.7f,1f,1f,1f);
         scaleAnimation.setDuration(300);
@@ -114,6 +117,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
         recViewSimilarProducts = findViewById(R.id.recViewSimilarProducts);
         similarManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         recViewSimilarProducts.setLayoutManager(similarManager);
+        recView.setHasFixedSize(true);
+        recViewSimilarProducts.setItemViewCacheSize(15);
+        recViewSimilarProducts.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        recViewSimilarProducts.setDrawingCacheEnabled(true);
+
         manager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         recView.setLayoutManager(manager);
         image_back.setOnClickListener(new View.OnClickListener() {
@@ -240,41 +248,57 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         }
         UpdateProductName(product_name);
+        UpdateViewPagerImages(product);
 
+
+
+    }
+
+    private void UpdateViewPagerImages(MainCategory.Products product)
+    {
+        Log.e("id",product.getId());
         productImagesList.clear();
-        fragmentList.clear();
+        imgsEndPointList.clear();
+        //fragmentList.clear();
         productImagesList.addAll(product.getImage());
 
         if (productImagesList.size()>0)
         {
             for (String img : productImagesList)
             {
-                fragmentList.add(Fragment_Pager_Images.newInstance(img));
+                Log.e("img",img);
+
+                imgsEndPointList.add(img);
+
             }
+            sliderPagerAdapter = new SliderPagerAdapter(imgsEndPointList,this);
+            pager.setAdapter(sliderPagerAdapter);
 
-            if (productViewPagerAdapter==null)
+            if (imgsEndPointList.size()>1)
             {
-                productViewPagerAdapter = new ProductViewPagerAdapter(getSupportFragmentManager());
-                productViewPagerAdapter.AddFragments(fragmentList);
-                pager.setAdapter(productViewPagerAdapter);
-                if (fragmentList.size()>1)
-                {
-                    timer = new Timer();
-                    timerTask = new MyTimerTask();
-                    timer.scheduleAtFixedRate(timerTask,5000,6000);
+                timer = new Timer();
+                timerTask = new MyTimerTask();
+                timer.scheduleAtFixedRate(timerTask,5000,6000);
 
-                }
             }else
                 {
-                    productViewPagerAdapter.notifyDataSetChanged();
+                    if (timer!=null)
+                    {
+                        timer.purge();
+                        timer.cancel();
 
+                    }
 
+                    if (timerTask!=null)
+                    {
+                        timerTask.cancel();
+                    }
                 }
 
 
         }
-
     }
+
     private void increaseCounter()
     {
         counter+=1;
@@ -442,7 +466,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (pager.getCurrentItem()<productImagesList.size())
+                    if (pager.getCurrentItem()<productImagesList.size()-1)
                     {
                         pager.setCurrentItem(pager.getCurrentItem()+1);
                     }else

@@ -118,6 +118,7 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
         ll_back = view.findViewById(R.id.ll_back);
         fl_save = view.findViewById(R.id.fl_save);
         tv_search = view.findViewById(R.id.tv_search);
+        tv_search.setSelected(false);
         ll_search_no_result = view.findViewById(R.id.ll_search_no_result);
         recView = view.findViewById(R.id.recView);
         manager = new LinearLayoutManager(getActivity());
@@ -165,6 +166,7 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
                     {
                         if (current_lat!=0.0 && current_lng!=0.0)
                         {
+
                             CreateLocationDialog();
                         }else
                             {
@@ -341,8 +343,8 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
     {
         if (location!=null)
         {
-            order_lat = location.getLatitude();
-            order_lng = location.getLongitude();
+            current_lat = location.getLatitude();
+            current_lng = location.getLongitude();
 
             getTitleFromLatLng(location);
             AddMarker(location);
@@ -376,7 +378,6 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
         order_lng = placeSearchModel.getLng();
         order_address_title = placeSearchModel.getName();
 
-        Common.CloseKeyBoard(getActivity(),tv_search);
         placeSearchModelList.clear();
         adapter.notifyDataSetChanged();
         Location location = new Location("");

@@ -70,18 +70,19 @@ public class Fragment_MyCart extends Fragment{
 
     }
 
-
-
     public void UpdateBasketUI()
     {
         image_basket.setImageResource(R.drawable.basket2);
         tv_basket.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+        clearCar();
+
     }
 
     public void UpdateCarUI()
     {
-        image_car.setImageResource(R.drawable.car_selected);
+        image_car.setImageResource(R.drawable.car_address_selected);
         tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+        clearConfirm();
     }
 
     public void UpdatePaymentUI()
@@ -90,16 +91,28 @@ public class Fragment_MyCart extends Fragment{
         tv_payment.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
     }
 
-    public void clearUI()
+
+
+    public void clearBasket()
     {
         image_basket.setImageResource(R.drawable.basket);
         tv_basket.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
 
+    }
+
+    private void clearCar()
+    {
+        image_car.setImageResource(R.drawable.car_address_unselected);
+        tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+
+    }
+
+    private void clearConfirm()
+    {
         image_payment.setImageResource(R.drawable.payment_unselected);
         tv_payment.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
 
-        image_car.setImageResource(R.drawable.car_address_unselected);
-        tv_car.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+
     }
 
 

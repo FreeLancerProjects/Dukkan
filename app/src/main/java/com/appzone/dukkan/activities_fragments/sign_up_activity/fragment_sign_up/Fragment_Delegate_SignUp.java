@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.tags.Tags;
 
 import java.util.Locale;
 
@@ -43,7 +44,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
     private Bitmap bitmap_personal,bitmap_id,bitmap_vehicle_licence,bitmap_driving_license,bitmap_front_photo,bitmap_back_photo;
     private final int IMG1=1,IMG2=2,IMG3=3,IMG4=4,IMG5=5,IMG6=6;
     private Uri uri1=null,uri2=null,uri3=null,uri4=null,uri5=null,uri6=null;
-    private String gender = "1";
+    private int gender = Tags.male;
     private boolean accept_rule = false;
     private final String read_permission = Manifest.permission.READ_EXTERNAL_STORAGE;
     private SignUpActivity activity;
@@ -143,7 +144,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
                 btn_male.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
                 btn_male.setBackgroundResource(R.drawable.btn_login_bg);
 
-                gender = "1";
+                gender = Tags.male;
 
                 btn_female.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray_text));
                 btn_female.setBackgroundResource(R.drawable.btn_female_bg);
@@ -156,7 +157,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
 
                 btn_female.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
                 btn_female.setBackgroundResource(R.drawable.btn_login_bg);
-                gender = "2";
+                gender = Tags.female;
 
                 btn_male.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray_text));
                 btn_male.setBackgroundResource(R.drawable.btn_female_bg);
@@ -230,7 +231,6 @@ public class Fragment_Delegate_SignUp extends Fragment{
                 m_phone.length()==9&&
                 !TextUtils.isEmpty(m_password)&&
                 accept_rule&&
-                !TextUtils.isEmpty(gender)&&
                 uri1!=null&&
                 uri2!=null&&
                 uri3!=null&&
@@ -317,7 +317,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
 
     }
 
-    private void Sign_Up(String m_name, String m_phone, String m_password, String gender, Uri uri1, Uri uri2, Uri uri3, Uri uri5, Uri uri51, Uri uri6) {
+    private void Sign_Up(String m_name, String m_phone, String m_password, int gender, Uri uri1, Uri uri2, Uri uri3, Uri uri5, Uri uri51, Uri uri6) {
 
     }
     public void update_checkbox(boolean isChecked)

@@ -127,20 +127,15 @@ public class OfferedProductsAdapter extends RecyclerView.Adapter{
         return productsList.size();
     }
 
-    public void UpdateListData(List<MainCategory.Products> productsList)
-    {
-        this.productsList.addAll(productsList);
 
-    }
 
     public class MyHolder extends RecyclerView.ViewHolder {
-        private FrameLayout fl_discount_container,fl_details;
+        private FrameLayout fl_discount_container;
         private ImageView image;
         private TextView tv_discount,tv_name,tv_before_discount,tv_after_discount;
         public MyHolder(View itemView) {
             super(itemView);
             fl_discount_container = itemView.findViewById(R.id.fl_discount_container);
-            fl_details = itemView.findViewById(R.id.fl_details);
             image = itemView.findViewById(R.id.image);
             tv_discount = itemView.findViewById(R.id.tv_discount);
             tv_name = itemView.findViewById(R.id.tv_name);
@@ -164,7 +159,7 @@ public class OfferedProductsAdapter extends RecyclerView.Adapter{
 
             if (products.getImage().size()>0)
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
 
             }
 

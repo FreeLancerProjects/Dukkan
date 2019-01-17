@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductViewPagerAdapter extends FragmentPagerAdapter {
-    List<Fragment> fragmentList;
+    private List<Fragment> fragmentList;
     public ProductViewPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentList = new ArrayList<>();
@@ -28,4 +28,6 @@ public class ProductViewPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return fragmentList.size();
     }
+
+
 }

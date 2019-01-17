@@ -67,13 +67,12 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
 
 
     public class MyHolder extends RecyclerView.ViewHolder {
-        private FrameLayout fl_discount_container,fl_details;
+        private FrameLayout fl_discount_container;
         private ImageView image;
         private TextView tv_discount,tv_name,tv_before_discount,tv_after_discount;
         public MyHolder(View itemView) {
             super(itemView);
             fl_discount_container = itemView.findViewById(R.id.fl_discount_container);
-            fl_details = itemView.findViewById(R.id.fl_details);
             image = itemView.findViewById(R.id.image);
             tv_discount = itemView.findViewById(R.id.tv_discount);
             tv_name = itemView.findViewById(R.id.tv_name);
@@ -97,7 +96,8 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
 
             if (products.getImage().size()>0)
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).into(image);
+                Log.e("url",products.getImage().get(0)+"_");
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
 
             }
 
@@ -134,7 +134,7 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
                         tv_after_discount.setText(products.getSize_prices().get(0).getNet_price()+" "+context.getString(R.string.rsa));
 
                     }
-                    fl_discount_container.setVisibility(View.GONE);
+                    fl_discount_container.setVisibility(View.INVISIBLE);
 
                 }
         }

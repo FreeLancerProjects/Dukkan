@@ -60,7 +60,8 @@ public class Fragment_Offers extends Fragment {
     {
         return new Fragment_Offers();
     }
-    private void initView(View view) {
+    private void initView(View view)
+    {
         homeActivity = (HomeActivity) getActivity();
         productsList = new ArrayList<>();
         ll_back = view.findViewById(R.id.ll_back);
@@ -78,6 +79,8 @@ public class Fragment_Offers extends Fragment {
             image_back.setImageResource(R.drawable.arrow_left);
 
         }
+        ll_no_offers = view.findViewById(R.id.ll_no_offers);
+
         progBar = view.findViewById(R.id.progBar);
         progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getActivity(),R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         recView = view.findViewById(R.id.recView);
@@ -106,8 +109,7 @@ public class Fragment_Offers extends Fragment {
             }
         });
     }
-
-    private void getOfferedProducts(int page_index, final boolean loadMore)
+    private void getOfferedProducts(final int page_index, final boolean loadMore)
     {
         Api.getService()
                 .getOfferedProductPagination(page_index)
@@ -123,6 +125,10 @@ public class Fragment_Offers extends Fragment {
                             {
                                 if (response.body().getData().size()>0)
                                 {
+                                    if (page_index==1)
+                                    {
+                                        ll_no_offers.setVisibility(View.GONE);
+                                    }
                                     current_page = response.body().getCurrent_page();
                                     if (loadMore)
                                     {
@@ -134,6 +140,11 @@ public class Fragment_Offers extends Fragment {
 
                                     }else
                                         {
+                                            if (page_index==1)
+                                            {
+                                                ll_no_offers.setVisibility(View.VISIBLE);
+
+                                            }
                                             Fragment_Offers.this.productsList.addAll(response.body().getData());
                                             offeredProductsAdapter.notifyDataSetChanged();
                                         }

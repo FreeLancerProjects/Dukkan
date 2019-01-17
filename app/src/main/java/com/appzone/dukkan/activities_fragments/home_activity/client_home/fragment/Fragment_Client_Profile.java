@@ -45,6 +45,7 @@ public class Fragment_Client_Profile extends Fragment {
     private ImageView image_arrow1,image_arrow2,image_arrow3;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
+    private ImageView image_whatsapp,image_facebook,image_instagram,image_telegram;
     private String current_lang;
     private HomeActivity activity;
     private  AlertDialog dialogUpdatePhone,dialogUpdatePassword,dialogContactUs;
@@ -79,6 +80,11 @@ public class Fragment_Client_Profile extends Fragment {
         ll_password = view.findViewById(R.id.ll_password);
         ll_language = view.findViewById(R.id.ll_language);
         ll_share = view.findViewById(R.id.ll_share);
+        image_whatsapp = view.findViewById(R.id.image_whatsapp);
+        image_facebook = view.findViewById(R.id.image_facebook);
+        image_instagram = view.findViewById(R.id.image_instagram);
+        image_telegram = view.findViewById(R.id.image_telegram);
+
         fl_terms = view.findViewById(R.id.fl_terms);
         fl_contact_us = view.findViewById(R.id.fl_contact_us);
         fl_about_app = view.findViewById(R.id.fl_about_app);
@@ -150,6 +156,38 @@ public class Fragment_Client_Profile extends Fragment {
             }
         });
 
+        image_whatsapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = "whatsapp://send?phone=966551011284";
+                CreateSocialMediaIntent(uri);
+            }
+        });
+
+        image_facebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = "https://www.facebook.com/dukkan.app.5";
+                CreateSocialMediaIntent(uri);
+            }
+        });
+
+        image_instagram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = "https://instagram.com/dukkanapp?utm_source=ig_profile_share&igshid=1a8okmwc5pex7";
+                CreateSocialMediaIntent(uri);
+            }
+        });
+
+        image_telegram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uri = "https://t.me/DukkanApp";
+                CreateSocialMediaIntent(uri);
+            }
+        });
+
         fl_contact_us.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,6 +202,14 @@ public class Fragment_Client_Profile extends Fragment {
     {
         tv_name.setText("");
         tv_phone.setText("");
+    }
+
+    private void CreateSocialMediaIntent(String uri)
+    {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
+        startActivity(intent);
     }
 
     private void Share()
