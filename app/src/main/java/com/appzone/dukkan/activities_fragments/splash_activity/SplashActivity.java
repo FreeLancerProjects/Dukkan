@@ -5,12 +5,15 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
@@ -47,16 +50,24 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 String session = preferences.getSession(SplashActivity.this);
+                Log.e("Session",session);
                 if (session.equals(Tags.session_login))
                 {
                     userModel = preferences.getUserData(SplashActivity.this);
                     userSingleTone.setUserModel(userModel);
 
-                    // go to home
+                    if (userModel.getUser().getRole().equals(Tags.user_client))
+                    {
+                        Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else if (userModel.getUser().getRole().equals(Tags.user_delegate))
+                    {
+                        Intent intent = new Intent(SplashActivity.this, DriverHomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                    /*Intent intent = new Intent(SplashActivity.this,);
-                    startActivity(intent);
-                    finish();*/
                 }else
                     {
 

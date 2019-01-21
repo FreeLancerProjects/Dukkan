@@ -42,8 +42,8 @@ import retrofit2.Response;
 
 public class Fragment_Client_Profile extends Fragment {
     private TextView tv_name,tv_phone,tv_lang;
-    private ImageView image_arrow1,image_arrow2,image_arrow3;
-    private LinearLayout ll_phone,ll_password,ll_language,ll_share;
+    private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4;
+    private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_logout;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
     private ImageView image_whatsapp,image_facebook,image_instagram,image_telegram;
     private String current_lang;
@@ -76,9 +76,13 @@ public class Fragment_Client_Profile extends Fragment {
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
         image_arrow3 = view.findViewById(R.id.image_arrow3);
+        image_arrow4 = view.findViewById(R.id.image_arrow4);
+
         ll_phone = view.findViewById(R.id.ll_phone);
         ll_password = view.findViewById(R.id.ll_password);
         ll_language = view.findViewById(R.id.ll_language);
+        ll_logout = view.findViewById(R.id.ll_logout);
+
         ll_share = view.findViewById(R.id.ll_share);
         image_whatsapp = view.findViewById(R.id.image_whatsapp);
         image_facebook = view.findViewById(R.id.image_facebook);
@@ -97,6 +101,7 @@ public class Fragment_Client_Profile extends Fragment {
             image_arrow1.setImageResource(R.drawable.arrow_blue_left);
             image_arrow2.setImageResource(R.drawable.arrow_blue_left);
             image_arrow3.setImageResource(R.drawable.arrow_blue_left);
+            image_arrow4.setImageResource(R.drawable.arrow_blue_left);
 
             tv_lang.setText(getString(R.string.lang)+" : " + "العربية");
 
@@ -105,6 +110,7 @@ public class Fragment_Client_Profile extends Fragment {
                 image_arrow1.setImageResource(R.drawable.arrow_blue_right);
                 image_arrow2.setImageResource(R.drawable.arrow_blue_right);
                 image_arrow3.setImageResource(R.drawable.arrow_blue_right);
+                image_arrow4.setImageResource(R.drawable.arrow_blue_right);
 
 
                 tv_lang.setText(getString(R.string.lang)+" : " + "English");
@@ -121,7 +127,8 @@ public class Fragment_Client_Profile extends Fragment {
         ll_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateUpdatePhoneDialog();
+                String phone = userModel.getUser().getPhone();
+                CreateUpdatePhoneDialog(phone);
             }
         });
 
@@ -131,6 +138,14 @@ public class Fragment_Client_Profile extends Fragment {
                 CreateUpdatePasswordDialog();
             }
         });
+
+        ll_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.SignOut();
+            }
+        });
+
 
         ll_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,8 +215,8 @@ public class Fragment_Client_Profile extends Fragment {
 
     private void UpdateUI(UserModel userModel)
     {
-        tv_name.setText("");
-        tv_phone.setText("");
+        tv_name.setText(userModel.getUser().getName());
+        tv_phone.setText("00966"+userModel.getUser().getPhone());
     }
 
     private void CreateSocialMediaIntent(String uri)
@@ -302,7 +317,7 @@ public class Fragment_Client_Profile extends Fragment {
         dialog.show();
     }
 
-    private void CreateUpdatePhoneDialog()
+    private void CreateUpdatePhoneDialog(String phone)
     {
          dialogUpdatePhone = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
@@ -312,7 +327,7 @@ public class Fragment_Client_Profile extends Fragment {
         Button btn_update = view.findViewById(R.id.btn_update);
         Button btn_cancel = view.findViewById(R.id.btn_cancel);
 
-        //edt_phone.setText(userModel.);
+        edt_phone.setText(phone);
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -485,11 +500,111 @@ public class Fragment_Client_Profile extends Fragment {
     }
 
     private void UpdatePhone(String m_phone) {
-        String ph = "00966"+m_phone;
+
+
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        String user_token = userModel.getToken();
+        Api.getService()
+                .updatePhone(user_token,m_phone)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null && response.body().getUser()!=null)
+                            {
+                                activity.dismissSnackBar();
+                                dialog.dismiss();
+                                Toast.makeText(activity,getString(R.string.succ), Toast.LENGTH_SHORT).show();
+                                UpdateUserData(response.body());
+                            }else
+                                {
+                                    Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                                }
+
+
+                        }else
+                            {
+                                dialog.dismiss();
+                                if (response.code() == 422)
+                                {
+                                    activity.CreateSnackBar(getString(R.string.phone_number_exists));
+
+                                }else
+                                    {
+                                        activity.CreateSnackBar(getString(R.string.failed));
+
+                                    }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
 
     private void UpdatePassword(String m_current_password, String m_new_password) {
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
 
+        String user_token = userModel.getToken();
+        Api.getService()
+                .updatePassword(user_token,m_current_password,m_new_password)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null && response.body().getUser()!=null)
+                            {
+                                activity.dismissSnackBar();
+                                dialog.dismiss();
+                                Toast.makeText(activity,getString(R.string.succ), Toast.LENGTH_SHORT).show();
+                                UpdateUserData(response.body());
+                            }else
+                            {
+                                Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        }else
+                        {
+                            dialog.dismiss();
+                            if (response.code() == 422)
+                            {
+                                activity.CreateSnackBar(getString(R.string.incorrect_old_password));
+
+                            }else
+                                {
+                                    activity.CreateSnackBar(getString(R.string.failed));
+
+                                }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
     private void ContactUs(String m_name, String m_msg, String m_phone) {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));

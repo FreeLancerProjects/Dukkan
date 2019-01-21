@@ -1,6 +1,7 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.activity;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -43,10 +44,12 @@ import com.appzone.dukkan.activities_fragments.product_details.activity.ProductD
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.OrderIdModel;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.services.ServiceUpdateLocation;
 import com.appzone.dukkan.share.Common;
@@ -55,6 +58,10 @@ import com.appzone.dukkan.singletone.UserSingleTone;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -66,6 +73,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,8 +114,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private LocationManager locationManager;
     public View root;
     private UserSingleTone userSingleTone;
+    private Preferences preferences;
     private UserModel userModel;
-    private String time_type="";
+    private int time_type=-1;
     private double order_lat=0.0,order_lng=0.0;
     private String order_address="";
     private OrderToUploadModel orderToUploadModel = null;
@@ -137,6 +146,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         userSingleTone =  UserSingleTone.getInstance();
         userModel = userSingleTone.getUserModel();
+        preferences = Preferences.getInstance();
         root = findViewById(R.id.root);
         fragmentManager = getSupportFragmentManager();
         orderItemsSingleTone = OrderItemsSingleTone.newInstance();
@@ -165,15 +175,26 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         ah_bottom_nav.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-                UpdateBottomNavPos(position);
 
                 switch (position)
                 {
                     case 0:
+                        UpdateBottomNavPos(position);
+
                         DisplayFragmentHome();
                         break;
                     case 1:
-                        DisplayFragmentOffer();
+                        if (userModel!=null)
+                        {
+                            UpdateBottomNavPos(position);
+                            DisplayFragmentOffer();
+
+                        }else
+                            {
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+
+
+                            }
                         break;
                     case 2:
                         DisplayFragmentMyCart();
@@ -182,16 +203,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                         DisplayFragmentClientOrders();
                         break;
                     case 4:
-                        DisplayFragmentClientProfile();
-
-                        /*if (userModel!=null)
+                        if (userModel!=null)
                         {
+                            UpdateBottomNavPos(position);
                             DisplayFragmentClientProfile();
 
                         }else
                             {
                                 Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
-                            }*/
+                            }
                         break;
                 }
                 return false;
@@ -199,7 +219,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         });
 
         DisplayFragmentHome();
-
+        updateUserFireBaseToken();
 
 
     }
@@ -207,7 +227,46 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     {
         this.userModel = userModel;
     }
+    private void updateUserFireBaseToken()
+    {
+        if (userModel!=null)
+        {
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (task.isSuccessful())
+                            {
+                                String fireBaseToken = task.getResult().getToken();
+                                String user_token = userModel.getToken();
+                                Api.getService()
+                                        .updateFireBaseToken(user_token,fireBaseToken)
+                                        .enqueue(new Callback<ResponseBody>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
+                                                if (response.isSuccessful())
+                                                {
+                                                    Log.e("user_token_update","success");
+
+
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                                try {
+                                                    Log.e("Error",t.getMessage());
+                                                }catch (Exception e){}
+                                            }
+                                        });
+                            }
+                        }
+                    });
+        }
+    }
     public void UpdateCartNotification(int count)
     {
         if (count > 0 )
@@ -689,37 +748,46 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     public void DisplayFragmentDelivery_Address()
     {
-        if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
+        if (userModel==null)
         {
-            fragmentManager.popBackStack("fragment_payment_confirmation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
 
-        }
-        if (fragment_delivery_address==null)
-        {
-            fragment_delivery_address = Fragment_Delivery_Address.newInstance();
-        }
-
-        if (fragment_delivery_address.isAdded())
-        {
-            if (!fragment_delivery_address.isVisible())
-            {
-                fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
-            }
         }else
-        {
-            fragmentManager.beginTransaction().add(R.id.fragment_my_cart_container,fragment_delivery_address,"fragment_delivery_address").addToBackStack("fragment_delivery_address").commit();
-        }
+            {
+                if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
+                {
+                    fragmentManager.popBackStack("fragment_payment_confirmation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                }
+                if (fragment_delivery_address==null)
+                {
+                    fragment_delivery_address = Fragment_Delivery_Address.newInstance();
+                }
+
+                if (fragment_delivery_address.isAdded())
+                {
+                    if (!fragment_delivery_address.isVisible())
+                    {
+                        fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+                    }
+                }else
+                {
+                    fragmentManager.beginTransaction().add(R.id.fragment_my_cart_container,fragment_delivery_address,"fragment_delivery_address").addToBackStack("fragment_delivery_address").commit();
+                }
 
 
-        if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_review_purchases).commit();
-        }
-        if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_payment_confirmation).commit();
-        }
-        updateUIToolBarFragmentCart(2);
+                if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
+                {
+                    fragmentManager.beginTransaction().hide(fragment_review_purchases).commit();
+                }
+                if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
+                {
+                    fragmentManager.beginTransaction().hide(fragment_payment_confirmation).commit();
+                }
+                updateUIToolBarFragmentCart(2);
+            }
+
+
 
 
 
@@ -831,16 +899,19 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         if (fragment_myCart!=null&&fragment_myCart.isAdded())
         {
+            fragment_myCart = null;
             fragmentManager.popBackStack("fragment_myCart",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
         {
+            fragment_review_purchases = null;
             fragmentManager.popBackStack("fragment_review_purchases",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
         if (fragment_delivery_address!=null&&fragment_delivery_address.isAdded())
         {
+            fragment_delivery_address=null;
             fragmentManager.popBackStack("fragment_delivery_address",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
@@ -1165,8 +1236,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }
         if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
         {
-            fragmentManager.popBackStack();
-            NavigateToSignInActivity();
+
+            if (userModel!=null)
+            {
+                finish();
+            }else
+                {
+                    NavigateToSignInActivity();
+                }
+
         }else if (fragment_map!=null&&fragment_map.isVisible()) {
             fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentManager.beginTransaction().show(fragment_myCart).commit();
@@ -1182,6 +1260,66 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             {
                 DisplayFragmentHome();
             }
+    }
+
+    public void SignOut() {
+        if (userModel!=null)
+        {
+            final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.sgin_out));
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            String user_token = userModel.getToken();
+            Api.getService()
+                    .logout(user_token)
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            Log.e("Error",response.code()+"_");
+                            if (response.isSuccessful())
+                            {
+                                dismissSnackBar();
+                                dialog.dismiss();
+                                clearData();
+
+
+                            }else
+                                {
+                                    dialog.dismiss();
+
+                                    if (response.code() == 401)
+                                    {
+                                        CreateSnackBar(getString(R.string.failed));
+                                    }
+                                }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            try {
+                                dialog.dismiss();
+                                CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+
+                            }catch (Exception e){}
+                        }
+                    });
+        }
+    }
+
+    private void clearData() {
+        fragmentManager.popBackStack();
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (manager!=null)
+        {
+            manager.cancelAll();
+        }
+        preferences.ClearData(this);
+        userSingleTone.clear();
+        userModel = null;
+        NavigateToSignInActivity();
     }
 
     private void NavigateToSignInActivity() {
@@ -1227,7 +1365,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
 
     @Override
-    public void onDate_Time_Set(String time_type , String delivery_cost,String current_date) {
+    public void onDate_Time_Set(int time_type , String delivery_cost,String current_date) {
 
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
@@ -1270,9 +1408,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
             orderToUploadModel = new OrderToUploadModel();
         }
-        Log.e("payment_method",payment_method);
 
-        //orderToUploadModel.setClient_id();
+        orderToUploadModel.setClient_id(userModel.getUser().getId());
         orderToUploadModel.setClient_name(name);
         orderToUploadModel.setClient_Phone(phone);
         orderToUploadModel.setClient_street(street_name);
@@ -1290,9 +1427,44 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     public void UploadOrder()
     {
 
-        ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .uploadOrder(orderToUploadModel)
+                .enqueue(new Callback<OrderIdModel>() {
+                    @Override
+                    public void onResponse(Call<OrderIdModel> call, Response<OrderIdModel> response) {
+
+                        if (response.isSuccessful())
+                        {
+                            dialog.dismiss();
+                            dismissSnackBar();
+                            Toast.makeText(HomeActivity.this, R.string.order_sent_successfully, Toast.LENGTH_SHORT).show();
+                            DisplayFragment_Order_Finish_Congratulation(String.valueOf(response.body().getOrder_id()));
+
+                        }else
+                            {
+                                dialog.dismiss();
+                                if (response.code()==404)
+                                {
+                                    Toast.makeText(HomeActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OrderIdModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+
+                        }catch (Exception e){}
+                    }
+                });
 
     }
 

@@ -2,10 +2,10 @@ package com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_u
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,24 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Delegate_SignUp extends Fragment{
 
@@ -211,14 +223,11 @@ public class Fragment_Delegate_SignUp extends Fragment{
         {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        }else
-            {
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setType("image/*");
-                startActivityForResult(intent,img1);
-
-            }
+        }
+        intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType("image/*");
+        startActivityForResult(intent,img1);
     }
 
     private void CheckData() {
@@ -245,7 +254,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
             edt_phone.setError(null);
             edt_password.setError(null);
 
-            Sign_Up(m_name,m_phone,m_password,gender,uri1,uri2,uri3,uri5,uri5,uri6);
+            Sign_Up(m_name,m_phone,m_password,gender,uri1,uri2,uri3,uri4,uri5,uri6);
         }else
             {
                 if (TextUtils.isEmpty(m_name))
@@ -317,7 +326,82 @@ public class Fragment_Delegate_SignUp extends Fragment{
 
     }
 
-    private void Sign_Up(String m_name, String m_phone, String m_password, int gender, Uri uri1, Uri uri2, Uri uri3, Uri uri5, Uri uri51, Uri uri6) {
+    private void Sign_Up(String m_name, String m_phone, String m_password, int gender, Uri uri1, Uri uri2, Uri uri3, Uri uri4, Uri uri5, Uri uri6) {
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.signingup));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        RequestBody name_part = Common.getRequestBodyText(m_name);
+        RequestBody phone_part = Common.getRequestBodyText(m_phone);
+        RequestBody password_part = Common.getRequestBodyText(m_password);
+        RequestBody gender_part = Common.getRequestBodyText(String.valueOf(gender));
+        RequestBody role_part = Common.getRequestBodyText(Tags.user_delegate);
+
+        try {
+            MultipartBody.Part avatar_part = Common.getMultiPart(getActivity(),uri1,"avatar");
+            MultipartBody.Part id_image_part = Common.getMultiPart(getActivity(),uri2,"id_image");
+            MultipartBody.Part license_part = Common.getMultiPart(getActivity(),uri3,"license");
+            MultipartBody.Part car_license_part = Common.getMultiPart(getActivity(),uri4,"car_license");
+            MultipartBody.Part car_front_part = Common.getMultiPart(getActivity(),uri5,"car_front");
+            MultipartBody.Part car_back_part = Common.getMultiPart(getActivity(),uri6,"car_back");
+            Api.getService()
+                    .SignUp_Delegate(name_part,phone_part,password_part,role_part,gender_part,avatar_part,id_image_part,license_part,car_license_part,car_front_part,car_back_part)
+                    .enqueue(new Callback<UserModel>() {
+                        @Override
+                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+
+                            if (response.isSuccessful())
+                            {
+                                dialog.dismiss();
+                                activity.dismissSnackBar();
+
+                                if (response.body()!=null && response.body().getUser()!=null)
+                                {
+                                    UserSingleTone userSingleTone = UserSingleTone.getInstance();
+                                    Preferences preferences = Preferences.getInstance();
+                                    UserModel userModel = response.body();
+                                    userSingleTone.setUserModel(userModel);
+                                    preferences.create_update_userData(getActivity(),userModel);
+
+                                    Intent intent = new Intent(getActivity(), DriverHomeActivity.class);
+                                    intent.putExtra("signup",1);
+                                    startActivity(intent);
+                                    getActivity().finish();
+
+
+                                }else
+                                {
+                                    Common.CreateSignAlertDialog(getActivity(),getString(R.string.something));
+                                }
+                            }else
+                            {
+
+                                activity.dismissSnackBar();
+                                dialog.dismiss();
+
+                                if (response.code()==422)
+                                {
+                                    Common.CreateSignAlertDialog(getActivity(),getString(R.string.phone_number_exists));
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserModel> call, Throwable t) {
+                            try {
+                                dialog.dismiss();
+                                activity.CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+                            }catch (Exception e){}
+                        }
+                    });
+        }catch (Exception e)
+        {
+            Toast.makeText(getActivity(), R.string.inc_img_path, Toast.LENGTH_SHORT).show();
+        }
+
 
     }
     public void update_checkbox(boolean isChecked)
@@ -338,40 +422,56 @@ public class Fragment_Delegate_SignUp extends Fragment{
         {
             image_icon1.setVisibility(View.GONE);
             uri1 = data.getData();
-            bitmap_personal = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri1));
-            image_personal.setImageBitmap(bitmap_personal);
+
+            /*bitmap_personal = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri1));
+            image_personal.setImageBitmap(bitmap_personal);*/
+            Picasso.with(getActivity()).load(uri1).fit().into(image_personal);
         }else if (requestCode == IMG2 && resultCode == Activity.RESULT_OK && data!=null)
         {
             image_icon2.setVisibility(View.GONE);
             uri2 = data.getData();
-            bitmap_id = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri2));
-            image_id.setImageBitmap(bitmap_id);
+           /* bitmap_id = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri2));
+            image_id.setImageBitmap(bitmap_id);*/
+
+            Picasso.with(getActivity()).load(uri2).fit().into(image_id);
+
         }
         else if (requestCode == IMG3 && resultCode == Activity.RESULT_OK && data!=null)
         {
             image_icon3.setVisibility(View.GONE);
             uri3 = data.getData();
-            bitmap_vehicle_licence = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri3));
-            image_vehicle_license.setImageBitmap(bitmap_vehicle_licence);
+            /*bitmap_vehicle_licence = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri3));
+            image_vehicle_license.setImageBitmap(bitmap_vehicle_licence);*/
+            Picasso.with(getActivity()).load(uri3).fit().into(image_vehicle_license);
+
         }
         else if (requestCode == IMG4 && resultCode == Activity.RESULT_OK && data!=null)
         {
             image_icon4.setVisibility(View.GONE);
             uri4 = data.getData();
-            bitmap_driving_license = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri4));
-            image_driving_license.setImageBitmap(bitmap_driving_license);
+           /* bitmap_driving_license = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri4));
+            image_driving_license.setImageBitmap(bitmap_driving_license);*/
+
+            Picasso.with(getActivity()).load(uri4).fit().into(image_driving_license);
+
         }
         else if (requestCode == IMG5 && resultCode == Activity.RESULT_OK && data!=null)
         {
             uri5 = data.getData();
-            bitmap_front_photo = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri5));
-            image_front_photo.setImageBitmap(bitmap_front_photo);
+            /*bitmap_front_photo = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri5));
+            image_front_photo.setImageBitmap(bitmap_front_photo);*/
+
+            Picasso.with(getActivity()).load(uri5).fit().into(image_front_photo);
+
         }
         else if (requestCode == IMG6 && resultCode == Activity.RESULT_OK && data!=null)
         {
             uri6 = data.getData();
-            bitmap_back_photo = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri6));
-            image_back_photo.setImageBitmap(bitmap_back_photo);
+           /* bitmap_back_photo = BitmapFactory.decodeFile(Common.getImagePath(getActivity(),uri6));
+            image_back_photo.setImageBitmap(bitmap_back_photo);*/
+
+            Picasso.with(getActivity()).load(uri6).fit().into(image_back_photo);
+
         }
     }
 

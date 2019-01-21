@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +16,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.ResponseModel;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForgetPasswordActivity extends AppCompatActivity {
 
@@ -130,15 +137,62 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
 
     private void ResetPassword(String m_phone, String m_email) {
-        ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
-        //dialog.show();
-        //CreateAlertDialog(this,getString(R.string.we_will_send_you_a_link_to_on_the_email_recover_your_password));
-        //Common.CreateSnackBar(this,root,getString(R.string.something));
-        //snackbar.dismiss();
+        String p_phone ="00966"+m_phone;
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        Api.getService()
+                .forgetPassword(m_email,p_phone)
+                .enqueue(new Callback<ResponseModel>() {
+                    @Override
+                    public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            dialog.dismiss();
+                            DismissSnakBar();
+
+                            if (response.body().getSuccess()==1)
+                            {
+                                CreateAlertDialog(ForgetPasswordActivity.this,getString(R.string.we_will_send_you_a_link_to_on_the_email_recover_your_password));
+
+                            }else
+                                {
+                                    Toast.makeText(ForgetPasswordActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+
+                                }
+                        }else
+                            {
+                                dialog.dismiss();
+
+                                if (response.code() == 404)
+                                {
+                                    Toast.makeText(ForgetPasswordActivity.this, R.string.phone_number_not_exists, Toast.LENGTH_LONG).show();
+
+                                }else
+                                    {
+                                        Toast.makeText(ForgetPasswordActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+
+                                    }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+
+                        }catch (Exception e){}
+                    }
+                });
+
     }
 
     public  void CreateAlertDialog(Context context,String msg)
     {
+
          alertDialog = new AlertDialog.Builder(context)
                 .setCancelable(true)
                 .create();
@@ -166,6 +220,13 @@ public class ForgetPasswordActivity extends AppCompatActivity {
     {
         snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
+    }
+    private void DismissSnakBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+        }
     }
 
 

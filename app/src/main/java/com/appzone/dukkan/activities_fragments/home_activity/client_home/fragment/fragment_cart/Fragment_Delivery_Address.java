@@ -53,13 +53,13 @@ public class Fragment_Delivery_Address extends Fragment {
     private ImageView image_correct,image_in_correct;
     private String payment_method= Tags.payment_cash;
     private HomeActivity activity;
-    private String time_type="",delivery_cost="";
+    private int time_type=-1;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
     private String address ="";
     private CouponModel couponModel = null;
     private String coupon_code ="-1";
-    private String coupon_value="";
+    private String coupon_value="",delivery_cost="";
     private  String current_lang;
 
 
@@ -377,7 +377,7 @@ public class Fragment_Delivery_Address extends Fragment {
         dialog.setView(view);
         dialog.show();
     }
-    public void UpdateDate_Time(String time_type,String delivery_cost,String current_date)
+    public void UpdateDate_Time(int time_type,String delivery_cost,String current_date)
     {
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
@@ -405,7 +405,7 @@ public class Fragment_Delivery_Address extends Fragment {
                 m_phone.length()==9&&
                 !TextUtils.isEmpty(m_street_name)&&
                 !TextUtils.isEmpty(address)&&
-                !TextUtils.isEmpty(time_type)&&
+                time_type!=-1&&
                 !TextUtils.isEmpty(payment_method)
                 )
         {
@@ -423,8 +423,7 @@ public class Fragment_Delivery_Address extends Fragment {
                     coupon_code = couponModel.getCoupon().getCode();
                     coupon_value = couponModel.getCoupon().getValue();
                     String d_name = m_first_name+" "+m_last_name;
-                    String p_phone="00966"+m_phone;
-                    DisplayFragmentPayment_Confirmation(d_name,p_phone,m_street_name,m_feedback, coupon_code,payment_method);
+                    DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, coupon_code,payment_method);
                 }else
                     {
                         Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
@@ -449,8 +448,7 @@ public class Fragment_Delivery_Address extends Fragment {
                     }
 
                     String d_name = m_first_name+" "+m_last_name;
-                    String p_phone="00966"+m_phone;
-                    DisplayFragmentPayment_Confirmation(d_name,p_phone,m_street_name,m_feedback, coupon_code,payment_method);
+                    DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, coupon_code,payment_method);
 
                 }
         }else
@@ -488,7 +486,7 @@ public class Fragment_Delivery_Address extends Fragment {
                     edt_street.setError(null);
                 }
 
-                if (TextUtils.isEmpty(time_type))
+                if (time_type==-1)
                 {
                     tv_time.setError(getString(R.string.field_req));
                 }else

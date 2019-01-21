@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,13 +17,22 @@ import android.widget.LinearLayout;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.forget_password_activity.ForgetPasswordActivity;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.UserSingleTone;
+import com.appzone.dukkan.tags.Tags;
 
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -34,6 +44,8 @@ public class SignInActivity extends AppCompatActivity {
     private String current_lang = "";
     private View root;
     private Snackbar snackbar;
+    private UserSingleTone userSingleTone;
+    private Preferences preferences;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -164,7 +176,8 @@ public class SignInActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    private void CheckData() {
+    private void CheckData()
+    {
         String m_phone = edt_phone.getText().toString().trim();
         String m_password = edt_password.getText().toString().trim();
 
@@ -203,18 +216,77 @@ public class SignInActivity extends AppCompatActivity {
             }
 
     }
+    private void login(String m_phone, String m_password)
+    {
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.signning_in));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        Api.getService()
+                .SignIn(m_phone,m_password)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            dialog.dismiss();
+                            DismissSnackBar();
+                            if (response.body()!=null&&response.body().getUser()!=null)
+                            {
+                                userSingleTone = UserSingleTone.getInstance();
+                                preferences = Preferences.getInstance();
+                                UserModel userModel = response.body();
+                                userSingleTone.setUserModel(userModel);
+                                preferences.create_update_userData(SignInActivity.this,userModel);
 
-    private void login(String m_phone, String m_password) {
-        ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.signning_in));
-        //dialog.show();
-        String phone = "00966"+m_phone;
+                                if (userModel.getUser().getRole().equals(Tags.user_client))
+                                {
+                                    Intent intent = new Intent(SignInActivity.this,HomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else if (userModel.getUser().getRole().equals(Tags.user_delegate))
+                                {
+                                    Intent intent = new Intent(SignInActivity.this,DriverHomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+
+                            }
+                        }else
+                            {
+                                dialog.dismiss();
+                                if (response.code()==404)
+                                {
+                                    Common.CreateSignAlertDialog(SignInActivity.this,getString(R.string.inc_phonr_password));
+                                }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
-
     private void CreateSnackBar(String msg)
     {
         snackbar = Common.CreateSnackBar(this,root,msg);
-        snackbar.show();    }
+        snackbar.show();
 
+    }
+    private void DismissSnackBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+        }
+    }
     private void Refresh()
     {
         Intent intent = getIntent();

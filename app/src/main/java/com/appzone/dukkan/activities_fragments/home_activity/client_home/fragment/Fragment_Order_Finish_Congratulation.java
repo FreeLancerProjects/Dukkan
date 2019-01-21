@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
@@ -16,6 +19,7 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.activit
 public class Fragment_Order_Finish_Congratulation extends Fragment {
     public static final String TAG = "order_id";
     private TextView tv_order_id;
+    private ImageView image_done;
     private FrameLayout fl_follow_order,fl_back;
     private HomeActivity activity;
     private String order_id = "";
@@ -43,6 +47,26 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
         tv_order_id = view.findViewById(R.id.tv_order_id);
         fl_follow_order = view.findViewById(R.id.fl_follow_order);
         fl_back = view.findViewById(R.id.fl_back);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.image_congtaulation);
+        image_done = view.findViewById(R.id.image_done);
+        image_done.clearAnimation();
+        image_done.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                image_done.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
 
         Bundle bundle = getArguments();
         if (bundle!=null)
@@ -64,6 +88,8 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
 
             }
         });
+
+
 
 
     }

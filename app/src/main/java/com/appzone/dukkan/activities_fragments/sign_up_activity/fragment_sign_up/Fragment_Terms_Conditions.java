@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class Fragment_Terms_Conditions extends Fragment{
     private ListenForTermsAndCondition listener;
     private SignUpActivity activity;
     private String current_lang;
+    private ImageView image_arrow;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,7 +55,15 @@ public class Fragment_Terms_Conditions extends Fragment{
         Paper.init(getActivity());
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         LanguageHelper.setLocality(getActivity(),current_lang);
+        image_arrow = view.findViewById(R.id.image_arrow);
+        if (current_lang.equals("ar"))
+        {
+            image_arrow.setImageResource(R.drawable.arrow_right);
+        }else
+            {
+                image_arrow.setImageResource(R.drawable.arrow_left);
 
+            }
         tv_content = view.findViewById(R.id.tv_content);
         fl_accept = view.findViewById(R.id.fl_accept);
         smooth_progress = view.findViewById(R.id.smooth_progress);

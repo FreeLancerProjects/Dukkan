@@ -54,7 +54,6 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
         holder.image_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("pos",position+"__pos");
                 fragment_review_purchases.RemoveItem(orderItem);
             }
         });

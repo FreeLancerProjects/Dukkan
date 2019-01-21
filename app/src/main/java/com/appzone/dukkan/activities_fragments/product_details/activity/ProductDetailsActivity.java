@@ -413,8 +413,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         this.productSize_offerModel = productSize_offerModel;
 
-        Log.e("s","df");
-
         updateProductPrices_SizesUI(productSize_offerModel);
 
     }

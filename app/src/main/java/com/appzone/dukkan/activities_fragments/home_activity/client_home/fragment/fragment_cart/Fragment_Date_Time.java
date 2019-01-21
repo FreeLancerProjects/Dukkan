@@ -44,7 +44,7 @@ public class Fragment_Date_Time extends Fragment{
     private String current_lang;
     private Date_Time_Listener date_time_listener;
     private HomeActivity activity;
-    private String time_type="";
+    private int time_type=-1;
     private String delivery_cost="";
     private String current_date="";
     private String cost_less_2="",cost_more_2="";
@@ -94,7 +94,7 @@ public class Fragment_Date_Time extends Fragment{
             @Override
             public void onClick(View v) {
 
-                if (!TextUtils.isEmpty(time_type))
+                if (time_type!=-1)
                 {
                     date_time_listener.onDate_Time_Set(time_type,delivery_cost,current_date);
 
@@ -228,6 +228,6 @@ public class Fragment_Date_Time extends Fragment{
     }
     public interface Date_Time_Listener
     {
-        void onDate_Time_Set(String time_type , String delivery_cost,String current_date);
+        void onDate_Time_Set(int time_type , String delivery_cost,String current_date);
     }
 }

@@ -1,10 +1,13 @@
 package com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +18,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.UserSingleTone;
+import com.appzone.dukkan.tags.Tags;
 
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_User_SignUp extends Fragment{
     private ImageView image_arrow;
@@ -125,7 +137,7 @@ public class Fragment_User_SignUp extends Fragment{
                 if (TextUtils.isEmpty(m_phone))
                 {
                     edt_phone.setError(getString(R.string.field_req));
-                }else if (m_password.length()!=9)
+                }else if (m_phone.length()!=9)
                 {
                     edt_phone.setError(getString(R.string.inv_phone));
                 }
@@ -154,7 +166,57 @@ public class Fragment_User_SignUp extends Fragment{
     }
 
     private void Sign_Up(String m_name, String m_phone, String m_password) {
-        //activity.dismissSnackBar();
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.signingup));
+        dialog.show();
+        Api.getService()
+                .SignUp_Client(m_name,m_phone,m_password, Tags.user_client)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            activity.dismissSnackBar();
+                            dialog.dismiss();
+                            if (response.body()!=null && response.body().getUser()!=null)
+                            {
+                                UserSingleTone userSingleTone = UserSingleTone.getInstance();
+                                Preferences preferences = Preferences.getInstance();
+                                UserModel userModel = response.body();
+                                userSingleTone.setUserModel(userModel);
+                                preferences.create_update_userData(getActivity(),userModel);
+
+                                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                startActivity(intent);
+                                getActivity().finish();
+
+                            }else
+                                {
+                                    Common.CreateSignAlertDialog(getActivity(),getString(R.string.something));
+                                }
+                        }else
+                            {
+                                activity.dismissSnackBar();
+                                dialog.dismiss();
+
+                                if (response.code()==422)
+                                {
+                                    Common.CreateSignAlertDialog(getActivity(),getString(R.string.phone_number_exists));
+
+                                }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+
+
     }
 
     public void update_checkbox(boolean isChecked)

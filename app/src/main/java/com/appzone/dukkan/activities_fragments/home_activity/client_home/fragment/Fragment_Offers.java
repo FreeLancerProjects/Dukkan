@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,13 +22,17 @@ import android.widget.ProgressBar;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.adapters.OfferedProductsAdapter;
+import com.appzone.dukkan.adapters.SliderWeekPagerAdapter;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.ProductPaginationModel;
+import com.appzone.dukkan.models.WeekOfferModel;
 import com.appzone.dukkan.remote.Api;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.paperdb.Paper;
 import retrofit2.Call;
@@ -45,9 +50,14 @@ public class Fragment_Offers extends Fragment {
     private LinearLayout ll_no_offers;
     private OfferedProductsAdapter offeredProductsAdapter;
     private List<MainCategory.Products> productsList;
+    private FrameLayout fr_collapsing_container;
     private ProgressBar progBar;
     private int current_page = 1;
     private HomeActivity homeActivity;
+    private WeekOfferModel weekOfferModel;
+    private SliderWeekPagerAdapter sliderWeekPagerAdapter;
+    private Timer timer;
+    private TimerTask timerTask;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,6 +78,8 @@ public class Fragment_Offers extends Fragment {
         image_back = view.findViewById(R.id.image_back);
         pager = view.findViewById(R.id.pager);
         tab = view.findViewById(R.id.tab);
+        tab.setupWithViewPager(pager);
+        fr_collapsing_container = view.findViewById(R.id.fr_collapsing_container);
 
         Paper.init(getActivity());
         String current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
@@ -99,6 +111,7 @@ public class Fragment_Offers extends Fragment {
             }
         });
 
+        getWeekOffers();
         getOfferedProducts(current_page,false);
 
         offeredProductsAdapter.setOnLoadMoreListener(new OfferedProductsAdapter.LoadMoreListener() {
@@ -109,6 +122,55 @@ public class Fragment_Offers extends Fragment {
             }
         });
     }
+
+    private void getWeekOffers() {
+        Api.getService()
+                .getWeekOffers()
+                .enqueue(new Callback<WeekOfferModel>() {
+                    @Override
+                    public void onResponse(Call<WeekOfferModel> call, Response<WeekOfferModel> response) {
+
+                        if (response.isSuccessful())
+                        {
+
+                            if (response.body()!=null)
+                            {
+                                weekOfferModel = response.body();
+                                if (response.body().getData().size()>0)
+                                {
+                                    fr_collapsing_container.setVisibility(View.VISIBLE);
+                                    UpdateSliderUI(response.body().getData());
+                                }else
+                                    {
+
+                                        fr_collapsing_container.setVisibility(View.GONE);
+
+                                    }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<WeekOfferModel> call, Throwable t) {
+                        try {
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+
+    private void UpdateSliderUI(List<WeekOfferModel.Offer> data) {
+        sliderWeekPagerAdapter = new SliderWeekPagerAdapter(data,getActivity());
+        pager.setAdapter(sliderWeekPagerAdapter);
+
+        if (data.size()>1)
+        {
+            timer = new Timer();
+            timerTask = new MyTimerTask();
+            timer.scheduleAtFixedRate(timerTask,6000,6000);
+        }
+    }
+
     private void getOfferedProducts(final int page_index, final boolean loadMore)
     {
         Api.getService()
@@ -125,10 +187,8 @@ public class Fragment_Offers extends Fragment {
                             {
                                 if (response.body().getData().size()>0)
                                 {
-                                    if (page_index==1)
-                                    {
-                                        ll_no_offers.setVisibility(View.GONE);
-                                    }
+                                    ll_no_offers.setVisibility(View.GONE);
+
                                     current_page = response.body().getCurrent_page();
                                     if (loadMore)
                                     {
@@ -140,17 +200,14 @@ public class Fragment_Offers extends Fragment {
 
                                     }else
                                         {
-                                            if (page_index==1)
-                                            {
-                                                ll_no_offers.setVisibility(View.VISIBLE);
-
-                                            }
                                             Fragment_Offers.this.productsList.addAll(response.body().getData());
                                             offeredProductsAdapter.notifyDataSetChanged();
                                         }
 
                                 }else
                                     {
+
+
                                         if (loadMore)
                                         {
                                             Fragment_Offers.this.productsList.remove(Fragment_Offers.this.productsList.size()-1);
@@ -180,5 +237,39 @@ public class Fragment_Offers extends Fragment {
     public void setItemForDetails(MainCategory.Products products) {
 
         homeActivity.NavigateToProductDetailsActivity(products,homeActivity.getSimilarProducts(products.getMain_category_id(),products.getSub_category_id(),products.getId()));
+    }
+
+    private class MyTimerTask extends TimerTask{
+        @Override
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if (pager.getCurrentItem()<sliderWeekPagerAdapter.getCount()-1)
+                    {
+                        pager.setCurrentItem(pager.getCurrentItem()+1);
+                    }else
+                        {
+                            pager.setCurrentItem(0);
+                        }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (timer!=null)
+        {
+            timer.purge();
+            timer.cancel();
+        }
+        if (timerTask!=null)
+        {
+            timerTask.cancel();
+        }
+        super.onDestroyView();
+        Log.e("Fragment destroy view","destroy view");
     }
 }

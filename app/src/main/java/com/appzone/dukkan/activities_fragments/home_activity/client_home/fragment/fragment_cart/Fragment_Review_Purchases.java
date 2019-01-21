@@ -56,6 +56,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private double total_order_cost_after_tax=0.0;
 
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -233,12 +234,13 @@ public class Fragment_Review_Purchases extends Fragment {
     {
 
         double total_price =  orderItem.getProduct_price()*counter;
-        updateProductCost(total_price);
         orderItem.setProduct_quantity(counter);
         orderItem.setProduct_total_price(total_price);
 
         orderItemsSingleTone.UpdateProduct(orderItem);
         this.orderItemList = orderItemsSingleTone.getOrderItemList();
+        updateProductCost(getTotalOrderPrice(this.orderItemList));
+
         UpdateTaxUI(tax);
     }
     public void RemoveItem(OrderItem orderItem)

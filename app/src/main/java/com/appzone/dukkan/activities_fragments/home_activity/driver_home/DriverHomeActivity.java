@@ -1,23 +1,52 @@
 package com.appzone.dukkan.activities_fragments.home_activity.driver_home;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Orders;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Profile;
 import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Notification;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.fragment_driver_orders.Fragment_Driver_Orders;
+import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Profile;
+import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.UserSingleTone;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DriverHomeActivity extends AppCompatActivity {
 
@@ -28,16 +57,36 @@ public class DriverHomeActivity extends AppCompatActivity {
     private Fragment_Driver_Profile fragment_driver_profile;
     private String current_lang = "";
     private View root;
+    private Snackbar snackbar;
+    private UserSingleTone userSingleTone;
+    private Preferences preferences;
+    private UserModel userModel;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         Paper.init(newBase);
-        current_lang =Paper.book().read("language",Locale.getDefault().getLanguage());
+        current_lang =Paper.book().read("lang",Locale.getDefault().getLanguage());
         super.attachBaseContext(LanguageHelper.onAttach(newBase,current_lang));
     }
 
-    private void initView() {
-        root=findViewById(R.id.root);
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_driver_home);
+        initView();
+        getDataFromIntent();
+
+    }
+
+
+
+    private void initView()
+    {
+        userSingleTone =  UserSingleTone.getInstance();
+        userModel = userSingleTone.getUserModel();
+        preferences = Preferences.getInstance();
+        root = findViewById(R.id.root);
         fragmentManager=getSupportFragmentManager();
         ahBottomNavigation = findViewById(R.id.ah_bottom_nav);
 
@@ -49,14 +98,14 @@ public class DriverHomeActivity extends AppCompatActivity {
         ahBottomNavigation.setAccentColor(ContextCompat.getColor(this,R.color.colorPrimary));
         ahBottomNavigation.setInactiveColor(ContextCompat.getColor(this,R.color.gray_text));
 
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.my_order),R.drawable.bottom_nav_cart,R.color.gray_text);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.profile),R.drawable.bottom_nav_user,R.color.gray_text);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.nav_bottom_notfication,R.color.gray_text);
-      
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.me),R.drawable.bottom_nav_user,R.color.gray_text);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.nav_bottom_notfication,R.color.gray_text);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.my_order),R.drawable.bottom_nav_cart,R.color.gray_text);
+
         ahBottomNavigation.addItem(item1);
         ahBottomNavigation.addItem(item2);
         ahBottomNavigation.addItem(item3);
-        
+
         ahBottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
@@ -65,72 +114,153 @@ public class DriverHomeActivity extends AppCompatActivity {
                 switch (position)
                 {
                     case 0:
-                        DisplayFragmentDriverOrders();
+                        DisplayFragmentDriverProfile();
+
+
                         break;
                     case 1:
-                        DisplayFragmentDriverProfile();
+                        DisplayFragmentDriverNotification();
+
                         break;
                     case 2:
-                        DisplayFragmentDriverNotification();
+                        DisplayFragmentDriverOrders();
+
                         break;
-                   
+
                 }
                 return false;
             }
         });
 
-        DisplayFragmentDriverOrders();
+        DisplayFragmentDriverProfile();
+        updateUserFireBaseToken();
 
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_home);
-
-        initView();
-
-
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        if (intent!=null && intent.hasExtra("signup"))
+        {
+            if (intent.getIntExtra("signup",0)==1)
+            {
+                CreateWelcomeNotification();
+            }
+        }
     }
+
+    private void CreateWelcomeNotification()
+    {
+        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.not;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String CHANNEL_ID = "my_channel_01";
+            CharSequence CHANNEL_NAME = "channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,CHANNEL_NAME,IMPORTANCE);
+            channel.setShowBadge(true);
+            channel.setSound(Uri.parse(sound_path),new AudioAttributes.Builder()
+            .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .build()
+            );
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setChannelId(CHANNEL_ID);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setContentTitle(getString(R.string.notifications));
+            builder.setContentText(getString(R.string.welcome_delegate_not));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setLargeIcon(bitmap);
+
+
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (manager!=null)
+            {
+                manager.createNotificationChannel(channel);
+                manager.notify(1,builder.build());
+
+            }
+
+
+        }else
+
+            {
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+                builder.setSound(Uri.parse(sound_path));
+                builder.setContentTitle(getString(R.string.notifications));
+                builder.setContentText(getString(R.string.welcome_delegate_not));
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+                builder.setSmallIcon(R.mipmap.ic_launcher);
+                builder.setLargeIcon(bitmap);
+
+
+                NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                if (manager!=null)
+                {
+                    manager.notify(1,builder.build());
+
+                }
+            }
+    }
+    private void updateUserFireBaseToken()
+    {
+        if (userModel!=null)
+        {
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (task.isSuccessful())
+                            {
+
+                                String fireBaseToken = task.getResult().getToken();
+                                String user_token = userModel.getToken();
+                                Api.getService()
+                                        .updateFireBaseToken(user_token,fireBaseToken)
+                                        .enqueue(new Callback<ResponseBody>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                if (response.isSuccessful())
+                                                {
+                                                    Log.e("user_token_update","success");
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                                try {
+                                                    Log.e("Error",t.getMessage());
+                                                }catch (Exception e){}
+                                            }
+                                        });
+                            }
+                        }
+                    });
+        }
+    }
+    public void UpdateUserData(UserModel userModel)
+    {
+        this.userModel = userModel;
+    }
+
     private void UpdateBottomNavPos(int pos)
     {
         ahBottomNavigation.setCurrentItem(pos,false);
     }
-    public void DisplayFragmentDriverOrders()
-    {
-        if (fragment_driver_orders == null)
-        {
-            fragment_driver_orders = Fragment_Driver_Orders.newInstance();
-        }
 
-        if (fragment_driver_orders.isAdded())
-        {
-            if (!fragment_driver_orders.isVisible())
-            {
-                fragmentManager.beginTransaction().show(fragment_driver_orders).commit();
-                UpdateBottomNavPos(0);
-            }
-        }else
-        {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_orders,"fragment_driver_orders").addToBackStack("fragment_driver_orders").commit();
-
-            UpdateBottomNavPos(0);
-        }
-
-
-        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
-        }
-
-        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
-        }
-
-    }
     private void DisplayFragmentDriverProfile()
     {
+        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
+        }
+        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
+        }
+
         if (fragment_driver_profile ==null)
         {
             fragment_driver_profile = Fragment_Driver_Profile.newInstance();
@@ -141,53 +271,222 @@ public class DriverHomeActivity extends AppCompatActivity {
             if (!fragment_driver_profile.isVisible())
             {
                 fragmentManager.beginTransaction().show(fragment_driver_profile).commit();
-                UpdateBottomNavPos(1);
+                UpdateBottomNavPos(0);
             }
         }else
         {
             fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_profile,"fragment_driver_profile").addToBackStack("fragment_driver_profile").commit();
-            UpdateBottomNavPos(1);
+            UpdateBottomNavPos(0);
         }
 
+
+
+
+    }
+    private void DisplayFragmentDriverNotification()
+    {
+        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
+        }
 
         if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
         }
-        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
-        }
 
-    }
-    private void DisplayFragmentDriverNotification()
-    {
+
         if (fragment_driver_notification ==null)
         {
-            fragment_driver_notification = fragment_driver_notification.newInstance();
+            fragment_driver_notification = Fragment_Driver_Notification.newInstance();
         }
         if (fragment_driver_notification.isAdded())
         {
             if (!fragment_driver_notification.isVisible())
             {
                 fragmentManager.beginTransaction().show(fragment_driver_notification).commit();
-                UpdateBottomNavPos(2);
+                UpdateBottomNavPos(1);
             }
         }else
         {
             fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_notification,"fragment_driver_notification").addToBackStack("fragment_driver_notification").commit();
+            UpdateBottomNavPos(1);
+        }
+
+
+
+    }
+    public void DisplayFragmentDriverOrders()
+    {
+        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
+        }
+
+        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
+        }
+
+        if (fragment_driver_orders == null)
+        {
+            fragment_driver_orders = Fragment_Driver_Orders.newInstance();
+        }
+
+        if (fragment_driver_orders.isAdded())
+        {
+            if (!fragment_driver_orders.isVisible())
+            {
+                fragmentManager.beginTransaction().show(fragment_driver_orders).commit();
+                UpdateBottomNavPos(2);
+            }
+        }else
+        {
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_orders,"fragment_driver_orders").addToBackStack("fragment_driver_orders").commit();
+
             UpdateBottomNavPos(2);
         }
 
 
-        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
-        }
-        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
-        }
+
 
     }
 
+    public void ChangeLanguage(String lang)
+    {
+        Paper.book().write("lang",lang);
+        current_lang = lang;
+        LanguageHelper.setLocality(this,lang);
+        refreshActivity();
+    }
 
+    private void refreshActivity()
+    {
+
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
+    public void UpdateNotificationCount(int count)
+    {
+        if (count > 0 )
+        {
+            AHNotification.Builder builder = new AHNotification.Builder();
+            builder.setBackgroundColor(ContextCompat.getColor(this,R.color.green_text));
+            builder.setTextColor(ContextCompat.getColor(this,R.color.white));
+            builder.setText(String.valueOf(count));
+
+            ahBottomNavigation.setNotification(builder.build(),2);
+
+
+        }else
+        {
+            AHNotification.Builder builder = new AHNotification.Builder();
+            builder.setBackgroundColor(ContextCompat.getColor(this,R.color.green_text));
+            builder.setTextColor(ContextCompat.getColor(this,R.color.white));
+            builder.setText("");
+            ahBottomNavigation.setNotification(builder.build(),2);
+        }
+    }
+    public void CreateSnackBar(String msg)
+    {
+        snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();
+    }
+    public void dismissSnackBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+
+        }
+    }
+    public void SignOut()
+    {
+        if (userModel!=null)
+        {
+            final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.sgin_out));
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+
+            String user_token = userModel.getToken();
+            Api.getService()
+                    .logout(user_token)
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful())
+                            {
+                                dismissSnackBar();
+                                dialog.dismiss();
+                                clearData();
+
+
+                            }else
+                            {
+                                dialog.dismiss();
+
+                                if (response.code() == 401)
+                                {
+                                    CreateSnackBar(getString(R.string.failed));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            try {
+                                dialog.dismiss();
+                                CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+
+                            }catch (Exception e){}
+                        }
+                    });
+        }
+    }
+    private void clearData()
+    {
+        fragmentManager.popBackStack();
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (manager!=null)
+        {
+            manager.cancelAll();
+        }
+        preferences.ClearData(this);
+        userSingleTone.clear();
+        userModel = null;
+        NavigateToSignInActivity();
+    }
+    private void NavigateToSignInActivity()
+    {
+        Intent intent  = new Intent(DriverHomeActivity.this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    @Override
+    public void onBackPressed() {
+        Back();
+    }
+
+    private void Back()
+    {
+        if (fragment_driver_profile!=null&&fragment_driver_profile.isAdded()&&fragment_driver_profile.isVisible())
+        {
+            if (userModel!=null)
+            {
+                fragmentManager.popBackStack();
+                finish();
+            }else
+            {
+                fragmentManager.popBackStack();
+                NavigateToSignInActivity();
+            }
+        }else
+            {
+                DisplayFragmentDriverProfile();
+
+            }
+    }
 }

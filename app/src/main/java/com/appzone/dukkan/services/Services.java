@@ -3,19 +3,30 @@ package com.appzone.dukkan.services;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.OrderIdModel;
+import com.appzone.dukkan.models.OrderToUploadModel;
+import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.ProductPaginationModel;
 import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.models.Terms_Condition_Model;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.models.WeekOfferModel;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -37,7 +48,7 @@ public interface Services {
     Call<SimilarProductModel> getSimilarProducts(@Query("product_id") String product_id,
                                                  @Query("main_category_id") String main_category_id,
                                                  @Query("sub_category_id") String sub_category_id
-                                                 );
+    );
 
     @GET("api/get-terms-and-conditions")
     Call<Terms_Condition_Model> getTermsConditions();
@@ -47,18 +58,90 @@ public interface Services {
     Call<ResponseModel> sendContactUs(@Field("name") String name,
                                       @Field("phone") String phone,
                                       @Field("message") String message
-                                      );
+    );
 
     @FormUrlEncoded
     @POST("api/get-recent-search")
     Call<ProductPaginationModel> getRecentSearchProducts(@Field("ids[]") List<String> ids);
 
     @GET("api/search-products")
-    Call<ProductPaginationModel> search(@Query("q") String query,@Query("page") int page_index);
+    Call<ProductPaginationModel> search(@Query("q") String query, @Query("page") int page_index);
 
     @GET("api/get-delivery-cost")
     Call<DeliveryCostModel> getDeliveryCost();
 
     @GET("api/coupons/{coupon_id}")
     Call<CouponModel> isCouponAvailable(@Path("coupon_id") String coupon_id);
+
+    @GET("api/week-features")
+    Call<WeekOfferModel> getWeekOffers();
+
+    @FormUrlEncoded
+    @POST("api/login")
+    Call<UserModel> SignIn(@Field("phone") String phone,
+                           @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("api/sign-up")
+    Call<UserModel> SignUp_Client(@Field("name") String name,
+                                  @Field("phone") String phone,
+                                  @Field("password") String password,
+                                  @Field("role") String role
+    );
+
+    @Multipart
+    @POST("api/sign-up")
+    Call<UserModel> SignUp_Delegate(@Part("name") RequestBody name,
+                                    @Part("phone") RequestBody phone,
+                                    @Part("password") RequestBody password,
+                                    @Part("role") RequestBody role,
+                                    @Part("gender") RequestBody gender,
+                                    @Part MultipartBody.Part avatar,
+                                    @Part MultipartBody.Part id_image,
+                                    @Part MultipartBody.Part license,
+                                    @Part MultipartBody.Part car_license,
+                                    @Part MultipartBody.Part car_front,
+                                    @Part MultipartBody.Part car_back
+
+    );
+
+    @FormUrlEncoded
+    @POST("/api/forget")
+    Call<ResponseModel> forgetPassword(@Field("email") String email,
+                                       @Field("phone") String phone);
+
+
+    @FormUrlEncoded
+    @POST("api/logout")
+    Call<ResponseBody> logout(@Field("token") String user_token);
+
+    @FormUrlEncoded
+    @POST("api/set-firebase-token")
+    Call<ResponseBody> updateFireBaseToken(@Field("token") String user_token,
+                                           @Field("fire_base_token") String fireBaseToken
+    );
+
+    @POST("api/orders")
+    Call<OrderIdModel> uploadOrder(@Body OrderToUploadModel orderToUploadModel);
+
+    @FormUrlEncoded
+    @POST("/api/edit-profile")
+    Call<UserModel> updatePhone(@Field("token") String user_token,
+                                @Field("phone") String phone);
+
+    @FormUrlEncoded
+    @POST("/api/edit-profile")
+    Call<UserModel> updatePassword(
+            @Field("token") String user_token,
+            @Field("old_password") String old_password,
+            @Field("new_password") String new_password);
+
+    @FormUrlEncoded
+    @POST("/api/orders")
+    Call<OrdersModel> getOrders(@Field("token") String token,
+                                @Field("type") String type
+                                );
+
+
 }

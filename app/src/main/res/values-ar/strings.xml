@@ -64,6 +64,7 @@
     <string name="cart">سلتي</string>
     <string name="my_order">طلباتي</string>
     <string name="me">حسابي</string>
+    <string name="my_notification">الاشعارات</string>
     <string name="discounts">الخصومات</string>
     <string name="review_purchases">مراجعة المشتريات</string>
     <string name="delivery_and_address">رسوم التوصيل والعنوان</string>
@@ -156,11 +157,27 @@
     <string name="your_order_successfully_confirmed_your_order_number_is">تم تأكيد الطلب بنجاح! رقم الطلب هو</string>
     <string name="follow_order">تتبع طلبك</string>
     <string name="back2">عودة للدكان</string>
+    <string name="inc_phonr_password">رقم الجوال او كلمة المرور غير صحيح</string>
+    <string name="signingup">جار انشاء حساب جديد...</string>
+    <string name="phone_number_exists">رقم الجوال تم التسجيل بة من قبل</string>
+    <string name="declined_orders">الطلبات المنفذة</string>
+    <string name="refused_orders">الطلبات المرفوضة</string>
+    <string name="total3">العائد الاجمالي</string>
+    <string name="credit_limit">الحد الائتماني</string>
+    <string name="dukkan_receivables">مستحقات دكان</string>
+    <string name="my_receivable">مستحقاتي</string>
+    <string name="transformation">حسابات التحويل</string>
+    <string name="phone_number_not_exists">لم يتم التسجيل برقم الجوال من قبل</string>
+    <string name="sgin_out">جار تسجيل الخروج...</string>
+    <string name="sign_out">تسجيل الخروج</string>
+    <string name="order_sent_successfully">تم إرسال الطلب بنجاح</string>
+    <string name="welcome_delegate_not">مرحبا بك فى دكان سيتم التحقق من بيانات التسجيل كمندوب وإرسال لك اشعار عند الموافقة على تفعيل حسابك.</string>
+    <string name="inc_img_path">مسار الصور غير صحيح</string>
+    <string name="updating_phone">جار تعديل رقم الجوال...</string>
+    <string name="incorrect_old_password">كلمة المرور القديمة غير صحيحة</string>
+    <string name="new_orders">الطلبات الجديدة</string>
+    <string name="order_number">رقم الطلب</string>
+    <string name="order_status">حالة الطلب</string>
+    <string name="details">عرض الطلب</string>
 
-    <string-array name="sort_array">
-        <item>ترتيب حسب</item>
-        <item>ترتيب حسب</item>
-        <item>ترتيب حسب</item>
-
-    </string-array>
 </resources>

@@ -5,15 +5,15 @@ import java.util.List;
 
 public class OrderToUploadModel implements Serializable {
 
-    private String client_id;
+    private int client_id;
     private String client_name;
-    private String client_Phone;
+    private String client_phone;
     private String client_address;
     private double lat;
     private double lng;
     private String client_street;
     private String notes;
-    private String time_type;
+    private int time_type;
     private String coupon_code;
     private String coupon_value;
     private String payment_method;
@@ -24,11 +24,11 @@ public class OrderToUploadModel implements Serializable {
     }
 
 
-    public String getClient_id() {
+    public int getClient_id() {
         return client_id;
     }
 
-    public void setClient_id(String client_id) {
+    public void setClient_id(int client_id) {
         this.client_id = client_id;
     }
 
@@ -41,11 +41,11 @@ public class OrderToUploadModel implements Serializable {
     }
 
     public String getClient_Phone() {
-        return client_Phone;
+        return client_phone;
     }
 
     public void setClient_Phone(String client_Phone) {
-        this.client_Phone = client_Phone;
+        this.client_phone = client_Phone;
     }
 
     public String getClient_address() {
@@ -88,11 +88,11 @@ public class OrderToUploadModel implements Serializable {
         this.notes = notes;
     }
 
-    public String getTime_type() {
+    public int getTime_type() {
         return time_type;
     }
 
-    public void setTime_type(String time_type) {
+    public void setTime_type(int time_type) {
         this.time_type = time_type;
     }
 

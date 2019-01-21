@@ -185,6 +185,39 @@
           android:background="@color/gray3" />
 
       <LinearLayout
+          android:id="@+id/ll_logout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:padding="8dp"
+          android:weightSum="1">
+
+         <TextView
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_vertical"
+             android:layout_weight=".8"
+             android:textColor="@color/colorPrimary"
+             android:textSize="15sp"
+             android:textStyle="bold"
+             android:text="@string/sign_out"
+             />
+
+         <ImageView
+             android:id="@+id/image_arrow4"
+             android:layout_width="0dp"
+             android:layout_height="35dp"
+             android:layout_weight=".2"
+             android:padding="11dp"
+             android:src="@drawable/arrow_blue_right" />
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1px"
+          android:background="@color/gray3" />
+
+      <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="20dp"
