@@ -9,9 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_my_order.Fragment_Client_Current_Order;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_my_order.Fragment_Client_New_Order;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_my_order.Fragment_Client_Previous_Order;
 import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
 import com.appzone.dukkan.adapters.OrderViewPagerAdapter;
 
