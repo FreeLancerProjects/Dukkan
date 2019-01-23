@@ -36,7 +36,9 @@ public class Fragment_Client_Orders extends Fragment {
     {
         return new Fragment_Client_Orders();
     }
-    private void initView(View view) {
+
+    private void initView(View view)
+    {
         fragmentList = new ArrayList<>();
         titleList = new ArrayList<>();
         tab = view.findViewById(R.id.tab);
@@ -58,5 +60,22 @@ public class Fragment_Client_Orders extends Fragment {
         pager.setAdapter(orderViewPagerAdapter);
 
 
+    }
+
+    public void RefreshFragment_Previous_New_Order()
+    {
+        Fragment_Client_Previous_Order fragment_client_previous_order = (Fragment_Client_Previous_Order) orderViewPagerAdapter.getItem(2);
+        fragment_client_previous_order.UpdateItem_Adapter();
+        Fragment_Client_New_Order fragment_client_new_order = (Fragment_Client_New_Order) orderViewPagerAdapter.getItem(0);
+        fragment_client_new_order.getOrders();
+    }
+
+    public void RefreshFragment_Current_Previous_Order()
+    {
+        Fragment_Client_Previous_Order fragment_client_previous_order = (Fragment_Client_Previous_Order) orderViewPagerAdapter.getItem(2);
+        fragment_client_previous_order.getOrders();
+
+        Fragment_Client_Current_Order fragment_client_current_order = (Fragment_Client_Current_Order) orderViewPagerAdapter.getItem(1);
+        fragment_client_current_order.getOrders();
     }
 }

@@ -18,6 +18,7 @@
     <color name="gradient_center_color2">#94bf2c</color>
     <color name="gradient_end_color2">#ccc615</color>
     <color name="press_color">#663092</color>
+    <color name="gray">#f5f5f5</color>
     <color name="gray0">#fafafa</color>
     <color name="gray1">#eeeeee</color>
     <color name="gray2">#e0e0e0</color>

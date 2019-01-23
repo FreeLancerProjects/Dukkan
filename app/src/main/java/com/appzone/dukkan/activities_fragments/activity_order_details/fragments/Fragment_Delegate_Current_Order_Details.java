@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import io.paperdb.Paper;
 
-public class Fragment_Delegate_Order_Details extends Fragment{
+public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private static final String TAG = "ORDER";
     private OrderDetailsActivity activity;
     private ImageView image_back,image_arrow,image_chat;
@@ -45,18 +45,18 @@ public class Fragment_Delegate_Order_Details extends Fragment{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_delegate_order_details,container,false);
+        View view = inflater.inflate(R.layout.fragment_delegate_current_order_details,container,false);
         initView(view);
         return view;
     }
 
-    public static Fragment_Delegate_Order_Details newInstance(OrdersModel.Order order)
+    public static Fragment_Delegate_Current_Order_Details newInstance(OrdersModel.Order order)
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(TAG,order);
-        Fragment_Delegate_Order_Details fragment_delegate_order_details = new Fragment_Delegate_Order_Details();
-        fragment_delegate_order_details.setArguments(bundle);
-        return fragment_delegate_order_details;
+        Fragment_Delegate_Current_Order_Details fragment_delegate_Current_order_details = new Fragment_Delegate_Current_Order_Details();
+        fragment_delegate_Current_order_details.setArguments(bundle);
+        return fragment_delegate_Current_order_details;
     }
     private void initView(View view) {
         activity = (OrderDetailsActivity) getActivity();

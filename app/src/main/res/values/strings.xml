@@ -223,4 +223,8 @@
     <string name="delivering_order_to_your_destination">delivering order to your destination</string>
     <string name="order_delivered_successfully">Order delivered successfully</string>
     <string name="we_are_pleased_to_serve_you">We are pleased to serve you</string>
+    <string name="products">Products</string>
+    <string name="request_again">Request again</string>
+    <string name="display_bill">Display bill</string>
+    <string name="no_notes">No notes</string>
 </resources>

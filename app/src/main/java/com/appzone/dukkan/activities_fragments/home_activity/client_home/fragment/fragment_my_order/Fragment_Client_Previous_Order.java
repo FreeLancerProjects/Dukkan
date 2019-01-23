@@ -42,6 +42,7 @@ public class Fragment_Client_Previous_Order extends Fragment {
     private UserModel userModel;
     private UserSingleTone userSingleTone;
     private HomeActivity activity;
+    private int selected_position;
 
     @Nullable
     @Override
@@ -72,7 +73,7 @@ public class Fragment_Client_Previous_Order extends Fragment {
         recView.setAdapter(client_order_adapter);
         getOrders();
     }
-    private void getOrders()
+    public void getOrders()
     {
         Api.getService()
                 .getOrders(userModel.getToken(), Tags.order_old)
@@ -114,7 +115,18 @@ public class Fragment_Client_Previous_Order extends Fragment {
 
 
     public void setItemData(OrdersModel.Order order, int pos) {
+        this.selected_position = pos;
         activity.NavigateToOrderDetailsActivity(order,Tags.order_old);
 
+    }
+
+    public void UpdateItem_Adapter()
+    {
+        client_order_adapter.notifyItemRemoved(selected_position);
+        orderList.remove(selected_position);
+        if (orderList.size()==0)
+        {
+            ll_no_order.setVisibility(View.VISIBLE);
+        }
     }
 }

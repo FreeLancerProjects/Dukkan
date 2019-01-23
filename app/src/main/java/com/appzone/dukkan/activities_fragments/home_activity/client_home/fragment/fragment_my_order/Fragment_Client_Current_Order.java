@@ -72,7 +72,7 @@ public class Fragment_Client_Current_Order extends Fragment {
         recView.setAdapter(client_order_adapter);
         getOrders();
     }
-    private void getOrders()
+    public void getOrders()
     {
         Api.getService()
                 .getOrders(userModel.getToken(), Tags.order_current)

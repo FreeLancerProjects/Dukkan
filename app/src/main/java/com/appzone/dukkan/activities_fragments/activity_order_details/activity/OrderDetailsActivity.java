@@ -17,8 +17,9 @@ import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Client_Order_Details;
+import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Client_Previous_Order_Details;
+import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Current_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_New_Order_Details;
-import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Map_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Order_Products;
 import com.appzone.dukkan.activities_fragments.chat_activity.ChatActivity;
@@ -43,8 +44,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private Fragment_Client_Order_Details fragment_client_order_details;
+    private Fragment_Client_Previous_Order_Details fragment_client_previous_order_details;
+
     private Fragment_Delegate_New_Order_Details fragment_delegate_new_order_details;
-    private Fragment_Delegate_Order_Details fragment_delegate_order_details;
+    private Fragment_Delegate_Current_Order_Details fragment_delegate_Current_order_details;
     private Fragment_Map_Order_Details fragment_map_order_details;
     private Fragment_Order_Products fragment_order_products;
     private OrdersModel.Order order;
@@ -100,6 +103,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         {
             if (order_type.equals(Tags.order_old))
             {
+                DisplayFragment_Client_Previous_Order_Details(order);
 
             }else if (order_type.equals(Tags.order_new)||order_type.equals(Tags.order_current))
                 {
@@ -121,6 +125,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
     {
         fragment_client_order_details = Fragment_Client_Order_Details.newInstance(order);
         fragmentManager.beginTransaction().replace(R.id.fragment_order_details_container,fragment_client_order_details).commit();
+
+    }
+    public void DisplayFragment_Client_Previous_Order_Details(OrdersModel.Order order)
+    {
+        fragment_client_previous_order_details = Fragment_Client_Previous_Order_Details.newInstance(order);
+        fragmentManager.beginTransaction().replace(R.id.fragment_order_details_container,fragment_client_previous_order_details).commit();
 
     }
     public void DisplayFragment_Delegate_New_Order_Details(OrdersModel.Order order)
@@ -160,18 +170,18 @@ public class OrderDetailsActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_order_products).commit();
         }
 
-        if (fragment_delegate_order_details==null)
+        if (fragment_delegate_Current_order_details ==null)
         {
-            fragment_delegate_order_details = Fragment_Delegate_Order_Details.newInstance(order);
+            fragment_delegate_Current_order_details = Fragment_Delegate_Current_Order_Details.newInstance(order);
         }
 
 
-        if (!fragment_delegate_order_details.isAdded())
+        if (!fragment_delegate_Current_order_details.isAdded())
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_order_details_container,fragment_delegate_order_details,"fragment_delegate_order_details").addToBackStack("fragment_delegate_order_details").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_order_details_container, fragment_delegate_Current_order_details,"fragment_delegate_Current_order_details").addToBackStack("fragment_delegate_Current_order_details").commit();
         }else
         {
-            fragmentManager.beginTransaction().show(fragment_delegate_order_details).commit();
+            fragmentManager.beginTransaction().show(fragment_delegate_Current_order_details).commit();
         }
 
 
@@ -186,9 +196,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_delegate_new_order_details).commit();
         }
-        if (fragment_delegate_order_details!=null && fragment_delegate_order_details.isAdded())
+        if (fragment_delegate_Current_order_details !=null && fragment_delegate_Current_order_details.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_delegate_order_details).commit();
+            fragmentManager.beginTransaction().hide(fragment_delegate_Current_order_details).commit();
         }
 
         if (fragment_order_products == null)
@@ -211,9 +221,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_delegate_new_order_details).commit();
         }
-        if (fragment_delegate_order_details!=null && fragment_delegate_order_details.isAdded())
+        if (fragment_delegate_Current_order_details !=null && fragment_delegate_Current_order_details.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_delegate_order_details).commit();
+            fragmentManager.beginTransaction().hide(fragment_delegate_Current_order_details).commit();
         }
 
         if (fragment_map_order_details==null)
@@ -326,6 +336,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void SendOrderAgain(OrdersModel.Order order)
+    {
+        Intent intent = getIntent();
+        setResult(RESULT_OK,intent);
+        finish();
+    }
+
     public void NavigateToChatActivity()
     {
         UserChatModel userChatModel = null;
@@ -387,6 +404,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
     @Override
     public void onBackPressed() {
         Back();
@@ -400,7 +418,11 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }else if (fragment_delegate_new_order_details!=null && fragment_delegate_new_order_details.isVisible())
         {
             finish();
-        }else if (fragment_delegate_order_details!=null && fragment_delegate_order_details.isVisible())
+        }else if (fragment_delegate_Current_order_details !=null && fragment_delegate_Current_order_details.isVisible())
+        {
+            finish();
+        }
+        else if (fragment_client_previous_order_details !=null && fragment_client_previous_order_details.isVisible())
         {
             finish();
         }

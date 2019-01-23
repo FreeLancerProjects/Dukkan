@@ -40,10 +40,12 @@
                             android:layout_height="match_parent"
                             >
                             <LinearLayout
+                                android:id="@+id/ll_delegate_data_container"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:layout_marginTop="20dp"
+                                android:visibility="gone"
 
                                 >
                                 <FrameLayout
@@ -125,6 +127,18 @@
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
+                            <TextView
+                                android:id="@+id/tv_not_approved"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:textSize="17sp"
+                                android:text="@string/not_approved"
+                                android:visibility="gone"
+                                />
                         </FrameLayout>
                     </LinearLayout>
 
@@ -208,6 +222,7 @@
                 tools:ignore="RtlCompat"
                 android:src="@drawable/chat"
                 android:padding="10dp"
+                android:visibility="gone"
                 />
 
             <ImageView
@@ -218,7 +233,9 @@
                 android:background="@drawable/add_bg_gradient"
                 android:padding="10dp"
                 android:src="@drawable/what_call"
-                tools:ignore="RtlCompat" />
+                tools:ignore="RtlCompat"
+                android:visibility="gone"
+                />
         </RelativeLayout>
 
         <android.support.v4.widget.NestedScrollView
@@ -254,9 +271,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:layout_marginTop="8dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginTop="10dp"
                     >
                     <LinearLayout
                         android:layout_width="60dp"
@@ -310,8 +327,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     >
                     <LinearLayout
                         android:layout_width="60dp"
@@ -365,8 +382,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     >
                     <LinearLayout
                         android:layout_width="60dp"
@@ -421,8 +438,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     >
                     <LinearLayout
                         android:layout_width="60dp"
@@ -477,8 +494,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
                     >
                     <LinearLayout
                         android:layout_width="60dp"

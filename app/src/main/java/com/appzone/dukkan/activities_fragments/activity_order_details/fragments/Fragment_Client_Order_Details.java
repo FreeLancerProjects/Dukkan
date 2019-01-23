@@ -31,11 +31,13 @@ public class Fragment_Client_Order_Details extends Fragment {
     private static final String TAG = "ORDER";
     private OrderDetailsActivity activity;
     private ImageView image_back,image_chat,image_call;
-    private LinearLayout ll_back;
+    private LinearLayout ll_back,ll_delegate_data_container;
     private CircleImageView image;
     private TextView tv_delegate_name,tv_rate;
     private SimpleRatingBar rateBar;
     private String current_lang;
+    private TextView tv_not_approved;
+
     ////////////////////////////////
     private ImageView image1,image2,image3,image4,image5;
     private TextView tv1,tv2,tv3,tv4,tv5,tv_order_id;
@@ -74,6 +76,9 @@ public class Fragment_Client_Order_Details extends Fragment {
             image_back.setImageResource(R.drawable.arrow_left);
 
         }
+        ll_delegate_data_container = view.findViewById(R.id.ll_delegate_data_container);
+        tv_not_approved = view.findViewById(R.id.tv_not_approved);
+
         /////////////////////////////////////////////////
         image1 = view.findViewById(R.id.image1);
         image2 = view.findViewById(R.id.image2);
@@ -142,6 +147,7 @@ public class Fragment_Client_Order_Details extends Fragment {
         {
             if (order.getDelegate()!=null)
             {
+
                 tv_delegate_name.setText(order.getDelegate().getName());
                 Picasso.with(activity).load(Uri.parse(Tags.IMAGE_URL+order.getDelegate().getAvatar())).into(image);
                 tv_rate.setText("("+order.getDelegate().getRate()+")");
@@ -151,8 +157,17 @@ public class Fragment_Client_Order_Details extends Fragment {
                 builder.setRatingTarget((float) order.getDelegate().getRate());
                 builder.setInterpolator(new AccelerateInterpolator());
                 builder.start();
+
+                ll_delegate_data_container.setVisibility(View.VISIBLE);
+                image_chat.setVisibility(View.VISIBLE);
+                image_call.setVisibility(View.VISIBLE);
+                tv_not_approved.setVisibility(View.GONE);
             }else
                 {
+                    ll_delegate_data_container.setVisibility(View.GONE);
+                    image_chat.setVisibility(View.GONE);
+                    image_call.setVisibility(View.GONE);
+                    tv_not_approved.setVisibility(View.VISIBLE);
                     updateStepView(0);
                 }
 

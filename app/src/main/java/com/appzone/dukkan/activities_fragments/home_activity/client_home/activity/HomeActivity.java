@@ -58,6 +58,7 @@ import com.appzone.dukkan.services.ServiceUpdateLocation;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 import com.appzone.dukkan.singletone.UserSingleTone;
+import com.appzone.dukkan.tags.Tags;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
@@ -1166,10 +1167,61 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         DisplayFragmentHome();
     }
+    private void NavigateToSignInActivity()
+    {
+        Intent intent  = new Intent(HomeActivity.this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    public void NavigateToOrderDetailsActivity(OrdersModel.Order order,String order_type)
+    {
+
+
+        if (fragment_order_finish_congratulation!=null && fragment_order_finish_congratulation.isVisible())
+        {
+            DisplayFragmentHome();
+            Intent intent = new Intent(this, OrderDetailsActivity.class);
+            intent.putExtra("order",order);
+            intent.putExtra("order_type",order_type);
+            startActivity(intent);
+        }else
+        {
+            if (order_type.equals(Tags.order_old))
+            {
+                Intent intent = new Intent(this, OrderDetailsActivity.class);
+                intent.putExtra("order",order);
+                intent.putExtra("order_type",order_type);
+                startActivityForResult(intent,2);
+            }else
+            {
+                Intent intent = new Intent(this, OrderDetailsActivity.class);
+                intent.putExtra("order",order);
+                intent.putExtra("order_type",order_type);
+                startActivity(intent);
+            }
+
+        }
+
+    }
+    private void RefreshFragmentClient_Previous_New_Order()
+    {
+        if (fragment_client_orders!=null)
+        {
+            fragment_client_orders.RefreshFragment_Previous_New_Order();
+        }
+    }
+    private void RefreshFragmentClient_Current_Previous_Order()
+    {
+        if (fragment_client_orders!=null)
+        {
+            fragment_client_orders.RefreshFragment_Current_Previous_Order();
+        }
+    }
     ////////////////////////////////////
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
         List<Fragment> fragmentList = fragmentManager.getFragments();
         for (Fragment fragment:fragmentList)
@@ -1189,14 +1241,17 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }else if (requestCode == 1122 && resultCode == RESULT_OK)
         {
             UpdateCartNotification(orderItemsSingleTone.getItemsCount());
+        }else if (requestCode == 2 && resultCode==RESULT_OK)
+        {
+            RefreshFragmentClient_Previous_New_Order();
         }
 
 
 
     }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         List<Fragment> fragmentList = fragmentManager.getFragments();
         for (Fragment fragment:fragmentList)
@@ -1224,7 +1279,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             }
         }
     }
-
     public void Back()
     {
 
@@ -1264,8 +1318,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 DisplayFragmentHome();
             }
     }
-
-    public void SignOut() {
+    public void SignOut()
+    {
         if (userModel!=null)
         {
             final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.sgin_out));
@@ -1310,8 +1364,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     });
         }
     }
-
-    private void clearData() {
+    private void clearData()
+    {
         fragmentManager.popBackStack();
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -1325,32 +1379,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         NavigateToSignInActivity();
     }
 
-    private void NavigateToSignInActivity() {
-        Intent intent  = new Intent(HomeActivity.this, SignInActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    public void NavigateToOrderDetailsActivity(OrdersModel.Order order,String order_type) {
-
-
-        if (fragment_order_finish_congratulation!=null && fragment_order_finish_congratulation.isVisible())
-        {
-            DisplayFragmentHome();
-            Intent intent = new Intent(this, OrderDetailsActivity.class);
-            intent.putExtra("order",order);
-            intent.putExtra("order_type",order_type);
-            startActivity(intent);
-        }else
-            {
-                Intent intent = new Intent(this, OrderDetailsActivity.class);
-                intent.putExtra("order",order);
-                intent.putExtra("order_type",order_type);
-                startActivity(intent);
-            }
-
-    }
-
     public void dismissSnackBar()
     {
         if (snackbar!=null)
@@ -1359,7 +1387,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         }
     }
-
     public void ChangeLanguage(String lang)
     {
         Paper.book().write("lang",lang);
@@ -1367,7 +1394,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         LanguageHelper.setLocality(this,lang);
         refreshActivity();
     }
-
     private void refreshActivity()
     {
 
@@ -1375,7 +1401,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         finish();
         startActivity(intent);
     }
-
     @Override
     public void onDate_Time_Set(int time_type , String delivery_cost,String current_date) {
 
@@ -1391,7 +1416,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
     }
     @Override
-    public void onAddressSet(String address, double lat, double lng) {
+    public void onAddressSet(String address, double lat, double lng)
+    {
         this.order_lat = lat;
         this.order_lng = lng;
         this.order_address = address;
@@ -1401,7 +1427,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         fragment_delivery_address.UpdateAddress(address);
         fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
     }
-
     public void SaveListOf_Order_Order_Total_Cost(List<OrderItem> orderItemList,double total_order_price)
     {
         if (orderToUploadModel==null)
@@ -1412,7 +1437,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         orderToUploadModel.setOrderItemList(orderItemList);
     }
-
     public void Save_Order_Data(String name, String phone, String street_name, String feedback, String coupon_code,String coupon_value,String payment_method)
     {
         if (orderToUploadModel==null)
@@ -1437,7 +1461,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setLng(order_lng);
 
     }
-
     public void UploadOrder()
     {
 
@@ -1486,7 +1509,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 });
 
     }
-
     public void Clear_Order_Object()
     {
         if (orderToUploadModel!=null)
@@ -1494,8 +1516,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             orderToUploadModel = null;
         }
     }
-
-
     public void CreateCartAlertDialog()
     {
         final AlertDialog dialog = new AlertDialog.Builder(this)
@@ -1546,9 +1566,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     public void onBackPressed() {
         Back();
     }
-
     @Override
-    protected void onDestroy() {
+    protected void onDestroy()
+    {
         if (intentService!=null)
         {
             StopLocationUpdate();

@@ -225,5 +225,9 @@
     <string name="delivering_order_to_your_destination">جار توصيل طلبك للوجهة المحددة</string>
     <string name="order_delivered_successfully">تم توصيل طلبك بنجاح</string>
     <string name="we_are_pleased_to_serve_you">شكرا لك على طلبك من تطبيق دكان كوم اسعدتنا خدمتك</string>
+    <string name="products">منتجات الطلب</string>
+    <string name="request_again">الطلب مرة اخرى</string>
+    <string name="display_bill">عرض فاتورة</string>
+    <string name="no_notes">لا توجد ملاحظات</string>
 
 </resources>
