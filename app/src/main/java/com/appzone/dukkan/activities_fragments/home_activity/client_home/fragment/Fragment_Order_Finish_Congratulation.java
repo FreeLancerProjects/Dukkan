@@ -15,14 +15,16 @@ import android.widget.TextView;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
+import com.appzone.dukkan.models.OrdersModel;
+import com.appzone.dukkan.tags.Tags;
 
 public class Fragment_Order_Finish_Congratulation extends Fragment {
-    public static final String TAG = "order_id";
+    public static final String TAG = "order";
     private TextView tv_order_id;
     private ImageView image_done;
     private FrameLayout fl_follow_order,fl_back;
     private HomeActivity activity;
-    private String order_id = "";
+    private OrdersModel.Order order;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,10 +34,10 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
     }
 
 
-    public static Fragment_Order_Finish_Congratulation newInstance(String order_id)
+    public static Fragment_Order_Finish_Congratulation newInstance(OrdersModel.Order order)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(TAG,order_id);
+        bundle.putSerializable(TAG,order);
         Fragment_Order_Finish_Congratulation fragment_order_finish_congratulation = new Fragment_Order_Finish_Congratulation();
         fragment_order_finish_congratulation.setArguments(bundle);
         return fragment_order_finish_congratulation;
@@ -71,8 +73,8 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
         Bundle bundle = getArguments();
         if (bundle!=null)
         {
-            order_id = bundle.getString(TAG);
-            UpdateUI(order_id);
+            order = (OrdersModel.Order) bundle.getSerializable(TAG);
+            UpdateUI(order);
         }
 
         fl_back.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +88,7 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
             @Override
             public void onClick(View v) {
 
+                activity.NavigateToOrderDetailsActivity(order, Tags.order_new);
             }
         });
 
@@ -94,8 +97,8 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
 
     }
 
-    private void UpdateUI(String order_id) {
-        tv_order_id.setText(getString(R.string.your_order_successfully_confirmed_your_order_number_is)+" #"+order_id);
+    private void UpdateUI(OrdersModel.Order order) {
+        tv_order_id.setText(getString(R.string.your_order_successfully_confirmed_your_order_number_is)+" #"+order.getId());
 
     }
 }

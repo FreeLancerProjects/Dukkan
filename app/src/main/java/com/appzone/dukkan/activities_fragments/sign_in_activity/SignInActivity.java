@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.forget_password_activity.ForgetPasswordActivity;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.UserModel;
@@ -246,7 +246,7 @@ public class SignInActivity extends AppCompatActivity {
                                     finish();
                                 }else if (userModel.getUser().getRole().equals(Tags.user_delegate))
                                 {
-                                    Intent intent = new Intent(SignInActivity.this,DriverHomeActivity.class);
+                                    Intent intent = new Intent(SignInActivity.this,DelegateHomeActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }

@@ -26,5 +26,8 @@ public class App extends Application {
         Fonts.setDefaultFont(this, "SANS_SERIF", "ar_font.ttf");
 
 
+
     }
+
+
 }

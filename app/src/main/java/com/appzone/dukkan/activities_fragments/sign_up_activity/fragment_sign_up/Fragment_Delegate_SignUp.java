@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
@@ -223,8 +223,11 @@ public class Fragment_Delegate_SignUp extends Fragment{
         {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        }
-        intent = new Intent(Intent.ACTION_GET_CONTENT);
+        }else
+            {
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+            }
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setType("image/*");
         startActivityForResult(intent,img1);
@@ -364,7 +367,7 @@ public class Fragment_Delegate_SignUp extends Fragment{
                                     userSingleTone.setUserModel(userModel);
                                     preferences.create_update_userData(getActivity(),userModel);
 
-                                    Intent intent = new Intent(getActivity(), DriverHomeActivity.class);
+                                    Intent intent = new Intent(getActivity(), DelegateHomeActivity.class);
                                     intent.putExtra("signup",1);
                                     startActivity(intent);
                                     getActivity().finish();

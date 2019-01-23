@@ -187,7 +187,7 @@ public class Fragment_Review_Purchases extends Fragment {
         double total_items_prices = getTotalOrderPrice(orderItemList);
         double price_after_tax = total_items_prices*((double) tax/100.0);
 
-        total_order_cost_after_tax = getTotalOrderPrice(orderItemList) - price_after_tax;
+        total_order_cost_after_tax = getTotalOrderPrice(orderItemList) + price_after_tax;
 
         tv_total.setText(String.valueOf(total_order_cost_after_tax));
 

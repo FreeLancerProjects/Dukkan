@@ -41,9 +41,8 @@ public class Fragment_Client_Orders extends Fragment {
         titleList = new ArrayList<>();
         tab = view.findViewById(R.id.tab);
         pager = view.findViewById(R.id.pager);
-
         tab.setupWithViewPager(pager);
-
+        pager.setOffscreenPageLimit(3);
         fragmentList.add(Fragment_Client_New_Order.newInstance());
         fragmentList.add(Fragment_Client_Current_Order.newInstance());
         fragmentList.add(Fragment_Client_Previous_Order.newInstance());

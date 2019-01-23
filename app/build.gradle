@@ -59,5 +59,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.github.FlyingPumba:SimpleRatingBar:v0.1.5'
     implementation 'com.github.baoyachi:StepView:1.9'
+    implementation 'com.github.tajchert:WaitingDots:0.4.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
+
 }
 apply plugin: 'com.google.gms.google-services'

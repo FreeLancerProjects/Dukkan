@@ -3,7 +3,6 @@ package com.appzone.dukkan.services;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
-import com.appzone.dukkan.models.OrderIdModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.ProductPaginationModel;
@@ -123,7 +122,7 @@ public interface Services {
     );
 
     @POST("api/orders")
-    Call<OrderIdModel> uploadOrder(@Body OrderToUploadModel orderToUploadModel);
+    Call<OrdersModel.Order> uploadOrder(@Body OrderToUploadModel orderToUploadModel);
 
     @FormUrlEncoded
     @POST("/api/edit-profile")
@@ -137,11 +136,16 @@ public interface Services {
             @Field("old_password") String old_password,
             @Field("new_password") String new_password);
 
-    @FormUrlEncoded
-    @POST("/api/orders")
-    Call<OrdersModel> getOrders(@Field("token") String token,
-                                @Field("type") String type
+    @GET("/api/orders")
+    Call<OrdersModel> getOrders(@Query("token") String token,
+                                @Query("type") String type
                                 );
 
+    @FormUrlEncoded
+    @POST("/api/accept-refuse-orders/{order_id}")
+    Call<ResponseBody> Accept_Refuse_order(@Path("order_id") int order_id,
+                                           @Field("token") String user_token,
+                                           @Field("type") String type
+                                           );
 
 }

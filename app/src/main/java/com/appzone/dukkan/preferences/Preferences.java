@@ -193,6 +193,24 @@ public class Preferences {
         editor_visited.clear();
         editor_visited.apply();
 
+        SharedPreferences preferences_chat = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        SharedPreferences.Editor preferences_chat_editor = preferences_chat.edit();
+        preferences_chat_editor.clear();
+        preferences_chat_editor.apply();
 
+    }
+
+    public void create_update_chat_user_id(Context context,String chat_user_id)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("chat_user_id",chat_user_id);
+        editor.apply();
+    }
+
+    public String getChatUserId(Context context)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        return preferences.getString("chat_user_id","");
     }
 }

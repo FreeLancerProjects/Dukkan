@@ -30,11 +30,11 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:textSize="17sp"
             android:gravity="center"
             android:paddingLeft="60dp"
             android:paddingRight="60dp"
+
 
             />
 

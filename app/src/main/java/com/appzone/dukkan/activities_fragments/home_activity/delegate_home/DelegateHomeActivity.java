@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.driver_home;
+package com.appzone.dukkan.activities_fragments.home_activity.delegate_home;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,9 +23,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Notification;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.fragment_driver_orders.Fragment_Driver_Orders;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment.Fragment_Driver_Profile;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.Fragment_Delegate_Notification;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_New_Order;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Orders;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.Fragment_Delegate_Profile;
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.UserModel;
@@ -40,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -48,13 +51,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DriverHomeActivity extends AppCompatActivity {
+public class DelegateHomeActivity extends AppCompatActivity implements Fragment_Delegate_New_Order.ListenerUpdateFragmentDelegateCurrentOrder{
 
     private FragmentManager fragmentManager;
     private AHBottomNavigation ahBottomNavigation;
-    private Fragment_Driver_Notification fragment_driver_notification;
-    private Fragment_Driver_Orders fragment_driver_orders;
-    private Fragment_Driver_Profile fragment_driver_profile;
+    private Fragment_Delegate_Notification fragment_delegate_notification;
+    private Fragment_Delegate_Orders fragment_delegate_orders;
+    private Fragment_Delegate_Profile fragment_delegate_profile;
     private String current_lang = "";
     private View root;
     private Snackbar snackbar;
@@ -73,7 +76,7 @@ public class DriverHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_home);
+        setContentView(R.layout.activity_delegate_home);
         initView();
         getDataFromIntent();
 
@@ -253,29 +256,29 @@ public class DriverHomeActivity extends AppCompatActivity {
 
     private void DisplayFragmentDriverProfile()
     {
-        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
+        if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_delegate_notification).commit();
         }
-        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
+        if (fragment_delegate_orders !=null&& fragment_delegate_orders.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
-        }
-
-        if (fragment_driver_profile ==null)
-        {
-            fragment_driver_profile = Fragment_Driver_Profile.newInstance();
+            fragmentManager.beginTransaction().hide(fragment_delegate_orders).commit();
         }
 
-        if (fragment_driver_profile.isAdded())
+        if (fragment_delegate_profile ==null)
         {
-            if (!fragment_driver_profile.isVisible())
+            fragment_delegate_profile = Fragment_Delegate_Profile.newInstance();
+        }
+
+        if (fragment_delegate_profile.isAdded())
+        {
+            if (!fragment_delegate_profile.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_driver_profile).commit();
+                fragmentManager.beginTransaction().show(fragment_delegate_profile).commit();
                 UpdateBottomNavPos(0);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_profile,"fragment_driver_profile").addToBackStack("fragment_driver_profile").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_delegate_profile,"fragment_delegate_profile").addToBackStack("fragment_delegate_profile").commit();
             UpdateBottomNavPos(0);
         }
 
@@ -285,30 +288,30 @@ public class DriverHomeActivity extends AppCompatActivity {
     }
     private void DisplayFragmentDriverNotification()
     {
-        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded()) {
-            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
+        if (fragment_delegate_profile !=null&& fragment_delegate_profile.isAdded()) {
+            fragmentManager.beginTransaction().hide(fragment_delegate_profile).commit();
         }
 
-        if (fragment_driver_orders !=null&& fragment_driver_orders.isAdded())
+        if (fragment_delegate_orders !=null&& fragment_delegate_orders.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_driver_orders).commit();
+            fragmentManager.beginTransaction().hide(fragment_delegate_orders).commit();
         }
 
 
-        if (fragment_driver_notification ==null)
+        if (fragment_delegate_notification ==null)
         {
-            fragment_driver_notification = Fragment_Driver_Notification.newInstance();
+            fragment_delegate_notification = Fragment_Delegate_Notification.newInstance();
         }
-        if (fragment_driver_notification.isAdded())
+        if (fragment_delegate_notification.isAdded())
         {
-            if (!fragment_driver_notification.isVisible())
+            if (!fragment_delegate_notification.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_driver_notification).commit();
+                fragmentManager.beginTransaction().show(fragment_delegate_notification).commit();
                 UpdateBottomNavPos(1);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_notification,"fragment_driver_notification").addToBackStack("fragment_driver_notification").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_delegate_notification,"fragment_delegate_notification").addToBackStack("fragment_delegate_notification").commit();
             UpdateBottomNavPos(1);
         }
 
@@ -317,31 +320,31 @@ public class DriverHomeActivity extends AppCompatActivity {
     }
     public void DisplayFragmentDriverOrders()
     {
-        if (fragment_driver_profile !=null&& fragment_driver_profile.isAdded())
+        if (fragment_delegate_profile !=null&& fragment_delegate_profile.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_driver_profile).commit();
+            fragmentManager.beginTransaction().hide(fragment_delegate_profile).commit();
         }
 
-        if (fragment_driver_notification !=null&& fragment_driver_notification.isAdded())
+        if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_driver_notification).commit();
+            fragmentManager.beginTransaction().hide(fragment_delegate_notification).commit();
         }
 
-        if (fragment_driver_orders == null)
+        if (fragment_delegate_orders == null)
         {
-            fragment_driver_orders = Fragment_Driver_Orders.newInstance();
+            fragment_delegate_orders = Fragment_Delegate_Orders.newInstance();
         }
 
-        if (fragment_driver_orders.isAdded())
+        if (fragment_delegate_orders.isAdded())
         {
-            if (!fragment_driver_orders.isVisible())
+            if (!fragment_delegate_orders.isVisible())
             {
-                fragmentManager.beginTransaction().show(fragment_driver_orders).commit();
+                fragmentManager.beginTransaction().show(fragment_delegate_orders).commit();
                 UpdateBottomNavPos(2);
             }
         }else
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_driver_orders,"fragment_driver_orders").addToBackStack("fragment_driver_orders").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_delegate_orders,"fragment_delegate_orders").addToBackStack("fragment_delegate_orders").commit();
 
             UpdateBottomNavPos(2);
         }
@@ -461,10 +464,34 @@ public class DriverHomeActivity extends AppCompatActivity {
     }
     private void NavigateToSignInActivity()
     {
-        Intent intent  = new Intent(DriverHomeActivity.this, SignInActivity.class);
+        Intent intent  = new Intent(DelegateHomeActivity.this, SignInActivity.class);
         startActivity(intent);
         finish();
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        for (Fragment fragment : fragmentList)
+        {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<Fragment> fragmentList = fragmentManager.getFragments();
+        for (Fragment fragment : fragmentList)
+        {
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+
+
     @Override
     public void onBackPressed() {
         Back();
@@ -472,7 +499,7 @@ public class DriverHomeActivity extends AppCompatActivity {
 
     private void Back()
     {
-        if (fragment_driver_profile!=null&&fragment_driver_profile.isAdded()&&fragment_driver_profile.isVisible())
+        if (fragment_delegate_profile !=null&& fragment_delegate_profile.isAdded()&& fragment_delegate_profile.isVisible())
         {
             if (userModel!=null)
             {
@@ -488,5 +515,13 @@ public class DriverHomeActivity extends AppCompatActivity {
                 DisplayFragmentDriverProfile();
 
             }
+    }
+
+    @Override
+    public void onUpdated() {
+        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+        {
+            fragment_delegate_orders.RefreshFragmentDelegateCurrentOrder();
+        }
     }
 }

@@ -22,9 +22,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Client_Profile;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Offers;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Order_Finish_Congratulation;
@@ -44,9 +47,9 @@ import com.appzone.dukkan.activities_fragments.product_details.activity.ProductD
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.MainCategory;
-import com.appzone.dukkan.models.OrderIdModel;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.OrderToUploadModel;
+import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
@@ -120,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private double order_lat=0.0,order_lng=0.0;
     private String order_address="";
     private OrderToUploadModel orderToUploadModel = null;
-    public String payment_method="",delivery_cost="";
+    public String payment_method="",delivery_cost="0.0";
     public String coupon_value ="";
     public double total_order_cost = 0.0;
 
@@ -450,10 +453,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
             fragmentManager.beginTransaction().hide(fragment_client_profile).commit();
         }
-        /*if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
-        {
-            fragmentManager.beginTransaction().hide(fragment_subCategory).commit();
-        }*/
 
 
 
@@ -891,7 +890,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
     }
 
-    public void DisplayFragment_Order_Finish_Congratulation(String order_id)
+    public void DisplayFragment_Order_Finish_Congratulation(OrdersModel.Order order)
     {
         orderItemsSingleTone.ClearCart();
         orderToUploadModel = null;
@@ -923,7 +922,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
 
 
-        fragment_order_finish_congratulation = Fragment_Order_Finish_Congratulation.newInstance(order_id);
+        fragment_order_finish_congratulation = Fragment_Order_Finish_Congratulation.newInstance(order);
 
         fragmentManager.beginTransaction().add(R.id.fragment_home_container,fragment_order_finish_congratulation,"fragment_order_finish_congratulation").addToBackStack("fragment_order_finish_congratulation").commit();
 
@@ -1229,21 +1228,25 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     public void Back()
     {
 
-        List<Fragment> fragmentList = fragmentManager.getFragments();
-        for (Fragment fragment :fragmentList)
-        {
-            Log.e("fragment_tag",fragment.getTag());
-        }
         if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
         {
 
-            if (userModel!=null)
+            if (orderItemsSingleTone.getItemsCount()>0)
             {
-                finish();
+                CreateCartAlertDialog();
             }else
                 {
-                    NavigateToSignInActivity();
+                    if (userModel!=null)
+                    {
+
+
+                        finish();
+                    }else
+                    {
+                        NavigateToSignInActivity();
+                    }
                 }
+
 
         }else if (fragment_map!=null&&fragment_map.isVisible()) {
             fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -1328,15 +1331,24 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         finish();
     }
 
-    private void CreateToast(String msg)
-    {
-        Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
-    }
+    public void NavigateToOrderDetailsActivity(OrdersModel.Order order,String order_type) {
 
-    public void CreateSnackBar(String msg)
-    {
-        snackbar = Common.CreateSnackBar(this,root,msg);
-        snackbar.show();
+
+        if (fragment_order_finish_congratulation!=null && fragment_order_finish_congratulation.isVisible())
+        {
+            DisplayFragmentHome();
+            Intent intent = new Intent(this, OrderDetailsActivity.class);
+            intent.putExtra("order",order);
+            intent.putExtra("order_type",order_type);
+            startActivity(intent);
+        }else
+            {
+                Intent intent = new Intent(this, OrderDetailsActivity.class);
+                intent.putExtra("order",order);
+                intent.putExtra("order_type",order_type);
+                startActivity(intent);
+            }
+
     }
 
     public void dismissSnackBar()
@@ -1370,6 +1382,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
         Log.e("delivery_cost",delivery_cost+"_");
+
         fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.beginTransaction().show(fragment_myCart).commit();
         fragment_delivery_address.UpdateDate_Time(time_type,delivery_cost,current_date);
@@ -1396,10 +1409,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             orderToUploadModel = new OrderToUploadModel();
         }
         this.total_order_cost = total_order_price;
-        Log.e("total_cost",total_order_cost+"_");
 
         orderToUploadModel.setOrderItemList(orderItemList);
-        orderToUploadModel.setOrder_total_price(total_order_price);
     }
 
     public void Save_Order_Data(String name, String phone, String street_name, String feedback, String coupon_code,String coupon_value,String payment_method)
@@ -1415,6 +1426,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setClient_street(street_name);
         orderToUploadModel.setNotes(feedback);
         orderToUploadModel.setTime_type(time_type);
+        orderToUploadModel.setDelivery_cost(Double.parseDouble(delivery_cost));
+        orderToUploadModel.setOrder_total_price(this.total_order_cost+Double.parseDouble(delivery_cost));
+
         orderToUploadModel.setCoupon_value(coupon_value);
         orderToUploadModel.setCoupon_code(coupon_code);
         orderToUploadModel.setPayment_method(payment_method);
@@ -1433,16 +1447,21 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         dialog.show();
         Api.getService()
                 .uploadOrder(orderToUploadModel)
-                .enqueue(new Callback<OrderIdModel>() {
+                .enqueue(new Callback<OrdersModel.Order>() {
                     @Override
-                    public void onResponse(Call<OrderIdModel> call, Response<OrderIdModel> response) {
+                    public void onResponse(Call<OrdersModel.Order> call, Response<OrdersModel.Order> response) {
 
                         if (response.isSuccessful())
                         {
+
                             dialog.dismiss();
                             dismissSnackBar();
                             Toast.makeText(HomeActivity.this, R.string.order_sent_successfully, Toast.LENGTH_SHORT).show();
-                            DisplayFragment_Order_Finish_Congratulation(String.valueOf(response.body().getOrder_id()));
+                            if (response.body()!=null)
+                            {
+                                DisplayFragment_Order_Finish_Congratulation(response.body());
+
+                            }
 
                         }else
                             {
@@ -1456,7 +1475,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     }
 
                     @Override
-                    public void onFailure(Call<OrderIdModel> call, Throwable t) {
+                    public void onFailure(Call<OrdersModel.Order> call, Throwable t) {
                         try {
                             dialog.dismiss();
                             CreateSnackBar(getString(R.string.something));
@@ -1474,6 +1493,53 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
             orderToUploadModel = null;
         }
+    }
+
+
+    public void CreateCartAlertDialog()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .create();
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_remove_cart_item,null);
+        FrameLayout fl_delete = view.findViewById(R.id.fl_delete);
+        FrameLayout fl_cancel = view.findViewById(R.id.fl_cancel);
+
+        TextView tv_msg = view.findViewById(R.id.tv_msg);
+        tv_msg.setText(getString(R.string.the_cart_contains)+" "+orderItemsSingleTone.getItemsCount()+" "+getString(R.string.item)+" "+getString(R.string.delete_items));
+
+        fl_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderItemsSingleTone.ClearCart();
+                Clear_Order_Object();
+                UpdateCartNotification(0);
+                dialog.dismiss();
+            }
+        });
+        fl_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setView(view);
+        dialog.show();
+    }
+    private void CreateToast(String msg)
+    {
+        Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
+    }
+
+    public void CreateSnackBar(String msg)
+    {
+        snackbar = Common.CreateSnackBar(this,root,msg);
+        snackbar.show();
     }
 
     @Override

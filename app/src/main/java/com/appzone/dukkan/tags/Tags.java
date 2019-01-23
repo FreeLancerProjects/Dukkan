@@ -16,15 +16,18 @@ public class Tags {
     public static final String payment_mada = "2";
     public static final String payment_visa = "3";
 
-    private static final int status_delegate_accept_order = 1;
-    private static final int status_delegate_collect_order = 2;
-    private static final int status_delegate_already_collect_order = 3;
-    private static final int status_delegate_delivering_order = 4;
-    private static final int status_delegate_delivered_order = 5;
+    public static final int status_delegate_accept_order = 1;
+    public static final int status_delegate_collect_order = 2;
+    public static final int status_delegate_already_collect_order = 3;
+    public static final int status_delegate_delivering_order = 4;
+    public static final int status_delegate_delivered_order = 5;
 
-    private static final String order_current = "current";
-    private static final String order_new = "new";
-    private static final String order_old = "old";
+    public static final String order_current = "current";
+    public static final String order_new = "new";
+    public static final String order_old = "old";
+
+    public static final String order_accepted= "accepted";
+    public static final String order_refused = "refused";
 
 
 

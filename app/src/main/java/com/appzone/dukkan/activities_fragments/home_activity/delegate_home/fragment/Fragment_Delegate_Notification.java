@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment;
+package com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
 
-public class Fragment_Driver_Notification extends Fragment {
+public class Fragment_Delegate_Notification extends Fragment {
 
-    private DriverHomeActivity activity;
+    private DelegateHomeActivity activity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_notification, container, false);;
@@ -19,13 +19,13 @@ public class Fragment_Driver_Notification extends Fragment {
         return view;
     }
 
-    public static Fragment_Driver_Notification newInstance() {
+    public static Fragment_Delegate_Notification newInstance() {
 
-        return new Fragment_Driver_Notification();
+        return new Fragment_Delegate_Notification();
     }
 
     private void initView(View view) {
-        activity = (DriverHomeActivity) getActivity();
+        activity = (DelegateHomeActivity) getActivity();
     }
 
 

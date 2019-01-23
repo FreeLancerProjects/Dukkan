@@ -32,7 +32,6 @@ import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
 import com.appzone.dukkan.adapters.PlaceSearchAdapter;
 import com.appzone.dukkan.models.PlaceSearchModel;
-import com.appzone.dukkan.share.Common;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePredictionBufferResponse;
 import com.google.android.gms.location.places.PlaceBufferResponse;
@@ -212,7 +211,7 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.maps));
             filter = new AutocompleteFilter.Builder()
-                    .setCountry("EG")
+                    .setCountry("SA")
                     .build();
 
 

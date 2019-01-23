@@ -22,13 +22,15 @@ public class OrdersModel implements Serializable{
         private String address;
         private String street;
         private String note;
-        private int total;
+        private double total;
         private int coupon_value;
         private String coupon_code;
         private int time_type;
         private int payment_method;
         private int status;
         private String created_at;
+        private long milli_time;
+        private long accepted_time;
         private Client client;
         private Delegate delegate;
         private List<Products> products;
@@ -57,7 +59,7 @@ public class OrdersModel implements Serializable{
             return note;
         }
 
-        public int getTotal() {
+        public double getTotal() {
             return total;
         }
 
@@ -83,6 +85,14 @@ public class OrdersModel implements Serializable{
 
         public String getCreated_at() {
             return created_at;
+        }
+
+        public long getMilli_time() {
+            return milli_time;
+        }
+
+        public long getAccepted_time() {
+            return accepted_time;
         }
 
         public Client getClient() {
@@ -128,6 +138,7 @@ public class OrdersModel implements Serializable{
         private String name;
         private String phone;
         private String avatar;
+        private double rate;
 
         public int getId() {
             return id;
@@ -143,6 +154,10 @@ public class OrdersModel implements Serializable{
 
         public String getAvatar() {
             return avatar;
+        }
+
+        public double getRate() {
+            return rate;
         }
     }
 

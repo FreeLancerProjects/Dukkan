@@ -18,6 +18,7 @@ public class OrderToUploadModel implements Serializable {
     private String coupon_value;
     private String payment_method;
     private double order_total_price;
+    private double delivery_cost;
     private List<OrderItem> orderItemList;
 
     public OrderToUploadModel() {
@@ -126,6 +127,22 @@ public class OrderToUploadModel implements Serializable {
 
     public void setOrder_total_price(double order_total_price) {
         this.order_total_price = order_total_price;
+    }
+
+    public String getClient_phone() {
+        return client_phone;
+    }
+
+    public void setClient_phone(String client_phone) {
+        this.client_phone = client_phone;
+    }
+
+    public double getDelivery_cost() {
+        return delivery_cost;
+    }
+
+    public void setDelivery_cost(double delivery_cost) {
+        this.delivery_cost = delivery_cost;
     }
 
     public List<OrderItem> getOrderItemList() {

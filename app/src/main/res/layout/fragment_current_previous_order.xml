@@ -17,6 +17,30 @@
         android:layout_width="25dp"
         android:layout_height="21dp"
         android:layout_gravity="center"
-        android:visibility="invisible"
         />
+    <LinearLayout
+        android:id="@+id/ll_no_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:src="@drawable/blue_cart"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="@string/no_orders_to_display"
+            />
+    </LinearLayout>
+
 </FrameLayout>

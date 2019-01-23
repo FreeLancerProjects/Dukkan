@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.home_activity.driver_home.fragment;
+package com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.driver_home.DriverHomeActivity;
+import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity;
 import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.UserModel;
@@ -32,6 +33,7 @@ import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 
 import java.util.Locale;
 
@@ -41,15 +43,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class Fragment_Driver_Profile extends Fragment {
-    private DriverHomeActivity activity;
+public class Fragment_Delegate_Profile extends Fragment {
+    private DelegateHomeActivity activity;
     private Toolbar toolBar;
     private AppBarLayout app_bar;
-    private TextView tv_name,tv_phone,tv_lang;
+    private TextView tv_name,tv_phone,tv_lang,tv_rate;
     private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_driver_container,ll_logout;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
     private ImageView image_whatsapp,image_facebook,image_instagram,image_telegram;
+    private SimpleRatingBar rateBar;
     private String current_lang;
     private AlertDialog dialogUpdatePhone,dialogUpdatePassword,dialogContactUs;
     private UserModel userModel;
@@ -57,20 +60,20 @@ public class Fragment_Driver_Profile extends Fragment {
     private Preferences preferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-       View view =  inflater.inflate(R.layout.fragment_driver_profile, container, false);
+       View view =  inflater.inflate(R.layout.fragment_delegate_profile, container, false);
        initView(view);
        return view;
     }
 
-    public static Fragment_Driver_Profile newInstance() {
+    public static Fragment_Delegate_Profile newInstance() {
 
-        return new Fragment_Driver_Profile();
+        return new Fragment_Delegate_Profile();
     }
 
     private void initView(View view)
     {
 
-        activity = (DriverHomeActivity) getActivity();
+        activity = (DelegateHomeActivity) getActivity();
         toolBar = view.findViewById(R.id.toolBar);
         app_bar = view.findViewById(R.id.app_bar);
         ll_driver_container = view.findViewById(R.id.ll_driver_container);
@@ -96,9 +99,12 @@ public class Fragment_Driver_Profile extends Fragment {
         userModel = userSingleTone.getUserModel();
         preferences = Preferences.getInstance();
         tv_name = view.findViewById(R.id.tv_name);
+        tv_rate = view.findViewById(R.id.tv_rate);
 
         tv_phone = view.findViewById(R.id.tv_phone);
         tv_lang = view.findViewById(R.id.tv_lang);
+        rateBar = view.findViewById(R.id.rateBar);
+
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
         image_arrow3 = view.findViewById(R.id.image_arrow3);
@@ -244,6 +250,13 @@ public class Fragment_Driver_Profile extends Fragment {
         {
             tv_name.setText(userModel.getUser().getName());
             tv_phone.setText("00966"+userModel.getUser().getPhone());
+            tv_rate.setText("("+userModel.getUser().getRate()+")");
+            SimpleRatingBar.AnimationBuilder builder = rateBar.getAnimationBuilder();
+            builder.setDuration(1500);
+            builder.setRepeatCount(0);
+            builder.setRatingTarget((float) userModel.getUser().getRate());
+            builder.setInterpolator(new AccelerateInterpolator());
+            builder.start();
         }
 
     }
