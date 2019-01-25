@@ -114,7 +114,7 @@
     <string name="cur_order">Current orders</string>
     <string name="prv_order">Previous orders</string>
     <string name="password">Password</string>
-    <string name="contact_us">contact us</string>
+    <string name="contact_us">Customer service</string>
     <string name="about_dukkan">About Dukkan</string>
     <string name="share">Share</string>
     <string name="change_language">Change language</string>
@@ -191,7 +191,7 @@
     <string name="order_collected">Order collected</string>
     <string name="delivering_order">Delivering order</string>
     <string name="no_orders_to_display">No orders to display</string>
-    <string name="panda">Panda</string>
+    <string name="panda">Panda,Hyper panda</string>
     <string name="show_products">Show products</string>
     <string name="client_name">Client name</string>
     <string name="show_address_on_map">Show address on map</string>
@@ -227,4 +227,9 @@
     <string name="request_again">Request again</string>
     <string name="display_bill">Display bill</string>
     <string name="no_notes">No notes</string>
+    <string name="bill_photo">Bill photo</string>
+    <string name="order_cost">Order cost</string>
+    <string name="no_alternative_phone">No alternative phone</string>
+    <string name="alter">Alter</string>
+    <string name="welcome_to_Dukkan">Welcome to Dukkan thanks for join us</string>
 </resources>

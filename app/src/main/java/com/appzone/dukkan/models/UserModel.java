@@ -20,6 +20,7 @@ public class UserModel implements Serializable{
         private int id;
         private String name;
         private String phone;
+        private String alternative_phone;
         private int gender;
         private String avatar;
         private String email;
@@ -32,6 +33,7 @@ public class UserModel implements Serializable{
         private String role;
         private double rate;
 
+
         public int getId() {
             return id;
         }
@@ -42,6 +44,10 @@ public class UserModel implements Serializable{
 
         public String getPhone() {
             return phone;
+        }
+
+        public String getAlternative_phone() {
+            return alternative_phone;
         }
 
         public int getGender() {

@@ -7,13 +7,33 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+
+        >
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/blue_cart"
-            android:layout_marginTop="20dp"
+            android:padding="10dp"
             />
+        <TextView
+            android:id="@+id/tv_not_dialog"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/not_edt_tv"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="13sp"
+            android:layout_margin="5dp"
+            />
+    </FrameLayout>
+
 
 
         <TextView
@@ -22,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:paddingLeft="30dp"
@@ -35,8 +55,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+
             >
             <FrameLayout
                 android:id="@+id/fl_delete"
@@ -110,7 +131,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:src="@drawable/close_gray"
-                        android:padding="3dp"
+                        android:padding="6dp"
                         android:clickable="false"
                         android:longClickable="false"
                         />

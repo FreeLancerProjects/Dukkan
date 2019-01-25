@@ -24,7 +24,7 @@
                 android:id="@+id/fragment_collapsing_container"
                 android:layout_width="match_parent"
                 android:layout_height="315dp"
-                android:background="@drawable/back_tool"
+                android:background="@drawable/bg_img"
                 app:layout_collapseMode="parallax"
 
                 >

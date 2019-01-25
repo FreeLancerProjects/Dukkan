@@ -379,7 +379,7 @@
                         android:orientation="vertical"
                         >
                         <TextView
-                            android:id="@+id/tv_hour"
+                            android:id="@+id/tv_second"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="22sp"
@@ -393,18 +393,20 @@
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
                             android:textColor="@color/gray3"
-                            android:text="@string/hours"
+                            android:text="@string/seconds"
                             android:gravity="center"
                             android:layout_gravity="center"
                             />
 
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
                         android:layout_marginTop="5dp"
                         />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -431,19 +433,21 @@
                             />
 
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
                         android:layout_marginTop="5dp"
                         />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         >
                         <TextView
-                            android:id="@+id/tv_second"
+                            android:id="@+id/tv_hour"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="22sp"
@@ -457,7 +461,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
                             android:textColor="@color/gray3"
-                            android:text="@string/seconds"
+                            android:text="@string/hours"
                             android:gravity="center"
                             android:layout_gravity="center"
                             />

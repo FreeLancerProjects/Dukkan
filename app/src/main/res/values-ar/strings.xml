@@ -17,7 +17,7 @@
     <string name="change_language_to_english">تغيير اللغة الى الانجليزية.</string>
     <string name="change_language_to_arabic">تغيير اللغة الى العربية</string>
     <string name="open_sesame">إفتح ياسمسم</string>
-    <string name="add_delegate">إضافة مندوب</string>
+    <string name="add_delegate">سجل كمندوب</string>
     <string name="field_req">الحقل مطلوب</string>
     <string name="inv_phone">رقم الجوال غير صحيح</string>
     <string name="signning_in">جار تسجيل الدخول</string>
@@ -116,7 +116,7 @@
     <string name="cur_order">الطلبات الحالية</string>
     <string name="prv_order">الطلبات السابقة</string>
     <string name="password">كلمة المرور</string>
-    <string name="contact_us">إتصل بنا</string>
+    <string name="contact_us">خدمة العملاء</string>
     <string name="about_dukkan">عن التطبيق</string>
     <string name="share">شارك التطبيق</string>
     <string name="change_language">تغيير اللغة</string>
@@ -193,7 +193,7 @@
     <string name="order_collected">تم التجميع</string>
     <string name="delivering_order">جار التوصيل</string>
     <string name="no_orders_to_display">لا توجد طلبات لعرضها</string>
-    <string name="panda">سوبر ماركت بنده</string>
+    <string name="panda">سوبر ماركت بنده,هايبر بنده</string>
     <string name="show_products">عرض المنتجات المطلوبة</string>
     <string name="client_name">إسم المستلم</string>
     <string name="show_address_on_map">عرض الموقع على الخريطة</string>
@@ -229,5 +229,10 @@
     <string name="request_again">الطلب مرة اخرى</string>
     <string name="display_bill">عرض فاتورة</string>
     <string name="no_notes">لا توجد ملاحظات</string>
+    <string name="bill_photo">صورة الفاتورة</string>
+    <string name="order_cost">تكلفة الطلب</string>
+    <string name="no_alternative_phone">لا يوجد رقم جوال بديل</string>
+    <string name="alter">بديل</string>
+    <string name="welcome_to_Dukkan">اهلا بك بدكان كوم شكرا لانضمامك معنا</string>
 
 </resources>

@@ -51,7 +51,7 @@ public class Fragment_Delegate_Profile extends Fragment {
     private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_driver_container,ll_logout;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
-    private ImageView image_whatsapp,image_facebook,image_instagram,image_telegram;
+    private ImageView image_twitter,image_facebook,image_instagram;
     private SimpleRatingBar rateBar;
     private String current_lang;
     private AlertDialog dialogUpdatePhone,dialogUpdatePassword,dialogContactUs;
@@ -115,10 +115,9 @@ public class Fragment_Delegate_Profile extends Fragment {
         ll_language = view.findViewById(R.id.ll_language);
         ll_logout = view.findViewById(R.id.ll_logout);
         ll_share = view.findViewById(R.id.ll_share);
-        image_whatsapp = view.findViewById(R.id.image_whatsapp);
+        image_twitter = view.findViewById(R.id.image_twitter);
         image_facebook = view.findViewById(R.id.image_facebook);
         image_instagram = view.findViewById(R.id.image_instagram);
-        image_telegram = view.findViewById(R.id.image_telegram);
 
         fl_terms = view.findViewById(R.id.fl_terms);
         fl_contact_us = view.findViewById(R.id.fl_contact_us);
@@ -202,11 +201,11 @@ public class Fragment_Delegate_Profile extends Fragment {
             }
         });
 
-        image_whatsapp.setOnClickListener(new View.OnClickListener() {
+        image_twitter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = "whatsapp://send?phone=966551011284";
-                CreateSocialMediaIntent(uri);
+                /*String uri = "whatsapp://send?phone=966551011284";
+                CreateSocialMediaIntent(uri);*/
             }
         });
 
@@ -226,18 +225,13 @@ public class Fragment_Delegate_Profile extends Fragment {
             }
         });
 
-        image_telegram.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String uri = "https://t.me/DukkanApp";
-                CreateSocialMediaIntent(uri);
-            }
-        });
 
         fl_contact_us.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateContactUsDialog();
+
+                String uri = "https://t.me/DukkanApp";
+                CreateSocialMediaIntent(uri);
             }
         });
 

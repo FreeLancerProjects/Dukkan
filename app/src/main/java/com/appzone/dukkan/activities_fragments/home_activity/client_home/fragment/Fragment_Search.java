@@ -201,7 +201,7 @@ public class Fragment_Search extends Fragment {
         ll_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.DisplayFragmentHome();
+                activity.Back();
             }
         });
         getSavedQueries();

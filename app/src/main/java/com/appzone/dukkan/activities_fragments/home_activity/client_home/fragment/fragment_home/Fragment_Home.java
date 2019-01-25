@@ -154,6 +154,7 @@ public class Fragment_Home extends Fragment {
         ll_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.setLast_selected_fragment("fragment_home");
                 activity.DisplayFragmentSearch();
             }
         });

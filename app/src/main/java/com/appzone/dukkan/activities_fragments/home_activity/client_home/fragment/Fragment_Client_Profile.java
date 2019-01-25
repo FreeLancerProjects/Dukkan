@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
@@ -41,11 +42,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Fragment_Client_Profile extends Fragment {
-    private TextView tv_name,tv_phone,tv_lang;
-    private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4;
-    private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_logout;
+    private TextView tv_name,tv_phone,tv_alter_phone,tv_lang;
+    private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4,image_arrow5;
+    private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_logout,ll_data_container,ll_alter_phone;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
-    private ImageView image_whatsapp,image_facebook,image_instagram,image_telegram;
+    private ImageView image_twitter,image_facebook,image_instagram;
+    private AppBarLayout app_bar;
     private String current_lang;
     private HomeActivity activity;
     private  AlertDialog dialogUpdatePhone,dialogUpdatePassword,dialogContactUs;
@@ -72,22 +74,43 @@ public class Fragment_Client_Profile extends Fragment {
         activity = (HomeActivity) getActivity();
         tv_name = view.findViewById(R.id.tv_name);
         tv_phone = view.findViewById(R.id.tv_phone);
+        tv_alter_phone = view.findViewById(R.id.tv_alter_phone);
+
+        //////////////////////////////////////////////
+        ll_data_container = view.findViewById(R.id.ll_data_container);
+        app_bar = view.findViewById(R.id.app_bar);
+        app_bar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                int total_offset = appBarLayout.getTotalScrollRange();
+                if ((total_offset+verticalOffset)>90)
+                {
+                    ll_data_container.setVisibility(View.VISIBLE);
+                }else
+                    {
+                        ll_data_container.setVisibility(View.GONE);
+
+                    }
+            }
+        });
+        /////////////////////////////////////////////
         tv_lang = view.findViewById(R.id.tv_lang);
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
         image_arrow3 = view.findViewById(R.id.image_arrow3);
         image_arrow4 = view.findViewById(R.id.image_arrow4);
+        image_arrow5 = view.findViewById(R.id.image_arrow5);
 
         ll_phone = view.findViewById(R.id.ll_phone);
         ll_password = view.findViewById(R.id.ll_password);
+        ll_alter_phone = view.findViewById(R.id.ll_alter_phone);
         ll_language = view.findViewById(R.id.ll_language);
         ll_logout = view.findViewById(R.id.ll_logout);
 
         ll_share = view.findViewById(R.id.ll_share);
-        image_whatsapp = view.findViewById(R.id.image_whatsapp);
+        image_twitter = view.findViewById(R.id.image_twitter);
         image_facebook = view.findViewById(R.id.image_facebook);
         image_instagram = view.findViewById(R.id.image_instagram);
-        image_telegram = view.findViewById(R.id.image_telegram);
 
         fl_terms = view.findViewById(R.id.fl_terms);
         fl_contact_us = view.findViewById(R.id.fl_contact_us);
@@ -102,6 +125,7 @@ public class Fragment_Client_Profile extends Fragment {
             image_arrow2.setImageResource(R.drawable.arrow_blue_left);
             image_arrow3.setImageResource(R.drawable.arrow_blue_left);
             image_arrow4.setImageResource(R.drawable.arrow_blue_left);
+            image_arrow5.setImageResource(R.drawable.arrow_blue_left);
 
             tv_lang.setText(getString(R.string.lang)+" : " + "العربية");
 
@@ -111,6 +135,7 @@ public class Fragment_Client_Profile extends Fragment {
                 image_arrow2.setImageResource(R.drawable.arrow_blue_right);
                 image_arrow3.setImageResource(R.drawable.arrow_blue_right);
                 image_arrow4.setImageResource(R.drawable.arrow_blue_right);
+                image_arrow5.setImageResource(R.drawable.arrow_blue_right);
 
 
                 tv_lang.setText(getString(R.string.lang)+" : " + "English");
@@ -129,6 +154,19 @@ public class Fragment_Client_Profile extends Fragment {
             public void onClick(View v) {
                 String phone = userModel.getUser().getPhone();
                 CreateUpdatePhoneDialog(phone);
+            }
+        });
+
+        ll_alter_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String alter_phone="";
+                if (userModel.getUser().getAlternative_phone()!=null&&!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
+                {
+                    alter_phone = userModel.getUser().getAlternative_phone().trim();
+                }
+                CreateUpdateAlterPhoneDialog(alter_phone);
             }
         });
 
@@ -171,11 +209,11 @@ public class Fragment_Client_Profile extends Fragment {
             }
         });
 
-        image_whatsapp.setOnClickListener(new View.OnClickListener() {
+        image_twitter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = "whatsapp://send?phone=966551011284";
-                CreateSocialMediaIntent(uri);
+                /*String uri = "whatsapp://send?phone=966551011284";
+                CreateSocialMediaIntent(uri);*/
             }
         });
 
@@ -195,18 +233,13 @@ public class Fragment_Client_Profile extends Fragment {
             }
         });
 
-        image_telegram.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String uri = "https://t.me/DukkanApp";
-                CreateSocialMediaIntent(uri);
-            }
-        });
+
 
         fl_contact_us.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateContactUsDialog();
+                String uri = "whatsapp://send?phone=966551011284";
+                CreateSocialMediaIntent(uri);
             }
         });
 
@@ -215,8 +248,20 @@ public class Fragment_Client_Profile extends Fragment {
 
     private void UpdateUI(UserModel userModel)
     {
-        tv_name.setText(userModel.getUser().getName());
-        tv_phone.setText("00966"+userModel.getUser().getPhone());
+        if (userModel!=null)
+        {
+            tv_name.setText(userModel.getUser().getName());
+            tv_phone.setText("00966"+userModel.getUser().getPhone());
+            if (userModel.getUser().getAlternative_phone()!=null||!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
+            {
+                tv_alter_phone.setText("00966"+userModel.getUser().getAlternative_phone());
+            }else
+                {
+                    tv_alter_phone.setText(R.string.no_alternative_phone);
+
+                }
+        }
+
     }
 
     private void CreateSocialMediaIntent(String uri)
@@ -360,6 +405,61 @@ public class Fragment_Client_Profile extends Fragment {
 
                         }
                     }
+
+
+
+            }
+        });
+
+        dialogUpdatePhone.setView(view);
+        dialogUpdatePhone.setCanceledOnTouchOutside(true);
+        dialogUpdatePhone.getWindow().getAttributes().windowAnimations = R.style.custom_dialog_animation;
+        dialogUpdatePhone.show();
+    }
+
+    private void CreateUpdateAlterPhoneDialog(String phone)
+    {
+        dialogUpdatePhone = new AlertDialog.Builder(getActivity())
+                .setCancelable(true)
+                .create();
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_update_phone,null);
+        final EditText edt_phone = view.findViewById(R.id.edt_phone);
+        Button btn_update = view.findViewById(R.id.btn_update);
+        Button btn_cancel = view.findViewById(R.id.btn_cancel);
+
+        edt_phone.setText(phone);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Common.CloseKeyBoard(getActivity(),edt_phone);
+                dialogUpdatePhone.dismiss();
+            }
+        });
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String m_phone = edt_phone.getText().toString();
+                if (!TextUtils.isEmpty(m_phone) && m_phone.length()==9)
+                {
+                    edt_phone.setError(null);
+                    Common.CloseKeyBoard(getActivity(),edt_phone);
+                    dialogUpdatePhone.dismiss();
+
+                    UpdateAlterPhone(m_phone);
+
+                }else
+                {
+                    if (TextUtils.isEmpty(m_phone))
+                    {
+                        edt_phone.setError(getString(R.string.field_req));
+                    }else if (m_phone.length()!=9)
+                    {
+                        edt_phone.setError(getString(R.string.inv_phone));
+
+                    }
+                }
 
 
 
@@ -554,7 +654,63 @@ public class Fragment_Client_Profile extends Fragment {
                 });
     }
 
-    private void UpdatePassword(String m_current_password, String m_new_password) {
+    private void UpdateAlterPhone(String m_phone) {
+
+
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        String user_token = userModel.getToken();
+        Api.getService()
+                .updateAlterPhone(user_token,m_phone)
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null && response.body().getUser()!=null)
+                            {
+                                activity.dismissSnackBar();
+                                dialog.dismiss();
+                                Toast.makeText(activity,getString(R.string.succ), Toast.LENGTH_SHORT).show();
+                                UpdateUserData(response.body());
+                            }else
+                            {
+                                Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        }else
+                        {
+                            dialog.dismiss();
+                            if (response.code() == 422)
+                            {
+                                activity.CreateSnackBar(getString(R.string.phone_number_exists));
+
+                            }else
+                            {
+                                activity.CreateSnackBar(getString(R.string.failed));
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+
+    private void UpdatePassword(String m_current_password, String m_new_password)
+    {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
@@ -606,7 +762,8 @@ public class Fragment_Client_Profile extends Fragment {
                     }
                 });
     }
-    private void ContactUs(String m_name, String m_msg, String m_phone) {
+    private void ContactUs(String m_name, String m_msg, String m_phone)
+    {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
         dialog.show();
         String ph = "00966"+m_phone;

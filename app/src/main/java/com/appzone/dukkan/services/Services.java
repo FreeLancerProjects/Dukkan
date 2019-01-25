@@ -131,6 +131,11 @@ public interface Services {
 
     @FormUrlEncoded
     @POST("/api/edit-profile")
+    Call<UserModel> updateAlterPhone(@Field("token") String user_token,
+                                @Field("alternative_phone") String phone);
+
+    @FormUrlEncoded
+    @POST("/api/edit-profile")
     Call<UserModel> updatePassword(
             @Field("token") String user_token,
             @Field("old_password") String old_password,

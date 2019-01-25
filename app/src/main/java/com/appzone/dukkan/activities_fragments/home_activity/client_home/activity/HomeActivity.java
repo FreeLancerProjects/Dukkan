@@ -1,20 +1,29 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.activity;
 
 import android.Manifest;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -127,6 +136,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     public String payment_method="",delivery_cost="0.0";
     public String coupon_value ="";
     public double total_order_cost = 0.0;
+    private String last_selected_fragment="";
+    private MainCategory.MainCategoryItems mainCategoryItems;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -139,8 +150,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         initView();
-
+        getDataFromIntent();
     }
+
+
 
     private void initView()
     {
@@ -230,6 +243,87 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     public void UpdateUserData(UserModel userModel)
     {
         this.userModel = userModel;
+    }
+
+    private void getDataFromIntent()
+    {
+
+        Intent intent = getIntent();
+        if (intent!=null)
+        {
+            if (intent.hasExtra("signup"))
+            {
+                int signup = intent.getIntExtra("signup",0);
+                if (signup==1)
+                {
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    CreateWelcomeNotification();
+                                }
+                            },3000);
+                }
+            }
+        }
+    }
+    private void CreateWelcomeNotification()
+    {
+        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.not;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String CHANNEL_ID = "my_channel_01";
+            CharSequence CHANNEL_NAME = "channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,CHANNEL_NAME,IMPORTANCE);
+            channel.setShowBadge(true);
+            channel.setSound(Uri.parse(sound_path),new AudioAttributes.Builder()
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .build()
+            );
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setChannelId(CHANNEL_ID);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setContentTitle(getString(R.string.notifications));
+            builder.setContentText(getString(R.string.welcome_to_Dukkan));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setLargeIcon(bitmap);
+
+
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (manager!=null)
+            {
+                manager.createNotificationChannel(channel);
+                manager.notify(1,builder.build());
+
+            }
+
+
+        }else
+
+        {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setContentTitle(getString(R.string.notifications));
+            builder.setContentText(getString(R.string.welcome_to_Dukkan));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setLargeIcon(bitmap);
+
+
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (manager!=null)
+            {
+                manager.notify(1,builder.build());
+
+            }
+        }
     }
     private void updateUserFireBaseToken()
     {
@@ -386,6 +480,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     private void DisplayFragmentOffer()
     {
+
         if (fragment_order_finish_congratulation!=null&&fragment_order_finish_congratulation.isAdded())
         {
             fragmentManager.popBackStack("fragment_order_finish_congratulation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -610,6 +705,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     public void DisplayFragmentSearch()
     {
+
         if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
         {
             fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -654,7 +750,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     ////////////////////////////////////
     private void DisplayFragmentMyCart()
     {
-
 
         if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
         {
@@ -920,6 +1015,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             fragmentManager.popBackStack("fragment_payment_confirmation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+        if (fragment_search!=null&&fragment_search.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (fragment_subCategory!=null&&fragment_subCategory.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_subCategory",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
 
 
 
@@ -934,6 +1037,13 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     ///////////////////////////////////////////////////
     public void DisplayFragmentSubCategory(MainCategory.MainCategoryItems mainCategoryItems)
     {
+
+        this.mainCategoryItems = mainCategoryItems;
+
+        if (fragment_search!=null&&fragment_search.isAdded())
+        {
+            fragmentManager.popBackStack("fragment_search",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
         fragment_subCategory = Fragment_SubCategory.newInstance(mainCategoryItems);
 
 
@@ -952,7 +1062,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 }
 
     }
-
     public void updateUIToolBarFragmentCart(int pos)
     {
         switch (pos)
@@ -1007,7 +1116,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             }
 
     }
-
     private void StartLocationUpdate()
     {
         if (!EventBus.getDefault().isRegistered(this))
@@ -1165,7 +1273,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         intent.putExtra("similar_products", (Serializable) similarProducts);
         startActivityForResult(intent,1122);
 
-        DisplayFragmentHome();
+        //DisplayFragmentHome();
     }
     private void NavigateToSignInActivity()
     {
@@ -1218,7 +1326,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }
     }
     ////////////////////////////////////
-
+    public void setLast_selected_fragment(String fragment)
+    {
+        this.last_selected_fragment = fragment;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -1313,9 +1424,25 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
 
         }
+        else if (fragment_subCategory!=null&&fragment_subCategory.isVisible()) {
+            fragmentManager.popBackStack("fragment_subCategory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            DisplayFragmentHome();
+
+        }else if ((fragment_offers!=null&&fragment_offers.isVisible())||(fragment_myCart!=null&&fragment_myCart.isVisible())||(fragment_client_orders!=null&&fragment_client_orders.isVisible())||(fragment_client_profile!=null&&fragment_client_profile.isVisible()))
+        {
+            DisplayFragmentHome();
+
+        }
         else
             {
-                DisplayFragmentHome();
+                if (last_selected_fragment.equals("fragment_home"))
+                {
+                    DisplayFragmentHome();
+
+                }else if (last_selected_fragment.equals("fragment_sub_category"))
+                {
+                    DisplayFragmentSubCategory(mainCategoryItems);
+                }
             }
     }
     public void SignOut()
@@ -1526,8 +1653,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         FrameLayout fl_delete = view.findViewById(R.id.fl_delete);
         FrameLayout fl_cancel = view.findViewById(R.id.fl_cancel);
 
-        TextView tv_msg = view.findViewById(R.id.tv_msg);
-        tv_msg.setText(getString(R.string.the_cart_contains)+" "+orderItemsSingleTone.getItemsCount()+" "+getString(R.string.item)+" "+getString(R.string.delete_items));
+        TextView tv_not_dialog = view.findViewById(R.id.tv_not_dialog);
+        TextView tv_content = view.findViewById(R.id.tv_content);
+        tv_not_dialog.setText(String.valueOf(orderItemsSingleTone.getItemsCount()));
+        tv_content.setText(getString(R.string.the_cart_contains)+" "+orderItemsSingleTone.getItemsCount()+" "+getString(R.string.item)+" "+getString(R.string.delete_items));
 
         fl_delete.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -338,9 +338,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public void SendOrderAgain(OrdersModel.Order order)
     {
+        /*ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
         Intent intent = getIntent();
         setResult(RESULT_OK,intent);
-        finish();
+        finish();*/
     }
 
     public void NavigateToChatActivity()

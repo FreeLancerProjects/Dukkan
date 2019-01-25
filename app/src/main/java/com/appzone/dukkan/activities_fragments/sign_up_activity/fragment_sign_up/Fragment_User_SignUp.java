@@ -186,6 +186,7 @@ public class Fragment_User_SignUp extends Fragment{
                                 preferences.create_update_userData(getActivity(),userModel);
 
                                 Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                intent.putExtra("signup",1);
                                 startActivity(intent);
                                 getActivity().finish();
 
