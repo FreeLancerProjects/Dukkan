@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,10 @@ public class Fragment_Food_Department extends Fragment {
         recView = view.findViewById(R.id.recView);
         manager = new GridLayoutManager(getActivity(),3);
         recView.setLayoutManager(manager);
+        recView.setHasFixedSize(true);
+        recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        recView.setItemViewCacheSize(25);
+        recView.setDrawingCacheEnabled(true);
         adapter = new MainCategoryAdapter(getActivity(),mainCategoryItemsList,this);
         recView.setAdapter(adapter);
         getMainCategoryData();
@@ -92,8 +97,7 @@ public class Fragment_Food_Department extends Fragment {
                         try {
                             progBar.setVisibility(View.GONE);
                             activity.CreateSnackBar(getString(R.string.something));
-
-                            // CreateSnackBar(getString( R.string.something));
+                            Log.e("Error",t.getMessage());
                         }catch (Exception e){}
                     }
                 });
