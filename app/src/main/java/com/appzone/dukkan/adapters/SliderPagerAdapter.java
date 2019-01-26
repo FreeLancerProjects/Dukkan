@@ -36,7 +36,7 @@ public class SliderPagerAdapter extends PagerAdapter {
         View view = LayoutInflater.from(context).inflate(R.layout.slider_row,container,false);
         PhotoView image = view.findViewById(R.id.image);
         String endPoint = img_end_pointList.get(position);
-        Picasso.with(context).load(Tags.IMAGE_URL+endPoint).fit().into(image);
+        Picasso.with(context).load(Tags.IMAGE_URL+endPoint).priority(Picasso.Priority.HIGH).fit().into(image);
         container.addView(view);
         return view;
     }

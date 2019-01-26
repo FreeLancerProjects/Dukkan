@@ -35,7 +35,7 @@ public interface Services {
     Call<MainCategory> getMainCategory();
 
     @GET("api/sub-category/{sub_category_id}")
-    Call<ProductPaginationModel> getProductPagination(@Path("sub_category_id") String sub_category_id, @Query("page") int page_index);
+    Call<ProductPaginationModel> getProductPagination(@Path("sub_category_id") int sub_category_id, @Query("page") int page_index);
 
     @GET("api/get-tax")
     Call<TaxModel> getTax();
@@ -44,9 +44,11 @@ public interface Services {
     Call<ProductPaginationModel> getOfferedProductPagination(@Query("page") int page_index);
 
     @GET("api/similar")
-    Call<SimilarProductModel> getSimilarProducts(@Query("product_id") String product_id,
-                                                 @Query("main_category_id") String main_category_id,
-                                                 @Query("sub_category_id") String sub_category_id
+    Call<SimilarProductModel> getSimilarProducts(
+            @Query("page") int page_index,
+            @Query("product_id") int product_id,
+            @Query("main_category_id") int main_category_id,
+            @Query("sub_category_id") int sub_category_id
     );
 
     @GET("api/get-terms-and-conditions")
@@ -132,7 +134,7 @@ public interface Services {
     @FormUrlEncoded
     @POST("/api/edit-profile")
     Call<UserModel> updateAlterPhone(@Field("token") String user_token,
-                                @Field("alternative_phone") String phone);
+                                     @Field("alternative_phone") String phone);
 
     @FormUrlEncoded
     @POST("/api/edit-profile")
@@ -144,13 +146,13 @@ public interface Services {
     @GET("/api/orders")
     Call<OrdersModel> getOrders(@Query("token") String token,
                                 @Query("type") String type
-                                );
+    );
 
     @FormUrlEncoded
     @POST("/api/accept-refuse-orders/{order_id}")
     Call<ResponseBody> Accept_Refuse_order(@Path("order_id") int order_id,
                                            @Field("token") String user_token,
                                            @Field("type") String type
-                                           );
+    );
 
 }

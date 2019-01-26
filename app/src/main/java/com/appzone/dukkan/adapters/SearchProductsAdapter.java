@@ -56,7 +56,7 @@ public class SearchProductsAdapter extends RecyclerView.Adapter{
                     lastVisibleItem = layoutManager.findLastVisibleItemPosition();
                     totalItemCount = layoutManager.getChildCount();
 
-                    if (totalItemCount <= (lastVisibleItem+threshold) && canLoadMore)
+                    if ((totalItemCount-lastVisibleItem)<=20 && canLoadMore)
                     {
                         if (loadMoreListener!=null)
                         {
@@ -154,7 +154,7 @@ public class SearchProductsAdapter extends RecyclerView.Adapter{
 
             if (products.getImage().size()>0)
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).priority(Picasso.Priority.HIGH).fit().into(image);
 
             }
 

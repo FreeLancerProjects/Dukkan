@@ -56,7 +56,6 @@ public class Fragment_Review_Purchases extends Fragment {
     private double total_order_cost_after_tax=0.0;
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -149,7 +148,7 @@ public class Fragment_Review_Purchases extends Fragment {
     }
 
     private void updateProductCost(double total) {
-        tv_product_cost.setText(String.valueOf(total));
+        tv_product_cost.setText(String.valueOf(total)+" "+getString(R.string.rsa));
 
     }
 
@@ -189,7 +188,7 @@ public class Fragment_Review_Purchases extends Fragment {
 
         total_order_cost_after_tax = getTotalOrderPrice(orderItemList) + price_after_tax;
 
-        tv_total.setText(String.valueOf(total_order_cost_after_tax));
+        tv_total.setText(String.valueOf(total_order_cost_after_tax)+" "+getString(R.string.rsa));
 
     }
     private void getTax()

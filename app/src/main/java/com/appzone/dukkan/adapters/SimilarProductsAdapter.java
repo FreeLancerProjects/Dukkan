@@ -41,7 +41,7 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.similar_producr_row,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.similar_product_row,parent,false);
         return new MyHolder(view);
 
 
@@ -96,8 +96,7 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
 
             if (products.getImage().size()>0)
             {
-                Log.e("url",products.getImage().get(0)+"_");
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).fit().into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+products.getImage().get(0))).priority(Picasso.Priority.HIGH).fit().into(image);
 
             }
 

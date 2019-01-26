@@ -47,7 +47,7 @@ public class Fragment_SubCategory extends Fragment{
     private HomeActivity activity;
     private List<MainCategory.Products> productsList;
     private ProductsAdapter productsAdapter;
-    private String sub_category_id;
+    private int sub_category_id;
     private int current_page_index = 1;
 
 
@@ -252,7 +252,7 @@ public class Fragment_SubCategory extends Fragment{
 
     }
 
-    private List<MainCategory.Products> getSimilarProducts(List<MainCategory.Products> productList,String selectedProductId)
+    private List<MainCategory.Products> getSimilarProducts(List<MainCategory.Products> productList,int selectedProductId)
     {
         List<MainCategory.Products> products = new ArrayList<>();
 
@@ -260,9 +260,9 @@ public class Fragment_SubCategory extends Fragment{
         {
             if (product!=null)
             {
-                if (product.getId()!=null&&selectedProductId!=null)
+                if (product.getId()!=0&&selectedProductId!=0)
                 {
-                    if (!product.getId().equals(selectedProductId))
+                    if (product.getId()!=selectedProductId)
                     {
                         products.add(product);
                     }

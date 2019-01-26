@@ -80,7 +80,7 @@ public class MainCategoryAdapter extends RecyclerView.Adapter<MainCategoryAdapte
 
                 }
 
-            Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+mainCategoryItems.getImage())).fit().into(image);
+            Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+mainCategoryItems.getImage())).priority(Picasso.Priority.HIGH).fit().into(image);
         }
     }
 }

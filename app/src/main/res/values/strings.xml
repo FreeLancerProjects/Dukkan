@@ -232,4 +232,9 @@
     <string name="no_alternative_phone">No alternative phone</string>
     <string name="alter">Alter</string>
     <string name="welcome_to_Dukkan">Welcome to Dukkan thanks for join us</string>
+    <string name="if_product_is_not_available">If product is not available ?</string>
+    <string name="amount">Amount</string>
+    <string name="add_alternative_product">Add alternative product</string>
+    <string name="no_alternative_products">No alternative products</string>
+    <string name="not_need_to_add_alternative">Not need to add alternative</string>
 </resources>

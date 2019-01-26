@@ -1,5 +1,6 @@
 package com.appzone.dukkan.singletone;
 
+import com.appzone.dukkan.models.AlternativeProductItem;
 import com.appzone.dukkan.models.OrderItem;
 
 import java.util.ArrayList;
@@ -44,6 +45,10 @@ public class OrderItemsSingleTone {
     public void UpdateProduct(OrderItem orderItem)
     {
         int pos = getItemPosition(orderItem);
+
+        AlternativeProductItem alternativeProductItem = orderItem.getAlternativeProductItem();
+        alternativeProductItem.setProduct_quantity(orderItem.getProduct_quantity());
+        orderItem.setAlternativeProductItem(alternativeProductItem);
         orderItemList.set(pos,orderItem);
     }
 
@@ -66,7 +71,7 @@ public class OrderItemsSingleTone {
 
             OrderItem item = orderItemList.get(i);
 
-            if (item.getProduct_id().equals(orderItem.getProduct_id()) && orderItem.getProduct_price_id().equals(item.getProduct_price_id()))
+            if (item.getProduct_id()==orderItem.getProduct_id() && orderItem.getProduct_price_id()==item.getProduct_price_id())
             {
 
                 pos = i;

@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,30 +46,38 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyHolder holder,  int position) {
 
-        final OrderItem orderItem = orderItemList.get(position);
+        OrderItem orderItem = orderItemList.get(position);
         holder.BindData(orderItem);
         holder.image_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OrderItem orderItem = orderItemList.get(holder.getAdapterPosition());
+
                 fragment_review_purchases.RemoveItem(orderItem);
             }
         });
         holder.image_increment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OrderItem orderItem = orderItemList.get(holder.getAdapterPosition());
+
                 holder.image_increment.clearAnimation();
                 holder.image_decrement.clearAnimation();
                 holder.image_increment.startAnimation(animation);
                 int counter = Integer.parseInt(holder.tv_counter.getText().toString().trim())+1;
                 holder.tv_counter.setText(String.valueOf(counter));
+                double total = counter*orderItem.getProduct_price();
+                holder.tv_price.setText(total+" "+context.getString(R.string.rsa));
                 fragment_review_purchases.Increment_Decrement(orderItem,counter);
             }
         });
         holder.image_decrement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OrderItem orderItem = orderItemList.get(holder.getAdapterPosition());
+
                 holder.image_decrement.clearAnimation();
                 holder.image_increment.clearAnimation();
                 holder.image_decrement.startAnimation(animation);
@@ -80,6 +87,9 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
                 {
                     counter = 1;
                 }
+                double total = counter*orderItem.getProduct_price();
+                holder.tv_price.setText(total+" "+context.getString(R.string.rsa));
+
                 holder.tv_counter.setText(String.valueOf(counter));
                 fragment_review_purchases.Increment_Decrement(orderItem,counter);
             }
@@ -124,7 +134,7 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
             tv_price.setText(String.valueOf(orderItem.getProduct_total_price())+" " + context.getString(R.string.rsa));
             if (!TextUtils.isEmpty(orderItem.getProduct_image()))
             {
-                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+orderItem.getProduct_image())).fit().into(image);
+                Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+orderItem.getProduct_image())).priority(Picasso.Priority.HIGH).fit().into(image);
             }
         }
     }

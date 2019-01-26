@@ -3,18 +3,18 @@ package com.appzone.dukkan.models;
 import java.io.Serializable;
 
 public class ProductSize_OfferModel implements Serializable {
-    private String id;
+    private int id;
     private boolean isOffer;
     private String discount;
     private String price_before_discount;
     private String price_after_discount;
-    private String feature_id;
+    private int feature_id;
     private String ar_name;
     private String en_name;
 
 
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -34,15 +34,15 @@ public class ProductSize_OfferModel implements Serializable {
         return price_after_discount;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getFeature_id() {
+    public int getFeature_id() {
         return feature_id;
     }
 
-    public void setFeature_id(String feature_id) {
+    public void setFeature_id(int feature_id) {
         this.feature_id = feature_id;
     }
 

@@ -402,7 +402,7 @@ public class Fragment_Search extends Fragment {
         if (products!=null)
         {
 
-            preferences.saveVisitedProductIds(getActivity(),products.getId());
+            preferences.saveVisitedProductIds(getActivity(),String.valueOf(products.getId()));
 
             activity.NavigateToProductDetailsActivity(products,activity.getSimilarProducts(products.getMain_category_id(),products.getSub_category_id(),products.getId()));
 

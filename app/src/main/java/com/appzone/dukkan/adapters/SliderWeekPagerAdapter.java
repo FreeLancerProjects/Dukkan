@@ -37,7 +37,7 @@ public class SliderWeekPagerAdapter extends PagerAdapter {
         View view = LayoutInflater.from(context).inflate(R.layout.slider_row,container,false);
         ImageView image = view.findViewById(R.id.image);
         WeekOfferModel.Offer offer = offerList.get(position);
-        Picasso.with(context).load(Tags.IMAGE_URL+offer.getImage()).fit().into(image);
+        Picasso.with(context).load(Tags.IMAGE_URL+offer.getImage()).priority(Picasso.Priority.HIGH).fit().into(image);
         container.addView(view);
         return view;
     }

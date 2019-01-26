@@ -1139,29 +1139,35 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         this.mainCategory = mainCategory;
 
     }
-    public List<MainCategory.Products> getSimilarProducts(String main_category_id,String sub_category_id,String product_id)
+    public List<MainCategory.Products> getSimilarProducts(int main_category_id,int sub_category_id,int product_id)
     {
         final List<MainCategory.Products> productsList = new ArrayList<>();
 
         if (mainCategory!=null&&mainCategory.getData().size()>0)
         {
-            for (MainCategory.MainCategoryItems mainCategoryItems : mainCategory.getData())
+            for (int i=0;i<10;i++)
             {
+                MainCategory.MainCategoryItems mainCategoryItems = mainCategory.getData().get(i);
                 if (mainCategoryItems!=null)
                 {
-                    if (mainCategoryItems.getId().equals(main_category_id))
+                    if (mainCategoryItems.getId()==main_category_id)
                     {
                         for (MainCategory.SubCategory subCategory : mainCategoryItems.getSub_categories())
                         {
-                            if (sub_category_id!=null)
+                            if (sub_category_id!=0)
                             {
-                                if (subCategory.getId().equals(sub_category_id))
+                                if (subCategory.getId()==sub_category_id)
                                 {
                                     for (MainCategory.Products products : subCategory.getProducts())
                                     {
+
                                         if (products!=null)
                                         {
-                                            productsList.add(products);
+                                            if (products.getId()!=product_id)
+                                            {
+                                                productsList.add(products);
+
+                                            }
 
                                         }
                                     }
@@ -1177,13 +1183,13 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }else
         {
             Api.getService()
-                    .getSimilarProducts(product_id,main_category_id,sub_category_id)
+                    .getSimilarProducts(1,product_id,main_category_id,sub_category_id)
                     .enqueue(new Callback<SimilarProductModel>() {
                         @Override
                         public void onResponse(Call<SimilarProductModel> call, Response<SimilarProductModel> response) {
                             if (response.isSuccessful())
                             {
-                                productsList.addAll(response.body().getProducts());
+                                productsList.addAll(response.body().getData());
                             }
                         }
 

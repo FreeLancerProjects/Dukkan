@@ -13,13 +13,13 @@ public class MainCategory implements Serializable {
 
     public class MainCategoryItems implements Serializable
     {
-        private String id;
+        private int id;
         private String name_ar;
         private String name_en;
         private String image;
         private List<SubCategory> sub_categories;
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
@@ -42,14 +42,14 @@ public class MainCategory implements Serializable {
 
     public class SubCategory implements Serializable
     {
-        private String id;
+        private int id;
         private String name_ar;
         private String name_en;
         private String main_category_id;
         private List<Products> products;
 
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
@@ -72,16 +72,16 @@ public class MainCategory implements Serializable {
 
     public class Products implements Serializable
     {
-        private String id;
+        private int id;
         private String name_ar;
         private String name_en;
-        private String main_category_id;
-        private String sub_category_id;
+        private int main_category_id;
+        private int sub_category_id;
         private List<String> image;
         private List<Prices_Sizes>  size_prices;
         private List<Features> features;
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
@@ -105,23 +105,23 @@ public class MainCategory implements Serializable {
             return features;
         }
 
-        public String getMain_category_id() {
+        public int getMain_category_id() {
             return main_category_id;
         }
 
-        public String getSub_category_id() {
+        public int getSub_category_id() {
             return sub_category_id;
         }
     }
 
     public class Prices_Sizes implements Serializable
     {
-        private String id;
+        private int id;
         private String net_price;
         private String size_ar;
         private String size_en;
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
@@ -159,10 +159,10 @@ public class MainCategory implements Serializable {
 
     public class OldPrice implements Serializable
     {
-        private String id;
+        private int id;
         private String net_price;
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
