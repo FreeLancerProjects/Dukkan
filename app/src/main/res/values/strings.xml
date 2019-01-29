@@ -237,4 +237,13 @@
     <string name="add_alternative_product">Add alternative product</string>
     <string name="no_alternative_products">No alternative products</string>
     <string name="not_need_to_add_alternative">Not need to add alternative</string>
+    <string name="coupon_not_active">Coupon in not active</string>
+    <string name="use_coupon">Use coupon</string>
+    <string name="use_points">Use points</string>
+    <string name="type_the_word">Type the word</string>
+    <string name="to_get_the_discount">to get the discount</string>
+    <string name="or">or</string>
+    <string name="words_not_match">Words not match</string>
+    <string name="points">Points</string>
+    <string name="cost">Cost</string>
 </resources>

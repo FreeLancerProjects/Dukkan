@@ -29,6 +29,9 @@ public class OrdersModel implements Serializable{
         private int payment_method;
         private int status;
         private String created_at;
+        private int discount_by_use;
+        private double total_discount;
+        private double discount_point;
         private long milli_time;
         private long accepted_time;
         private Client client;
@@ -81,6 +84,18 @@ public class OrdersModel implements Serializable{
 
         public int getStatus() {
             return status;
+        }
+
+        public int getDiscount_by_use() {
+            return discount_by_use;
+        }
+
+        public double getTotal_discount() {
+            return total_discount;
+        }
+
+        public double getDiscount_point() {
+            return discount_point;
         }
 
         public String getCreated_at() {
@@ -161,7 +176,7 @@ public class OrdersModel implements Serializable{
         }
     }
 
-    private class Products implements Serializable
+    public class Products implements Serializable
     {
 
         private int feature_id;
@@ -170,6 +185,8 @@ public class OrdersModel implements Serializable{
         private Product_Price product_price;
         private Product product;
         private Feature feature;
+        private Products alternative;
+
 
         public int getFeature_id() {
             return feature_id;
@@ -193,6 +210,10 @@ public class OrdersModel implements Serializable{
 
         public Feature getFeature() {
             return feature;
+        }
+
+        public Products getAlternative() {
+            return alternative;
         }
     }
 

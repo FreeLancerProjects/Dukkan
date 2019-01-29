@@ -239,5 +239,14 @@
     <string name="add_alternative_product">أضف المنتج البديل</string>
     <string name="no_alternative_products">لا توجد منتجات بديلة</string>
     <string name="not_need_to_add_alternative">لا اريد إضافة منتج بديل</string>
+    <string name="coupon_not_active">الكوبون غير مفعل</string>
+    <string name="use_coupon">إستخدام الكوبون</string>
+    <string name="use_points">إستخدام النقط</string>
+    <string name="type_the_word">اكتب كلمة </string>
+    <string name="to_get_the_discount">للحصول على الخصم</string>
+    <string name="or">أو</string>
+    <string name="words_not_match">الكلمتين غير متطابقتين</string>
+    <string name="points">النقاط</string>
+    <string name="cost">التكلفة</string>
 
 </resources>

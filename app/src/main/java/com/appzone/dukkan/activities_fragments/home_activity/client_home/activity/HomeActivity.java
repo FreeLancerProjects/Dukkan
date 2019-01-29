@@ -55,6 +55,7 @@ import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.OrderToUploadModel;
@@ -80,6 +81,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +136,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private String order_address="";
     private OrderToUploadModel orderToUploadModel = null;
     public String payment_method="",delivery_cost="0.0";
-    public String coupon_value ="";
+    public CouponModel couponModel;
     public double total_order_cost = 0.0;
     private String last_selected_fragment="";
     private MainCategory.MainCategoryItems mainCategoryItems;
@@ -841,7 +843,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }
 
     }
-    public void DisplayFragmentDelivery_Address()
+    public void DisplayFragmentDelivery_Address(double total_order_cost)
     {
         if (userModel==null)
         {
@@ -854,9 +856,16 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     fragmentManager.popBackStack("fragment_payment_confirmation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                 }
+                if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
+                {
+                    fragmentManager.beginTransaction().hide(fragment_review_purchases).commit();
+                }
+
+
                 if (fragment_delivery_address==null)
                 {
-                    fragment_delivery_address = Fragment_Delivery_Address.newInstance();
+                    fragment_delivery_address = Fragment_Delivery_Address.newInstance(total_order_cost);
+
                 }
 
                 if (fragment_delivery_address.isAdded())
@@ -864,6 +873,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     if (!fragment_delivery_address.isVisible())
                     {
                         fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+                        fragment_delivery_address.setTotal_order(total_order_cost);
                     }
                 }else
                 {
@@ -871,14 +881,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 }
 
 
-                if (fragment_review_purchases!=null&&fragment_review_purchases.isAdded())
-                {
-                    fragmentManager.beginTransaction().hide(fragment_review_purchases).commit();
-                }
-                if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
-                {
-                    fragmentManager.beginTransaction().hide(fragment_payment_confirmation).commit();
-                }
+
+
+
+
                 updateUIToolBarFragmentCart(2);
             }
 
@@ -887,10 +893,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
 
     }
-    public void DisplayFragmentPayment_Confirmation(String payment_method, String coupon_value)
+    public void DisplayFragmentPayment_Confirmation(String payment_method,CouponModel couponModel)
     {
         this.payment_method = payment_method;
-        this.coupon_value = coupon_value;
+        this.couponModel = couponModel;
 
         fragment_payment_confirmation = Fragment_Payment_Confirmation.newInstance();
 
@@ -1570,7 +1576,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         orderToUploadModel.setOrderItemList(orderItemList);
     }
-    public void Save_Order_Data(String name, String phone, String street_name, String feedback, String coupon_code,String coupon_value,String payment_method)
+    public void Save_Order_Data(String name, String phone, String street_name, String feedback, CouponModel couponModel, String payment_method)
     {
         if (orderToUploadModel==null)
         {
@@ -1586,16 +1592,19 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setDelivery_cost(Double.parseDouble(delivery_cost));
         orderToUploadModel.setOrder_total_price(this.total_order_cost+Double.parseDouble(delivery_cost));
 
-        orderToUploadModel.setCoupon_value(coupon_value);
-        orderToUploadModel.setCoupon_code(coupon_code);
+        orderToUploadModel.setCoupon_value(couponModel.getCoupon_value());
+        orderToUploadModel.setCoupon_code(couponModel.getCoupon_codes().getAr());
         orderToUploadModel.setPayment_method(payment_method);
         orderToUploadModel.setClient_address(order_address);
         orderToUploadModel.setLat(order_lat);
         orderToUploadModel.setLng(order_lng);
 
     }
-    public void UploadOrder()
+    public void UploadOrder(int discount_by_use, double discount_point, double discount_points_cost)
     {
+        orderToUploadModel.setDiscount_by_use(discount_by_use);
+        orderToUploadModel.setDiscount_point(discount_point);
+        orderToUploadModel.setTotal_discount(discount_points_cost);
 
         final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         dialog.setCancelable(false);
@@ -1621,6 +1630,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
+                                try {
+                                    Log.e("error",response.raw().message());
+
+                                    Log.e("error",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
                                 dialog.dismiss();
                                 if (response.code()==404)
                                 {

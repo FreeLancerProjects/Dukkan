@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,6 +20,9 @@ import android.widget.TextView;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
+import com.appzone.dukkan.models.CouponModel;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
 import java.util.Locale;
@@ -27,14 +32,23 @@ import io.paperdb.Paper;
 public class Fragment_Payment_Confirmation extends Fragment {
 
     private ImageView image_arrow_back,image_arrow_continue;
-    private TextView tv_total,tv_product_cost,tv_delivery_cost,tv_coupon_cost;
+    private TextView tv_total,tv_product_cost,tv_delivery_cost,tv_coupon_cost,tv_point,tv_point_cost,tv_coupon_value;
     private CardView card_visa,card_cash;
     private EditText edt_card_number,edt_expire,edt_password;
-    private LinearLayout ll_coupon;
+    private LinearLayout ll_coupon,ll_point;
     private FrameLayout fl_continue,fl_back;
+    private CardView card_coupon,card_point;
+    private Button btn_coupon,btn_point;
     private HomeActivity activity;
     private double total_order_cost=0.0,coupon_value=0.0,delivery_cost=0.0;
     private String payment_method="";
+    private CouponModel couponModel = null;
+    private int discount_by_use=0;
+    private double discount_point=0.0;
+    private double discount_coupon_points_cost =0.0;
+
+    private UserSingleTone userSingleTone;
+    private UserModel userModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,14 +65,17 @@ public class Fragment_Payment_Confirmation extends Fragment {
     {
 
         activity = (HomeActivity) getActivity();
+        userSingleTone = UserSingleTone.getInstance();
+        userModel = userSingleTone.getUserModel();
         this.total_order_cost = activity.total_order_cost;
         this.payment_method = activity.payment_method;
+        this.couponModel = activity.couponModel;
+        if (couponModel!=null)
+        {
+            coupon_value = couponModel.getCoupon_value();
+        }
         try {
-            if (!TextUtils.isEmpty(activity.coupon_value))
-            {
-                this.coupon_value = Double.parseDouble(activity.coupon_value);
 
-            }
             if (!TextUtils.isEmpty(activity.delivery_cost))
             {
                 this.delivery_cost = Double.parseDouble(activity.delivery_cost);
@@ -81,16 +98,29 @@ public class Fragment_Payment_Confirmation extends Fragment {
             image_arrow_back.setImageResource(R.drawable.arrow_left);
             image_arrow_continue.setImageResource(R.drawable.arrow_right);
         }
+
         card_visa = view.findViewById(R.id.card_visa);
         card_cash = view.findViewById(R.id.card_cash);
         edt_card_number = view.findViewById(R.id.edt_card_number);
         edt_expire = view.findViewById(R.id.edt_expire);
         edt_password = view.findViewById(R.id.edt_password);
+
+        card_coupon = view.findViewById(R.id.card_coupon);
+        card_point = view.findViewById(R.id.card_point);
+        btn_coupon = view.findViewById(R.id.btn_coupon);
+        btn_point = view.findViewById(R.id.btn_point);
+
+        tv_point = view.findViewById(R.id.tv_point);
+        tv_point_cost = view.findViewById(R.id.tv_point_cost);
+        tv_coupon_value = view.findViewById(R.id.tv_coupon_value);
+
         tv_delivery_cost = view.findViewById(R.id.tv_delivery_cost);
         tv_product_cost = view.findViewById(R.id.tv_product_cost);
         tv_total = view.findViewById(R.id.tv_total);
         tv_coupon_cost = view.findViewById(R.id.tv_coupon_cost);
         ll_coupon = view.findViewById(R.id.ll_coupon);
+        ll_point = view.findViewById(R.id.ll_point);
+
         fl_continue = view.findViewById(R.id.fl_continue);
         fl_back = view.findViewById(R.id.fl_back);
 
@@ -98,23 +128,37 @@ public class Fragment_Payment_Confirmation extends Fragment {
         fl_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.UploadOrder();
+                activity.UploadOrder(discount_by_use,discount_point, discount_coupon_points_cost);
             }
         });
 
         fl_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.DisplayFragmentDelivery_Address();
+                activity.DisplayFragmentDelivery_Address(activity.total_order_cost);
             }
         });
 
+        btn_coupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdateCouponUI(coupon_value);
+            }
+        });
+
+        btn_point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UpdatePointUI();
+            }
+        });
         updateUI();
 
 
     }
 
     private void updateUI() {
+
 
         if (payment_method.equals(Tags.payment_cash))
         {
@@ -126,23 +170,99 @@ public class Fragment_Payment_Confirmation extends Fragment {
             card_cash.setVisibility(View.GONE);
         }
 
-        if (coupon_value!=0.0)
+        if (coupon_value>0.0 && userModel.getUser().getPoints()>0)
         {
-            ll_coupon.setVisibility(View.VISIBLE);
-            tv_coupon_cost.setText(String.valueOf(coupon_value)+" "+getString(R.string.rsa));
+            card_coupon.setVisibility(View.VISIBLE);
+            card_point.setVisibility(View.VISIBLE);
+            UpdateCouponUI(coupon_value);
+        }else if (coupon_value>0.0)
+        {
 
+            card_coupon.setVisibility(View.VISIBLE);
+            card_point.setVisibility(View.GONE);
+            UpdateCouponUI(coupon_value);
+        }else if (userModel.getUser().getPoints()>0)
+        {
+            card_coupon.setVisibility(View.GONE);
+            card_point.setVisibility(View.VISIBLE);
+            UpdatePointUI();
+        }
+
+
+
+
+    }
+
+    private void UpdateCouponUI(double coupon_value)
+    {
+        discount_by_use = Tags.discount_by_use_coupon;
+
+        ll_coupon.setVisibility(View.VISIBLE);
+        ll_point.setVisibility(View.GONE);
+        tv_coupon_value.setText(String.valueOf(coupon_value)+" %");
+        double order_cost_after_discount_coupon = (coupon_value/100)*total_order_cost;
+        discount_coupon_points_cost = order_cost_after_discount_coupon;
+
+        tv_coupon_cost.setText(Math.round(order_cost_after_discount_coupon)+" "+getString(R.string.rsa));
+        card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
+        card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
+
+
+        tv_delivery_cost.setText(Math.round(delivery_cost)+" "+getString(R.string.rsa));
+
+        tv_product_cost.setText(Math.round(total_order_cost)+" "+getString(R.string.rsa));
+        double order_cost_after_discount = total_order_cost-order_cost_after_discount_coupon;
+        double total_order_price = order_cost_after_discount+delivery_cost;
+
+        tv_total.setText(String.valueOf(Math.round(total_order_price))+" "+getString(R.string.rsa));
+
+    }
+    private void UpdatePointUI()
+    {
+        discount_by_use = Tags.discount_by_use_points;
+
+        ll_point.setVisibility(View.VISIBLE);
+        ll_coupon.setVisibility(View.GONE);
+        double point_cost = userModel.getUser().getPoints()*couponModel.getClient_point_cost();
+        tv_point_cost.setText(String.valueOf(point_cost)+" "+getString(R.string.rsa));
+
+        card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
+        card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
+
+        double delivery_order_cost = delivery_cost+total_order_cost;
+        if (point_cost>=delivery_order_cost)
+        {
+            discount_point = Math.round(delivery_order_cost/couponModel.getClient_point_cost());
+            double point_remain = userModel.getUser().getPoints()-discount_point;
+            tv_point.setText(String.valueOf(point_remain));
+            double remain_point_cost = point_remain * couponModel.getClient_point_cost();
+
+            discount_coupon_points_cost = discount_point * couponModel.getClient_point_cost();
+
+            tv_point_cost.setText(String.valueOf(Math.round(remain_point_cost)+" "+getString(R.string.rsa)));
+
+            tv_product_cost.setText(Math.round(total_order_cost)+" "+getString(R.string.rsa));
+            tv_delivery_cost.setText(String.valueOf(Math.round(delivery_cost))+" "+getString(R.string.rsa));
+            tv_total.setText("0 "+getString(R.string.rsa));
 
         }else
             {
-                ll_coupon.setVisibility(View.GONE);
+                discount_point = userModel.getUser().getPoints();
+                discount_coupon_points_cost = point_cost;
+
+                tv_delivery_cost.setText(String.valueOf(Math.round(delivery_cost))+" "+getString(R.string.rsa));
+                tv_product_cost.setText(String.valueOf(Math.round(total_order_cost)+" "+getString(R.string.rsa)));
+
+                double order_cost_after_discount = total_order_cost-point_cost;
+                double total_order_price = order_cost_after_discount+delivery_cost;
+
+                tv_total.setText(Math.round(total_order_price)+" "+getString(R.string.rsa));
+
             }
 
-        tv_delivery_cost.setText(String.valueOf(delivery_cost)+" "+getString(R.string.rsa));
 
-        tv_product_cost.setText(String.valueOf(total_order_cost)+" "+getString(R.string.rsa));
-        double discount = total_order_cost-coupon_value;
-        double total_order_price = discount+delivery_cost;
-        tv_total.setText(String.valueOf(total_order_price)+" "+getString(R.string.rsa));
+
+
 
     }
 

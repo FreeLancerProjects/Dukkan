@@ -32,6 +32,8 @@ public class UserModel implements Serializable{
         private int active;
         private String role;
         private double rate;
+        private int coupon;
+        private int points;
 
 
         public int getId() {
@@ -92,6 +94,14 @@ public class UserModel implements Serializable{
 
         public double getRate() {
             return rate;
+        }
+
+        public int getCoupon() {
+            return coupon;
+        }
+
+        public int getPoints() {
+            return points;
         }
     }
 }

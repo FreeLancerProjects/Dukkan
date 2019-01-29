@@ -18,10 +18,11 @@ import android.widget.Toast;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Client_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Client_Previous_Order_Details;
+import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Collecting_Order_Products;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Current_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_New_Order_Details;
+import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Order_Products_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Map_Order_Details;
-import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Order_Products;
 import com.appzone.dukkan.activities_fragments.chat_activity.ChatActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.OrdersModel;
@@ -49,7 +50,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private Fragment_Delegate_New_Order_Details fragment_delegate_new_order_details;
     private Fragment_Delegate_Current_Order_Details fragment_delegate_Current_order_details;
     private Fragment_Map_Order_Details fragment_map_order_details;
-    private Fragment_Order_Products fragment_order_products;
+    private Fragment_Delegate_Collecting_Order_Products fragment_DelegateCollecting_order_products;
+    private Fragment_Delegate_Order_Products_Details fragment_delegate_order_products_details;
     private OrdersModel.Order order;
     private String order_type ="",user_type;
     private String current_lang;
@@ -117,7 +119,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_New_Order_Details(order);
                 }else if (order_type.equals(Tags.order_current))
                 {
-                    DisplayFragment_Delegate_Order_Details(order);
+                    DisplayFragment_Delegate_Current_Order_Details(order);
                 }
             }
     }
@@ -139,9 +141,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_map_order_details).commit();
         }
-        if (fragment_order_products!=null && fragment_order_products.isAdded())
+        if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_order_products).commit();
+            fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
         }
 
         if (fragment_delegate_new_order_details==null)
@@ -159,15 +161,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
 
     }
-    public void DisplayFragment_Delegate_Order_Details(OrdersModel.Order order)
+    public void DisplayFragment_Delegate_Current_Order_Details(OrdersModel.Order order)
     {
         if (fragment_map_order_details!=null && fragment_map_order_details.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_map_order_details).commit();
         }
-        if (fragment_order_products!=null && fragment_order_products.isAdded())
+        if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
         {
-            fragmentManager.beginTransaction().hide(fragment_order_products).commit();
+            fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
         }
 
         if (fragment_delegate_Current_order_details ==null)
@@ -186,7 +188,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
 
     }
-    public void DisplayFragment_Order_Products()
+    public void DisplayFragment_Delegate_Show_Order_Products()
     {
         if (fragment_map_order_details!=null && fragment_map_order_details.isAdded())
         {
@@ -201,17 +203,43 @@ public class OrderDetailsActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().hide(fragment_delegate_Current_order_details).commit();
         }
 
-        if (fragment_order_products == null)
+        if (fragment_delegate_order_products_details == null)
         {
-            fragment_order_products = Fragment_Order_Products.newInstance(order);
+            fragment_delegate_order_products_details = Fragment_Delegate_Order_Products_Details.newInstance(order);
         }
 
-        if (!fragment_order_products.isAdded())
+        if (!fragment_delegate_order_products_details.isAdded())
         {
-            fragmentManager.beginTransaction().add(R.id.fragment_order_details_container,fragment_order_products,"fragment_order_products").addToBackStack("fragment_order_products").commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_order_details_container, fragment_delegate_order_products_details,"fragment_delegate_order_products_details").addToBackStack("fragment_delegate_order_products_details").commit();
         }else
         {
-            fragmentManager.beginTransaction().show(fragment_order_products).commit();
+            fragmentManager.beginTransaction().show(fragment_delegate_order_products_details).commit();
+        }
+
+    }
+    public void DisplayFragment_Delegate_Collecting_Order_Products()
+    {
+        if (fragment_map_order_details!=null && fragment_map_order_details.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_map_order_details).commit();
+        }
+
+        if (fragment_delegate_Current_order_details !=null && fragment_delegate_Current_order_details.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_delegate_Current_order_details).commit();
+        }
+
+        if (fragment_DelegateCollecting_order_products == null)
+        {
+            fragment_DelegateCollecting_order_products = Fragment_Delegate_Collecting_Order_Products.newInstance(order);
+        }
+
+        if (!fragment_DelegateCollecting_order_products.isAdded())
+        {
+            fragmentManager.beginTransaction().add(R.id.fragment_order_details_container, fragment_DelegateCollecting_order_products,"fragment_DelegateCollecting_order_products").addToBackStack("fragment_DelegateCollecting_order_products").commit();
+        }else
+        {
+            fragmentManager.beginTransaction().show(fragment_DelegateCollecting_order_products).commit();
         }
 
     }
@@ -437,7 +465,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_New_Order_Details(order);
                 }else if (user_type.equals(Tags.user_delegate)&&order_type.equals(Tags.order_current))
                 {
-                    DisplayFragment_Delegate_Order_Details(order);
+                    DisplayFragment_Delegate_Current_Order_Details(order);
                 }
             }
     }

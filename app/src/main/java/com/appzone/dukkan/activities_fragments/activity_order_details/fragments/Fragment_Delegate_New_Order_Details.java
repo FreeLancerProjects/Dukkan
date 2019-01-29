@@ -100,7 +100,7 @@ public class Fragment_Delegate_New_Order_Details extends Fragment{
         btn_show_products.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.DisplayFragment_Order_Products();
+                activity.DisplayFragment_Delegate_Show_Order_Products();
             }
         });
         btn_accept.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +160,7 @@ public class Fragment_Delegate_New_Order_Details extends Fragment{
             {
                 ll_notes.setVisibility(View.GONE);
             }
+
 
     }
     private String getCurrentTime()

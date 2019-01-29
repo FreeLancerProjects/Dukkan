@@ -1,15 +1,11 @@
 package com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart;
 
 import android.app.AlertDialog;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +17,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,25 +37,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Fragment_Delivery_Address extends Fragment {
-
+    private final static  String TAG = "cost";
     private ImageView image_arrow,image_arrow2,image_arrow_back,image_arrow_continue,image_visa,image_mada,image_cash;
-    private EditText edt_first_name,edt_last_name,edt_phone,edt_street,edt_feedback,edt_coupon;
+    private EditText edt_first_name,edt_last_name,edt_phone,edt_street,edt_feedback;
     private FrameLayout fl_choose_address,fl_continue,fl_back,fl_date;
     private TextView tv_address,tv_time,tv_cash;
     private LinearLayout ll_visa, ll_mada, ll_cash;
-    private Button btn_active;
-    private ProgressBar progBar;
-    private ImageView image_correct,image_in_correct;
     private String payment_method= Tags.payment_cash;
     private HomeActivity activity;
     private int time_type=-1;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
     private String address ="";
-    private CouponModel couponModel = null;
-    private String coupon_code ="-1";
-    private String coupon_value="",delivery_cost="";
+    private CouponModel couponModel= null;
+    private String delivery_cost="";
     private  String current_lang;
+    private double total_order = 0.0;
 
 
 
@@ -72,9 +64,13 @@ public class Fragment_Delivery_Address extends Fragment {
         return view;
     }
 
-    public static Fragment_Delivery_Address newInstance()
+    public static Fragment_Delivery_Address newInstance(double total_order_cost)
     {
-        return new Fragment_Delivery_Address();
+        Bundle bundle = new Bundle();
+        bundle.putDouble(TAG,total_order_cost);
+        Fragment_Delivery_Address fragment_delivery_address = new Fragment_Delivery_Address();
+        fragment_delivery_address.setArguments(bundle);
+        return fragment_delivery_address;
     }
     private void initView(View view) {
 
@@ -86,6 +82,7 @@ public class Fragment_Delivery_Address extends Fragment {
         image_arrow2 = view.findViewById(R.id.image_arrow2);
         image_arrow_back = view.findViewById(R.id.image_arrow_back);
         image_arrow_continue = view.findViewById(R.id.image_arrow_continue);
+
 
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         if (current_lang.equals("ar"))
@@ -119,7 +116,6 @@ public class Fragment_Delivery_Address extends Fragment {
         edt_phone = view.findViewById(R.id.edt_phone);
         edt_street = view.findViewById(R.id.edt_street);
         edt_feedback = view.findViewById(R.id.edt_feedback);
-        edt_coupon = view.findViewById(R.id.edt_coupon);
 
         fl_choose_address = view.findViewById(R.id.fl_choose_address);
         fl_continue = view.findViewById(R.id.fl_continue);
@@ -127,45 +123,7 @@ public class Fragment_Delivery_Address extends Fragment {
         tv_address = view.findViewById(R.id.tv_address);
         tv_time = view.findViewById(R.id.tv_time);
 
-        btn_active = view.findViewById(R.id.btn_active);
-        image_correct = view.findViewById(R.id.image_correct);
-        image_in_correct = view.findViewById(R.id.image_in_correct);
-        progBar = view.findViewById(R.id.progBar);
-        progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getActivity(),R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 
-        edt_coupon.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (edt_coupon.getText().toString().length()>0)
-                {
-                    btn_active.setVisibility(View.VISIBLE);
-                    image_in_correct.setVisibility(View.GONE);
-
-                }else
-                    {
-                        btn_active.setVisibility(View.INVISIBLE);
-                        image_in_correct.setVisibility(View.GONE);
-                    }
-            }
-        });
-
-        btn_active.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String coupon_id = edt_coupon.getText().toString().trim();
-                CheckIsCouponAvailable(coupon_id);
-            }
-        });
 
       /*  ll_visa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -254,55 +212,64 @@ public class Fragment_Delivery_Address extends Fragment {
             }
         });
 
-        updateUI();
-    }
-
-
-    private void updateUI() {
-        if (userModel!=null)
+        Bundle bundle = getArguments();
+        if (bundle!=null)
         {
-            //edt_phone.setText(userModel);
+            total_order = bundle.getDouble(TAG,0.0);
+            updateUI(total_order);
+
+
         }
     }
 
-    private void CheckIsCouponAvailable(String coupon_id)
+
+    private void updateUI(double total_order)
     {
-        image_in_correct.setVisibility(View.GONE);
-        image_correct.setVisibility(View.GONE);
-        progBar.setVisibility(View.VISIBLE);
+
+        if (userModel!=null)
+        {
+            edt_phone.setText(userModel.getUser().getPhone());
+            getCouponData(total_order);
+        }
+
+    }
+    public void setTotal_order(double total_order_cost)
+    {
+        this.total_order = total_order_cost;
+        updateUI(total_order_cost);
+
+    }
+    private void getCouponData(final double total_order)
+    {
+
         Api.getService()
-                .isCouponAvailable(coupon_id)
+                .isCouponAvailable()
                 .enqueue(new Callback<CouponModel>() {
                     @Override
                     public void onResponse(Call<CouponModel> call, Response<CouponModel> response) {
                         if (response.isSuccessful())
                         {
-                            progBar.setVisibility(View.GONE);
 
                             if (response.body()!=null)
                             {
-                                if (response.body().getCode()==200)
+                                couponModel = response.body();
+                                if (userModel.getUser().getCoupon()== 0)
                                 {
-                                    couponModel = response.body();
-
-                                    if (couponModel.getCoupon()!=null)
+                                    if (couponModel!=null)
                                     {
-                                        image_correct.setVisibility(View.VISIBLE);
-                                        CreateCongratulationDialog(couponModel.getCoupon().getValue());
-
+                                        if (total_order >= couponModel.getMinimum_order_cost()&&userModel.getUser().getPoints()>0)
+                                        {
+                                            CreateDialogUseCoupon_Point(couponModel);
+                                        }else if (total_order >= couponModel.getMinimum_order_cost())
+                                        {
+                                            CreateCongratulationDialog(couponModel);
+                                        }
                                     }
-                                }else
-                                    {
-                                        image_correct.setVisibility(View.GONE);
-                                        image_in_correct.setVisibility(View.VISIBLE);
-                                        Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
 
-                                    }
+                                }
 
                             }else
                                 {
-                                    image_correct.setVisibility(View.GONE);
-                                    image_in_correct.setVisibility(View.VISIBLE);
                                     Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
                                 }
 
@@ -312,7 +279,6 @@ public class Fragment_Delivery_Address extends Fragment {
                     @Override
                     public void onFailure(Call<CouponModel> call, Throwable t) {
                         try {
-                            progBar.setVisibility(View.GONE);
                             activity.CreateSnackBar(getString(R.string.something));
                             Log.e("Error",t.getMessage());
                         }catch (Exception e) {}
@@ -320,7 +286,7 @@ public class Fragment_Delivery_Address extends Fragment {
                 });
 
     }
-    private void CreateCongratulationDialog(String discount)
+    private void CreateCongratulationDialog(final CouponModel couponModel)
     {
         Animation cup_animation = AnimationUtils.loadAnimation(getActivity(),R.anim.cup_animation);
         final Animation image_congratulation_animation = AnimationUtils.loadAnimation(getActivity(),R.anim.image_congtaulation);
@@ -332,8 +298,10 @@ public class Fragment_Delivery_Address extends Fragment {
         ImageView image_cup = view.findViewById(R.id.image_cup);
         final ImageView image_congratulation = view.findViewById(R.id.image_congratulation);
         TextView tv_content = view.findViewById(R.id.tv_content);
+        final EditText edt_coupon_code = view.findViewById(R.id.edt_coupon_code);
+
         Button btn_get = view.findViewById(R.id.btn_get);
-        tv_content.setText(getString(R.string.you_have_received_a_discount_of)+" "+discount+" "+getString(R.string.rsa)+" "+getString(R.string.on_the_price_of_the_products));
+        tv_content.setText(getString(R.string.type_the_word)+" "+couponModel.getCoupon_codes().getAr()+" "+getString(R.string.or)+" "+couponModel.getCoupon_codes().getEn()+" "+getString(R.string.to_get_the_discount));
         if (current_lang.equals("ar"))
         {
             image_congratulation.setImageResource(R.drawable.ar_cong);
@@ -345,9 +313,95 @@ public class Fragment_Delivery_Address extends Fragment {
             btn_get.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    String m_coupon_code = edt_coupon_code.getText().toString().trim();
+                    if (!TextUtils.isEmpty(m_coupon_code))
+                    {
+                        if (m_coupon_code.equals(couponModel.getCoupon_codes().getAr())||m_coupon_code.equals(couponModel.getCoupon_codes().getEn()))
+                        {
+                            edt_coupon_code.setError(null);
+                            dialog.dismiss();
+
+
+                        }else
+                            {
+                                edt_coupon_code.setError(getString(R.string.words_not_match));
+
+                            }
+                    }else
+                        {
+                            edt_coupon_code.setError(getString(R.string.field_req));
+                        }
                 }
             });
+
+        image_congratulation.clearAnimation();
+        image_cup.clearAnimation();
+        image_cup.startAnimation(cup_animation);
+        cup_animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                image_congratulation.setVisibility(View.VISIBLE);
+                image_congratulation.startAnimation(image_congratulation_animation);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setView(view);
+        dialog.show();
+    }
+    private void CreateDialogUseCoupon_Point(final CouponModel couponModel)
+    {
+        Animation cup_animation = AnimationUtils.loadAnimation(getActivity(),R.anim.cup_animation);
+        final Animation image_congratulation_animation = AnimationUtils.loadAnimation(getActivity(),R.anim.image_congtaulation);
+
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .create();
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_points_coupon,null);
+        ImageView image_cup = view.findViewById(R.id.image_cup);
+        final ImageView image_congratulation = view.findViewById(R.id.image_congratulation);
+        TextView tv_content = view.findViewById(R.id.tv_content);
+
+        Button btn_coupon = view.findViewById(R.id.btn_coupon);
+        Button btn_point = view.findViewById(R.id.btn_point);
+
+        tv_content.setText(getString(R.string.you_have_received_a_discount_of)+" "+couponModel.getCoupon_value()+" %"+" "+getString(R.string.on_the_price_of_the_products));
+        if (current_lang.equals("ar"))
+        {
+            image_congratulation.setImageResource(R.drawable.ar_cong);
+        }else
+        {
+            image_congratulation.setImageResource(R.drawable.en_cong);
+
+        }
+        btn_coupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                CreateCongratulationDialog(couponModel);
+            }
+        });
+        btn_point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment_Delivery_Address.this.couponModel = null;
+                dialog.dismiss();
+
+            }
+        });
 
         image_congratulation.clearAnimation();
         image_cup.clearAnimation();
@@ -397,7 +451,6 @@ public class Fragment_Delivery_Address extends Fragment {
         String m_phone = edt_phone.getText().toString().trim();
         String m_street_name = edt_street.getText().toString().trim();
         String m_feedback = edt_feedback.getText().toString().trim();
-        String m_coupon = edt_coupon.getText().toString().trim();
 
         if (!TextUtils.isEmpty(m_first_name)&&
                 !TextUtils.isEmpty(m_last_name)&&
@@ -409,48 +462,16 @@ public class Fragment_Delivery_Address extends Fragment {
                 !TextUtils.isEmpty(payment_method)
                 )
         {
-            if (!TextUtils.isEmpty(m_coupon))
-            {
-                if (couponModel!=null)
-                {
-                    Common.CloseKeyBoard(getActivity(),edt_phone);
+            Common.CloseKeyBoard(getActivity(),edt_phone);
 
-                    edt_first_name.setError(null);
-                    edt_last_name.setError(null);
-                    edt_phone.setError(null);
-                    edt_street.setError(null);
+            edt_first_name.setError(null);
+            edt_last_name.setError(null);
+            edt_phone.setError(null);
+            edt_street.setError(null);
 
-                    coupon_code = couponModel.getCoupon().getCode();
-                    coupon_value = couponModel.getCoupon().getValue();
-                    String d_name = m_first_name+" "+m_last_name;
-                    DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, coupon_code,payment_method);
-                }else
-                    {
-                        Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
+            String d_name = m_first_name+" "+m_last_name;
+            DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, couponModel,payment_method);
 
-                    }
-
-
-            }else
-                {
-                    Common.CloseKeyBoard(getActivity(),edt_phone);
-
-                    edt_first_name.setError(null);
-                    edt_last_name.setError(null);
-                    edt_phone.setError(null);
-                    edt_street.setError(null);
-                    tv_time.setError(null);
-                    tv_address.setError(null);
-                    if (couponModel!=null)
-                    {
-                        coupon_code = couponModel.getCoupon().getCode();
-                        coupon_value = couponModel.getCoupon().getValue();
-                    }
-
-                    String d_name = m_first_name+" "+m_last_name;
-                    DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, coupon_code,payment_method);
-
-                }
         }else
             {
                 if (TextUtils.isEmpty(m_first_name))
@@ -508,10 +529,10 @@ public class Fragment_Delivery_Address extends Fragment {
 
     }
 
-    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone, String m_street_name, String m_feedback, String coupon_code, String payment_method)
+    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone, String m_street_name, String m_feedback, CouponModel couponModel, String payment_method)
     {
-        activity.Save_Order_Data(d_name,p_phone,m_street_name,m_feedback,coupon_code,coupon_value,payment_method);
-        activity.DisplayFragmentPayment_Confirmation(payment_method,coupon_value);
+        activity.Save_Order_Data(d_name,p_phone,m_street_name,m_feedback,couponModel,payment_method);
+        activity.DisplayFragmentPayment_Confirmation(payment_method,couponModel);
 
     }
 }

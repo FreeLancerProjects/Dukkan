@@ -29,6 +29,9 @@ public class Tags {
     public static final String order_accepted= "accepted";
     public static final String order_refused = "refused";
 
+    public static final int discount_by_use_coupon = 1;
+    public static final int discount_by_use_points = 2;
+
 
 
 

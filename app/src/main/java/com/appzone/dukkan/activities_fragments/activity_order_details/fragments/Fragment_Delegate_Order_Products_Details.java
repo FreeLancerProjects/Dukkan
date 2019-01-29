@@ -20,7 +20,7 @@ import java.util.Locale;
 
 import io.paperdb.Paper;
 
-public class Fragment_Order_Products extends Fragment {
+public class Fragment_Delegate_Order_Products_Details extends Fragment {
     private static final String TAG = "ORDER";
     private OrderDetailsActivity activity;
     private RecyclerView recView;
@@ -30,21 +30,21 @@ public class Fragment_Order_Products extends Fragment {
     private String current_lang;
     private OrdersModel.Order order;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_products,container,false);
+        View view = inflater.inflate(R.layout.fragment_delegate_order_products_details,container,false);
         initView(view);
         return view;
     }
-    public static Fragment_Order_Products newInstance(OrdersModel.Order order)
+    public static Fragment_Delegate_Order_Products_Details newInstance(OrdersModel.Order order)
     {
         Bundle bundle = new Bundle();
         bundle.putSerializable(TAG,order);
-        Fragment_Order_Products fragment_order_products = new Fragment_Order_Products();
-        fragment_order_products.setArguments(bundle);
-        return fragment_order_products;
+
+        Fragment_Delegate_Order_Products_Details fragment_DelegateCollecting_order_products = new Fragment_Delegate_Order_Products_Details();
+        fragment_DelegateCollecting_order_products.setArguments(bundle);
+        return fragment_DelegateCollecting_order_products;
     }
     private void initView(View view)
     {
@@ -73,6 +73,17 @@ public class Fragment_Order_Products extends Fragment {
                 activity.Back();
             }
         });
+
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+        {
+            order = (OrdersModel.Order) bundle.getSerializable(TAG);
+            UpdateUI(order);
+        }
+
+    }
+
+    private void UpdateUI(OrdersModel.Order order) {
 
     }
 }

@@ -63,6 +63,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
+                        android:gravity="center"
                         android:text="0"
                         />
                 </LinearLayout>
@@ -93,6 +94,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
+                        android:gravity="center"
                         android:text="0"
                         />
                 </LinearLayout>
@@ -114,10 +116,14 @@
                         android:textSize="14sp"
                         android:text="@string/coupon_value"
                         />
-                    <View
+                    <TextView
+                        android:id="@+id/tv_coupon_value"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".8"/>
+                        android:layout_weight=".8"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        />
                     <TextView
                         android:id="@+id/tv_coupon_cost"
                         android:layout_width="0dp"
@@ -125,6 +131,44 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
+                        android:gravity="center"
+                        android:text="0"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:visibility="gone"
+
+                    >
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1.3"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
+                        android:text="@string/points"
+                        />
+                    <TextView
+                        android:id="@+id/tv_point"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".8"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        />
+                    <TextView
+                        android:id="@+id/tv_point_cost"
+                        android:layout_width="0dp"
+                        android:layout_weight=".9"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"
+                        android:gravity="center"
                         android:text="0"
                         />
                 </LinearLayout>
@@ -157,9 +201,55 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"
                         android:text="0"
+                        android:gravity="center"
                         />
                 </LinearLayout>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/gray2"
+            app:cardElevation="3dp"
+            app:cardCornerRadius="15dp"
+
+
+            >
+            <Button
+                android:id="@+id/btn_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/use_coupon"
+                />
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_point"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/gray2"
+            app:cardElevation="3dp"
+            app:cardCornerRadius="15dp"
+
+            >
+            <Button
+                android:id="@+id/btn_point"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:text="@string/use_points"
+                />
         </android.support.v7.widget.CardView>
 
         <TextView

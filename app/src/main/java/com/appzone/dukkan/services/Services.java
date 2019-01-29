@@ -71,8 +71,8 @@ public interface Services {
     @GET("api/get-delivery-cost")
     Call<DeliveryCostModel> getDeliveryCost();
 
-    @GET("api/coupons/{coupon_id}")
-    Call<CouponModel> isCouponAvailable(@Path("coupon_id") String coupon_id);
+    @GET("api/coupons")
+    Call<CouponModel> isCouponAvailable();
 
     @GET("api/week-features")
     Call<WeekOfferModel> getWeekOffers();

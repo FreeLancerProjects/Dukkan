@@ -15,10 +15,13 @@ public class OrderToUploadModel implements Serializable {
     private String notes;
     private int time_type;
     private String coupon_code;
-    private String coupon_value;
+    private int coupon_value;
     private String payment_method;
+    private int discount_by_use;
+    private double total_discount;
     private double order_total_price;
     private double delivery_cost;
+    private double discount_point;
     private List<OrderItem> orderItemList;
 
     public OrderToUploadModel() {
@@ -81,6 +84,14 @@ public class OrderToUploadModel implements Serializable {
         this.client_street = client_street;
     }
 
+    public double getTotal_discount() {
+        return total_discount;
+    }
+
+    public void setTotal_discount(double total_discount) {
+        this.total_discount = total_discount;
+    }
+
     public String getNotes() {
         return notes;
     }
@@ -97,11 +108,11 @@ public class OrderToUploadModel implements Serializable {
         this.time_type = time_type;
     }
 
-    public String getCoupon_value() {
+    public int getCoupon_value() {
         return coupon_value;
     }
 
-    public void setCoupon_value(String coupon_value) {
+    public void setCoupon_value(int coupon_value) {
         this.coupon_value = coupon_value;
     }
 
@@ -129,6 +140,14 @@ public class OrderToUploadModel implements Serializable {
         this.order_total_price = order_total_price;
     }
 
+    public void setDiscount_by_use(int discount_by_use) {
+        this.discount_by_use = discount_by_use;
+    }
+
+    public int getDiscount_by_use() {
+        return discount_by_use;
+    }
+
     public String getClient_phone() {
         return client_phone;
     }
@@ -143,6 +162,14 @@ public class OrderToUploadModel implements Serializable {
 
     public void setDelivery_cost(double delivery_cost) {
         this.delivery_cost = delivery_cost;
+    }
+
+    public double getDiscount_point() {
+        return discount_point;
+    }
+
+    public void setDiscount_point(double discount_point) {
+        this.discount_point = discount_point;
     }
 
     public List<OrderItem> getOrderItemList() {

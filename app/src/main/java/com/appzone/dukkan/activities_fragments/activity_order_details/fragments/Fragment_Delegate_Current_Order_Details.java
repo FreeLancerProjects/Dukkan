@@ -111,7 +111,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         btn_show_products.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.DisplayFragment_Order_Products();
+                activity.DisplayFragment_Delegate_Collecting_Order_Products();
             }
         });
 

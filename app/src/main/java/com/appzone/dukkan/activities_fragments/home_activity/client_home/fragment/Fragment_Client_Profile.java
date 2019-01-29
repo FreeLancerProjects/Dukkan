@@ -42,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Fragment_Client_Profile extends Fragment {
-    private TextView tv_name,tv_phone,tv_alter_phone,tv_lang;
+    private TextView tv_name,tv_phone,tv_alter_phone,tv_lang,tv_points;
     private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4,image_arrow5;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_logout,ll_data_container,ll_alter_phone;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
@@ -94,7 +94,9 @@ public class Fragment_Client_Profile extends Fragment {
             }
         });
         /////////////////////////////////////////////
+        tv_points = view.findViewById(R.id.tv_points);
         tv_lang = view.findViewById(R.id.tv_lang);
+
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
         image_arrow3 = view.findViewById(R.id.image_arrow3);
@@ -252,6 +254,7 @@ public class Fragment_Client_Profile extends Fragment {
         {
             tv_name.setText(userModel.getUser().getName());
             tv_phone.setText("00966"+userModel.getUser().getPhone());
+
             if (userModel.getUser().getAlternative_phone()!=null||!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
             {
                 tv_alter_phone.setText("00966"+userModel.getUser().getAlternative_phone());
@@ -260,9 +263,19 @@ public class Fragment_Client_Profile extends Fragment {
                     tv_alter_phone.setText(R.string.no_alternative_phone);
 
                 }
+
+                if (userModel.getUser().getPoints()>0)
+                {
+                    tv_points.setText(String.valueOf(userModel.getUser().getPoints()));
+                }else
+                    {
+                        tv_points.setText("0");
+
+                    }
         }
 
     }
+
 
     private void CreateSocialMediaIntent(String uri)
     {

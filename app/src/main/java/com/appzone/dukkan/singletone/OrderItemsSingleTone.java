@@ -47,8 +47,12 @@ public class OrderItemsSingleTone {
         int pos = getItemPosition(orderItem);
 
         AlternativeProductItem alternativeProductItem = orderItem.getAlternativeProductItem();
-        alternativeProductItem.setProduct_quantity(orderItem.getProduct_quantity());
-        orderItem.setAlternativeProductItem(alternativeProductItem);
+        if (alternativeProductItem!=null)
+        {
+            alternativeProductItem.setProduct_quantity(orderItem.getProduct_quantity());
+            orderItem.setAlternativeProductItem(alternativeProductItem);
+        }
+
         orderItemList.set(pos,orderItem);
     }
 
