@@ -155,4 +155,9 @@ public interface Services {
                                            @Field("type") String type
     );
 
+    @FormUrlEncoded
+    @POST("/api/order-update_status/{order_id}")
+    Call<ResponseBody> updateOrderStatus(@Path("order_id") int order_id,
+                                         @Field("token") String token,
+                                         @Field ("status")int order_status);
 }

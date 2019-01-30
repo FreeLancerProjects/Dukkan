@@ -110,7 +110,7 @@ public class Sizes_Prices_Adapter extends RecyclerView.Adapter<Sizes_Prices_Adap
                 tv_size.setText(productSize_offerModel.getAr_name());
             }else
                 {
-                    tv_size.setText(productSize_offerModel.getAr_name());
+                    tv_size.setText(productSize_offerModel.getEn_name());
 
                 }
 

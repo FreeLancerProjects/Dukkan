@@ -44,13 +44,60 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/fl"
+            >
 
-    </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
+
+        <FrameLayout
+            android:id="@+id/fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:id="@+id/tv_order_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:gravity="center"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:background="@color/colorPrimary"
+                    android:visibility="gone"
+                    />
+                <Button
+                    android:id="@+id/btn_collected"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="@string/order_collected3"
+                    android:background="@drawable/edt_search_bg_cover_map"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+
+
+        </FrameLayout>
+    </RelativeLayout>
+
 
 
 </LinearLayout>

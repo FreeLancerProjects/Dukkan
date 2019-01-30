@@ -3,7 +3,10 @@ package com.appzone.dukkan.activities_fragments.activity_order_details.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
@@ -59,6 +64,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private UserModel userModel;
     private Snackbar snackbar;
     private View root;
+    //////////////////////////////////////
+    private View fl_root;
+    private ImageView image;
+    private TextView tv_name,tv_price,tv_amount;
+    private Button btn_add,btn_cancel;
+    private BottomSheetBehavior behavior;
+    private OrdersModel.Products product;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -85,6 +97,46 @@ public class OrderDetailsActivity extends AppCompatActivity {
         LanguageHelper.setLocality(this,current_lang);
         fragmentManager = getSupportFragmentManager();
         root = findViewById(R.id.root);
+        ///////////////////////////////////
+        fl_root = findViewById(R.id.fl_root);
+        image = findViewById(R.id.image);
+        tv_name = findViewById(R.id.tv_name);
+        tv_price = findViewById(R.id.tv_price);
+        tv_amount = findViewById(R.id.tv_amount);
+        btn_add = findViewById(R.id.btn_add);
+        btn_cancel = findViewById(R.id.btn_cancel);
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fragment_DelegateCollecting_order_products!=null && fragment_DelegateCollecting_order_products.isAdded())
+                {
+                    fragment_DelegateCollecting_order_products.updateOrderCost(product);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+        behavior = BottomSheetBehavior.from(fl_root);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING)
+                {
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
 
     }
 
@@ -122,6 +174,48 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_Current_Order_Details(order);
                 }
             }
+    }
+    public void UpdateBottomSheetUI(OrdersModel.Products product)
+    {
+        if (product!=null)
+        {
+            this.product = product;
+
+            if (product.getProduct().getImage().size()>0)
+            {
+                Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+product.getProduct().getImage().get(0))).fit().into(image);
+
+            }
+
+            if (current_lang.equals("ar"))
+            {
+                tv_name.setText(product.getProduct().getName_ar()+" "+product.getProduct_price().getSize_ar());
+            }else
+                {
+                    tv_name.setText(product.getProduct().getName_en()+" "+product.getProduct_price().getSize_en());
+
+                }
+
+                tv_amount.setText(product.getQuantity()+"");
+            double total_item_cost;
+
+            if (product.getFeature()!=null)
+            {
+                total_item_cost = product.getQuantity()*product.getFeature().getDiscount();
+            }else
+                {
+                    total_item_cost = product.getQuantity()*product.getProduct_price().getNet_price();
+
+                }
+
+                tv_price.setText(total_item_cost+" "+getString(R.string.rsa));
+
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        }
+
+
+
     }
     public void DisplayFragment_Client_Order_Details(OrdersModel.Order order)
     {
@@ -274,7 +368,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public void AcceptOrder()
     {
-        Log.e("order_id",order.getId()+"__");
         final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -444,7 +537,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public void Back()
     {
-        if (fragment_client_order_details!=null && fragment_client_order_details.isVisible())
+        if (behavior.getState()== BottomSheetBehavior.STATE_EXPANDED)
+        {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }else if (fragment_client_order_details!=null && fragment_client_order_details.isVisible())
         {
             finish();
         }else if (fragment_delegate_new_order_details!=null && fragment_delegate_new_order_details.isVisible())

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
@@ -37,6 +39,9 @@ public class Fragment_Client_Order_Details extends Fragment {
     private SimpleRatingBar rateBar;
     private String current_lang;
     private TextView tv_not_approved;
+    private RelativeLayout rl;
+    private LinearLayout ll;
+    private AppBarLayout app_bar;
 
     ////////////////////////////////
     private ImageView image1,image2,image3,image4,image5;
@@ -78,6 +83,28 @@ public class Fragment_Client_Order_Details extends Fragment {
         }
         ll_delegate_data_container = view.findViewById(R.id.ll_delegate_data_container);
         tv_not_approved = view.findViewById(R.id.tv_not_approved);
+
+        /////////////////////////////////////////////////
+        app_bar = view.findViewById(R.id.app_bar);
+        rl = view.findViewById(R.id.rl);
+        ll = view.findViewById(R.id.ll);
+
+        app_bar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                int totalRang = appBarLayout.getTotalScrollRange();
+
+                if ((totalRang+verticalOffset)<=30)
+                {
+                    ll.setVisibility(View.GONE);
+                    rl.setVisibility(View.GONE);
+                }else
+                    {
+                        ll.setVisibility(View.VISIBLE);
+                        rl.setVisibility(View.VISIBLE);
+                    }
+            }
+        });
 
         /////////////////////////////////////////////////
         image1 = view.findViewById(R.id.image1);

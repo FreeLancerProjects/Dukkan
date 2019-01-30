@@ -248,5 +248,8 @@
     <string name="words_not_match">الكلمتين غير متطابقتين</string>
     <string name="points">النقاط</string>
     <string name="cost">التكلفة</string>
+    <string name="show_alternative">عرض البديل</string>
+    <string name="alternative_product">المنتج البديل</string>
+    <string name="order_collected3">تم التجميع</string>
 
 </resources>

@@ -246,4 +246,7 @@
     <string name="words_not_match">Words not match</string>
     <string name="points">Points</string>
     <string name="cost">Cost</string>
+    <string name="show_alternative">Show alternative</string>
+    <string name="alternative_product">Alternative product</string>
+    <string name="order_collected3">Order collected</string>
 </resources>

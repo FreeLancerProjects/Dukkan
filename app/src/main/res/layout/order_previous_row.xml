@@ -160,6 +160,8 @@
                             android:background="@drawable/edt_feedback_bg"
                             android:text="@string/details"
                             android:textAllCaps="false"
+                            android:clickable="false"
+                            android:longClickable="false"
 
                             />
                     </LinearLayout>

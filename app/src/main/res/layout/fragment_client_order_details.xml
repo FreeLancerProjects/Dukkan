@@ -29,6 +29,7 @@
 
                     >
                     <LinearLayout
+                        android:id="@+id/ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -205,6 +206,7 @@
 
         </android.support.design.widget.AppBarLayout>
         <RelativeLayout
+            android:id="@+id/rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"

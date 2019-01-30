@@ -34,6 +34,7 @@ public class UserModel implements Serializable{
         private double rate;
         private int coupon;
         private int points;
+        private int escaped_orders_count;
 
 
         public int getId() {
@@ -102,6 +103,10 @@ public class UserModel implements Serializable{
 
         public int getPoints() {
             return points;
+        }
+
+        public int getEscaped_orders_count() {
+            return escaped_orders_count;
         }
     }
 }
