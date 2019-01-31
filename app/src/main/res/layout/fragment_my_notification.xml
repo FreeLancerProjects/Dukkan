@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities_fragments.home_activity.delegate_home.fragment.Fragment_Delegate_Notification">
+    tools:context=".activities_fragments.activity_home.delegate_home.fragment.Fragment_Delegate_Notification">
 
 
 

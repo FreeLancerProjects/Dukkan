@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;

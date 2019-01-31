@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.fragment_cart.Fragment_Review_Purchases;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_cart.Fragment_Review_Purchases;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;

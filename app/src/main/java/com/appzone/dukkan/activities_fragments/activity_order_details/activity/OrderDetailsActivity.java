@@ -27,7 +27,7 @@ import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_New_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Delegate_Order_Products_Details;
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Map_Order_Details;
-import com.appzone.dukkan.activities_fragments.chat_activity.ChatActivity;
+import com.appzone.dukkan.activities_fragments.activity_chat.ChatActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.UserChatModel;

@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.splash_activity;
+package com.appzone.dukkan.activities_fragments.activity_splash;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
-import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.DelegateHomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.singletone.UserSingleTone;

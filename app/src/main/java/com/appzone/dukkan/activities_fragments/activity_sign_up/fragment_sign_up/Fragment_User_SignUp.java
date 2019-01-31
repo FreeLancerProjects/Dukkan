@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up;
+package com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,8 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.fragment.Fragment_Search;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.Fragment_Search;
 
 import java.util.List;
 

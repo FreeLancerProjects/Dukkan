@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activities_fragments.chat_activity.ChatActivity"
+        tools:context=".activities_fragments.activity_chat.ChatActivity"
 
         >
 

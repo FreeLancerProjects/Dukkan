@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up;
+package com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.Terms_Condition_Model;
 import com.appzone.dukkan.remote.Api;

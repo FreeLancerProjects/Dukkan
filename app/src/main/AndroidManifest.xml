@@ -26,7 +26,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".activities_fragments.splash_activity.SplashActivity">
+        <activity android:name=".activities_fragments.activity_splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,23 +34,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities_fragments.sign_in_activity.SignInActivity"
+            android:name=".activities_fragments.activity_sign_in.SignInActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities_fragments.sign_up_activity.SignUpActivity"
+            android:name=".activities_fragments.activity_sign_up.SignUpActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities_fragments.forget_password_activity.ForgetPasswordActivity" />
+        <activity android:name=".activities_fragments.activity_forget_password.ForgetPasswordActivity" />
         <activity
-            android:name=".activities_fragments.home_activity.client_home.activity.HomeActivity"
+            android:name=".activities_fragments.activity_home.client_home.activity.HomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities_fragments.home_activity.delegate_home.DelegateHomeActivity" />
+        <activity android:name=".activities_fragments.activity_home.delegate_home.DelegateHomeActivity" />
         <activity android:name=".activities_fragments.product_details.activity.ProductDetailsActivity" />
         <activity
             android:name=".activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities_fragments.activity_order_details.activity.OrderDetailsActivity" />
-        <activity android:name=".activities_fragments.chat_activity.ChatActivity"></activity>
+        <activity android:name=".activities_fragments.activity_chat.ChatActivity"></activity>
     </application>
 
 </manifest>

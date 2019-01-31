@@ -13,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Current_Order;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_New_Order;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Previous_Order;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Current_Order;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_New_Order;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Previous_Order;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.share.TimeAgo;
 import com.appzone.dukkan.tags.Tags;

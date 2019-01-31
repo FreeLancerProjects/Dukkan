@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.sign_up_activity;
+package com.appzone.dukkan.activities_fragments.activity_sign_up;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up.Fragment_Delegate_SignUp;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up.Fragment_Terms_Conditions;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up.Fragment_User_SignUp;
+import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up.Fragment_Delegate_SignUp;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up.Fragment_Terms_Conditions;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up.Fragment_User_SignUp;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.share.Common;
 

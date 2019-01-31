@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.forget_password_activity;
+package com.appzone.dukkan.activities_fragments.activity_forget_password;
 
 import android.app.ProgressDialog;
 import android.content.Context;

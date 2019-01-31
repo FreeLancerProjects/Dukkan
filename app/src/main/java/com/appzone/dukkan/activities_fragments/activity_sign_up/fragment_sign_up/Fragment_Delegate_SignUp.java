@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.sign_up_activity.fragment_sign_up;
+package com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,8 +27,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.DelegateHomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;

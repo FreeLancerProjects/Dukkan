@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.sign_in_activity;
+package com.appzone.dukkan.activities_fragments.activity_sign_in;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,10 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.forget_password_activity.ForgetPasswordActivity;
-import com.appzone.dukkan.activities_fragments.home_activity.client_home.activity.HomeActivity;
-import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
-import com.appzone.dukkan.activities_fragments.sign_up_activity.SignUpActivity;
+import com.appzone.dukkan.activities_fragments.activity_forget_password.ForgetPasswordActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.DelegateHomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;

@@ -1,4 +1,4 @@
-package com.appzone.dukkan.activities_fragments.chat_activity;
+package com.appzone.dukkan.activities_fragments.activity_chat;
 
 import android.Manifest;
 import android.content.Context;
