@@ -24,6 +24,12 @@ public class CouponModel implements Serializable {
         return coupon_codes;
     }
 
+    public CouponModel(int coupon_value, int minimum_order_cost, int client_point_cost) {
+        this.coupon_value = coupon_value;
+        this.minimum_order_cost = minimum_order_cost;
+        this.client_point_cost = client_point_cost;
+    }
+
     public class CouponCodes implements Serializable
    {
        private String ar;

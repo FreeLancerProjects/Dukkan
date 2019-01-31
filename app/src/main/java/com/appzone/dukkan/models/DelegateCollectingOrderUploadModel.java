@@ -8,7 +8,7 @@ public class DelegateCollectingOrderUploadModel implements Serializable {
     private int order_id;
     private double total_order_cost;
     private String token;
-    private List<Products> productsList;
+    private List<Products> products;
 
     public DelegateCollectingOrderUploadModel() {
     }
@@ -17,7 +17,7 @@ public class DelegateCollectingOrderUploadModel implements Serializable {
         this.order_id = order_id;
         this.total_order_cost = total_order_cost;
         this.token = token;
-        this.productsList = productsList;
+        this.products = productsList;
     }
 
     public int getOrder_id() {
@@ -45,11 +45,11 @@ public class DelegateCollectingOrderUploadModel implements Serializable {
     }
 
     public List<Products> getProductsList() {
-        return productsList;
+        return products;
     }
 
     public void setProductsList(List<Products> productsList) {
-        this.productsList = productsList;
+        this.products = productsList;
     }
 
 

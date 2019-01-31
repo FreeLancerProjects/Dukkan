@@ -50,7 +50,10 @@
             android:name=".activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities_fragments.activity_order_details.activity.OrderDetailsActivity" />
-        <activity android:name=".activities_fragments.activity_chat.ChatActivity"></activity>
+        <activity android:name=".activities_fragments.activity_chat.ChatActivity" />
+        <activity android:name=".activities_fragments.activity_show_image.Activity_Show_Image"
+            android:theme="@style/transparent"
+            />
     </application>
 
 </manifest>

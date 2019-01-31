@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.activity_show_image.Activity_Show_Image;
 import com.appzone.dukkan.adapters.AlternativeProductsAdapter;
 import com.appzone.dukkan.adapters.AlternativeSizes_Prices_Adapter;
 import com.appzone.dukkan.adapters.SimilarProductsAdapter;
@@ -96,6 +98,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private String alternativeProductName="";
     private int selectedProductId;
     private int current_page =1;
+    private boolean canStartTimer=false;
 
 
     @Override
@@ -568,12 +571,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             if (imgsEndPointList.size()>1)
             {
-                timer = new Timer();
-                timerTask = new MyTimerTask();
-                timer.scheduleAtFixedRate(timerTask,5000,6000);
+                canStartTimer = true;
+                startTimer();
 
             }else
                 {
+                    canStartTimer = false;
                     if (timer!=null)
                     {
                         timer.purge();
@@ -891,6 +894,41 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void setItemEndPoint(String endPoint) {
+        StopTimer();
+        Intent intent = new Intent(this, Activity_Show_Image.class);
+        intent.putExtra("url",endPoint);
+
+        ActivityOptionsCompat option = ActivityOptionsCompat.makeSceneTransitionAnimation(this, pager, "pager_image");
+        startActivity(intent,option.toBundle());
+        overridePendingTransition(0,0);
+    }
+
+    private void StopTimer() {
+        try {
+            timer.purge();
+            timer.cancel();
+            timerTask.cancel();
+        }catch (Exception e){}
+    }
+
+    private void startTimer()
+    {
+        if (canStartTimer)
+        {
+            timer = new Timer();
+            timerTask = new MyTimerTask();
+            timer.scheduleAtFixedRate(timerTask,5000,6000);
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startTimer();
+    }
+
     private class MyTimerTask extends TimerTask
     {
         @Override
@@ -971,11 +1009,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     public void onDestroy()
     {
-        try {
-            timer.purge();
-            timer.cancel();
-            timerTask.cancel();
-        }catch (Exception e){}
+        StopTimer();
 
         super.onDestroy();
 

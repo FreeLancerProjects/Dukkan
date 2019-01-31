@@ -239,6 +239,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         }
 
 
+        Log.e("staus",order.getStatus()+"_");
         switch (order.getStatus())
         {
             case Tags.status_delegate_accept_order:

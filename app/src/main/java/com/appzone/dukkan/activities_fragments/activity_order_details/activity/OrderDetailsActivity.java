@@ -203,10 +203,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
             if (product.getFeature()!=null)
             {
-                total_item_cost = product.getQuantity()*product.getFeature().getDiscount();
+                total_item_cost = product.getFeature().getDiscount();
             }else
                 {
-                    total_item_cost = product.getQuantity()*product.getProduct_price().getNet_price();
+                    total_item_cost = product.getProduct_price().getNet_price();
 
                 }
 

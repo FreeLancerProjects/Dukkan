@@ -33,6 +33,7 @@ import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -183,8 +184,11 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
     public void updateOrderCost(OrdersModel.Products product,int status)
     {
+        Log.e("quantity",product.getQuantity()+"");
         double product_cost = getProductCost(product);
+        Log.e("product_cost",product_cost+"_");
         order_total_cost += product_cost;
+        Log.e("order_total_cost1",order_total_cost+"_");
 
        /* tv_order_price.setText(getString(R.string.products_cost3)+" "+order_total_cost+" "+getString(R.string.rsa));
         tv_order_price.setVisibility(View.VISIBLE);*/
@@ -210,8 +214,10 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         }
 
     }
-    private void PrepareOrderToUpload() {
+    private void PrepareOrderToUpload()
+    {
 
+        Log.e("order_total_cost",order_total_cost+"_");
         uploadModel.setOrder_id(order.getId());
         uploadModel.setTotal_order_cost(order_total_cost);
         uploadModel.setProductsList(choosedUploadProductsList);
@@ -235,6 +241,13 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
                         }else
                             {
+                                Log.e("code",response.code()+"_");
+                                try {
+                                    Log.e("error_body",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
                                 Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_LONG).show();
                             }
                     }
@@ -255,11 +268,19 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         double cost;
         if (product.getFeature()!=null)
         {
+            Log.e("quantity3", product.getQuantity()+"_");
+            Log.e("p_cost3", product.getFeature().getDiscount()+"_");
+
             cost = product.getQuantity()*product.getFeature().getDiscount();
+            Log.e("cost2", cost+"_");
 
         }else
             {
+                Log.e("quantity2", product.getQuantity()+"_");
+                Log.e("p_cost", product.getProduct_price().getNet_price()+"_");
+
                 cost = product.getQuantity()*product.getProduct_price().getNet_price();
+                Log.e("cost", cost+"_");
 
             }
             return cost;
