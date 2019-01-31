@@ -80,7 +80,7 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
         fl_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.Back();
+                activity.DisplayFragmentHome();
             }
         });
 

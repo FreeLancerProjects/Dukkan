@@ -1,6 +1,5 @@
 package com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.adapters.Delegate_Order_Adapter;
 import com.appzone.dukkan.models.OrdersModel;
@@ -118,10 +116,7 @@ public class Fragment_Delegate_Current_Order extends Fragment {
 
     public void setItem(OrdersModel.Order order, int pos) {
         this.selectedPos = pos;
-        Intent intent = new Intent(activity, OrderDetailsActivity.class);
-        intent.putExtra("order",order);
-        intent.putExtra("order_type",Tags.order_current);
-        startActivityForResult(intent,2);
+        activity.NavigateToOrderDetailsActivity(order);
     }
 
 }

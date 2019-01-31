@@ -1,11 +1,13 @@
 package com.appzone.dukkan.activities_fragments.activity_order_details.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,10 @@ import android.widget.TextView;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.models.OrdersModel;
+import com.appzone.dukkan.models.UserModel;
+import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
+import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
 import java.text.SimpleDateFormat;
@@ -25,6 +31,10 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private static final String TAG = "ORDER";
@@ -32,7 +42,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private ImageView image_back,image_arrow,image_chat;
     private LinearLayout ll_back,ll_notes;
     private String current_lang;
-    private Button btn_show_products;
+    private Button btn_show_products,btn_start,btn_finish;
     private TextView tv_current_time,tv_client_name,tv_address,tv_payment,tv_notes,tv_delivery_time_type;
     private FrameLayout fl_map;
     private OrdersModel.Order order;
@@ -40,6 +50,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private long now;
     private Handler handler;
     private Runnable runnable;
+    private UserSingleTone userSingleTone;
+    private UserModel userModel;
 
 
     @Nullable
@@ -60,6 +72,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
     }
     private void initView(View view) {
         activity = (OrderDetailsActivity) getActivity();
+        userSingleTone = UserSingleTone.getInstance();
+        userModel = userSingleTone.getUserModel();
         Paper.init(activity);
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
 
@@ -82,6 +96,9 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         ll_back = view.findViewById(R.id.ll_back);
         ll_notes = view.findViewById(R.id.ll_notes);
         btn_show_products = view.findViewById(R.id.btn_show_products);
+        btn_start = view.findViewById(R.id.btn_start);
+        btn_finish = view.findViewById(R.id.btn_finish);
+
         tv_delivery_time_type = view.findViewById(R.id.tv_delivery_time_type);
         tv_hour = view.findViewById(R.id.tv_hour);
         tv_minute = view.findViewById(R.id.tv_minute);
@@ -129,12 +146,28 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
             }
         });
 
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StartDelivery();
+            }
+        });
+        btn_finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FinishDelivery();
+            }
+        });
         handler = new Handler();
 
         StartTimer();
 
 
     }
+
+
+
+
 
     private void StartTimer() {
 
@@ -205,12 +238,123 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
 
         }
 
+
+        switch (order.getStatus())
+        {
+            case Tags.status_delegate_accept_order:
+
+                btn_show_products.setText(getString(R.string.collect_orders));
+                btn_show_products.setEnabled(true);
+
+                break;
+            case Tags.status_delegate_collect_order:
+                btn_show_products.setText(getString(R.string.collect_orders));
+                btn_show_products.setEnabled(true);
+
+
+                break;
+            case Tags.status_delegate_already_collect_order:
+                btn_show_products.setText(getString(R.string.order_collected));
+                btn_show_products.setEnabled(false);
+                btn_start.setVisibility(View.VISIBLE);
+
+
+                break;
+            case Tags.status_delegate_delivering_order:
+                btn_show_products.setText(getString(R.string.delivering_order));
+                btn_show_products.setEnabled(false);
+                btn_finish.setVisibility(View.VISIBLE);
+                break;
+
+
+        }
+
     }
     private String getCurrentTime()
     {
         Calendar calendar = Calendar.getInstance(new Locale(current_lang));
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm aa",new Locale(current_lang));
         return dateFormat.format(calendar.getTime());
+    }
+    public void setOrderCollected()
+    {
+        btn_show_products.setText(getString(R.string.order_collected));
+        btn_show_products.setEnabled(false);
+        btn_start.setVisibility(View.VISIBLE);
+    }
+    private void StartDelivery() {
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .updateOrderStatus(order.getId(),userModel.getToken(),Tags.status_delegate_delivering_order)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful())
+                        {
+                            btn_start.setVisibility(View.GONE);
+                            btn_finish.setVisibility(View.VISIBLE);
+                            activity.dismissSnackBar();
+                            dialog.dismiss();
+                            activity.setDeliveryStarted();
+
+                            Log.e("success","true");
+                        }else
+                        {
+                            activity.CreateSnackBar(getString(R.string.failed));
+                            Log.e("code",response.code()+"");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+
+                            Log.e("error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+    private void FinishDelivery() {
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .updateOrderStatus(order.getId(),userModel.getToken(),Tags.status_delegate_delivered_order)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful())
+                        {
+                            btn_start.setVisibility(View.GONE);
+                            btn_finish.setVisibility(View.GONE);
+                            activity.dismissSnackBar();
+                            dialog.dismiss();
+                            activity.setDeliveryFinished();
+
+                            Log.e("success","true");
+                        }else
+                        {
+                            activity.CreateSnackBar(getString(R.string.failed));
+                            Log.e("code",response.code()+"");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+
+                            Log.e("error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
 
 
@@ -223,4 +367,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
 
         }
     }
+
+
+
 }

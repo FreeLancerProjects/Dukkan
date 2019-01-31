@@ -229,6 +229,23 @@ public class Fragment_Delivery_Address extends Fragment {
         if (userModel!=null)
         {
             edt_phone.setText(userModel.getUser().getPhone());
+            String[] split = userModel.getUser().getName().split(" ",2);
+
+            if (split.length>=1)
+            {
+                try {
+                    edt_first_name.setText(split[0]);
+                    edt_last_name.setText(split[1]);
+
+                }catch (IndexOutOfBoundsException e){}
+            }else
+                {
+                    try {
+                        edt_first_name.setText(split[0]);
+
+                    }catch (IndexOutOfBoundsException e){}
+                }
+
             getCouponData(total_order);
         }
 

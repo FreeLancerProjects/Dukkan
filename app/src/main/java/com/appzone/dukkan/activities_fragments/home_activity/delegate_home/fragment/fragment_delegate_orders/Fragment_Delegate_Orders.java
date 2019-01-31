@@ -66,6 +66,9 @@ public class Fragment_Delegate_Orders extends Fragment {
     {
         Fragment_Delegate_Current_Order fragment_delegate_current_order = (Fragment_Delegate_Current_Order) orderViewPagerAdapter.getItem(1);
         fragment_delegate_current_order.getOrders();
+
+        Fragment_Delegate_Previous_Order fragment_delegate_previous_order = (Fragment_Delegate_Previous_Order) orderViewPagerAdapter.getItem(2);
+        fragment_delegate_previous_order.getOrders();
     }
 
 

@@ -1,9 +1,11 @@
 package com.appzone.dukkan.activities_fragments.activity_order_details.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -12,17 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.adapters.DelegateCollectOrderAdapter;
 import com.appzone.dukkan.adapters.RecyclerItemTouchHelper;
+import com.appzone.dukkan.models.DelegateCollectingOrderUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
+import com.appzone.dukkan.models.Products;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
@@ -50,9 +57,12 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
     private UserModel userModel;
     private List<OrdersModel.Products> orderProductList,productsList;
     private List<OrdersModel.Products> choosedProductList;
-    private TextView tv_order_price;
+    private TextView tv_order_price,tv_no_product;
     private Button btn_collected;
     private double order_total_cost=0.0;
+    private int alternativeItemPos =-1;
+    private List<Products> choosedUploadProductsList;
+    private DelegateCollectingOrderUploadModel uploadModel;
 
 
     @Nullable
@@ -76,6 +86,9 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         choosedProductList = new ArrayList<>();
         orderProductList = new ArrayList<>();
         productsList = new ArrayList<>();
+        choosedUploadProductsList = new ArrayList<>();
+        uploadModel = new DelegateCollectingOrderUploadModel();
+
         activity = (OrderDetailsActivity) getActivity();
         Paper.init(activity);
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
@@ -92,8 +105,9 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
         }
         ll_back = view.findViewById(R.id.ll_back);
-        tv_order_price = view.findViewById(R.id.tv_order_price);
+        //tv_order_price = view.findViewById(R.id.tv_order_price);
         btn_collected = view.findViewById(R.id.btn_collected);
+        tv_no_product = view.findViewById(R.id.tv_no_product);
 
         recView = view.findViewById(R.id.recView);
 
@@ -112,6 +126,12 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
             }
         });
 
+        btn_collected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PrepareOrderToUpload();
+            }
+        });
         Bundle bundle = getArguments();
         if (bundle!=null)
         {
@@ -121,6 +141,8 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         }
 
     }
+
+
 
     private void UpdateUI(OrdersModel.Order order)
     {
@@ -159,20 +181,82 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
     }
 
-    public void updateOrderCost(OrdersModel.Products product)
+    public void updateOrderCost(OrdersModel.Products product,int status)
     {
         double product_cost = getProductCost(product);
         order_total_cost += product_cost;
 
-        tv_order_price.setText(order_total_cost+" "+getString(R.string.rsa));
-        tv_order_price.setVisibility(View.VISIBLE);
+       /* tv_order_price.setText(getString(R.string.products_cost3)+" "+order_total_cost+" "+getString(R.string.rsa));
+        tv_order_price.setVisibility(View.VISIBLE);*/
+
+        if (alternativeItemPos != -1)
+        {
+            choosedProductList.add(product);
+            Products products = new Products(product.getId(),status);
+            choosedUploadProductsList.add(products);
+
+            this.orderProductList.remove(alternativeItemPos);
+            this.adapter.notifyItemRemoved(alternativeItemPos);
+            if (orderProductList.size()==0)
+            {
+                tv_no_product.setVisibility(View.VISIBLE);
+                btn_collected.setVisibility(View.VISIBLE);
+            }else
+                {
+                    tv_no_product.setVisibility(View.GONE);
+                    btn_collected.setVisibility(View.GONE);
+                }
+            alternativeItemPos = -1;
+        }
+
+    }
+    private void PrepareOrderToUpload() {
+
+        uploadModel.setOrder_id(order.getId());
+        uploadModel.setTotal_order_cost(order_total_cost);
+        uploadModel.setProductsList(choosedUploadProductsList);
+        uploadModel.setToken(userModel.getToken());
+
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        Api.getService()
+                .uploadCollectedProducts(uploadModel)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful())
+                        {
+                            activity.dismissSnackBar();
+                            dialog.dismiss();
+                            btn_collected.setVisibility(View.GONE);
+                            activity.DisplayFragment_Delegate_Current_Order_Details(true);
+
+                        }else
+                            {
+                                Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_LONG).show();
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
     private double getProductCost(OrdersModel.Products product)
     {
+
         double cost;
         if (product.getFeature()!=null)
         {
             cost = product.getQuantity()*product.getFeature().getDiscount();
+
         }else
             {
                 cost = product.getQuantity()*product.getProduct_price().getNet_price();
@@ -180,7 +264,9 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
             }
             return cost;
     }
-    public void setItemToShowAlternativeProducts(OrdersModel.Products alternative) {
+    public void setItemToShowAlternativeProducts(OrdersModel.Products alternative, int pos) {
+
+        alternativeItemPos = pos;
         activity.UpdateBottomSheetUI(alternative);
     }
 
@@ -188,29 +274,81 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
     public void onSwipe(RecyclerView.ViewHolder viewHolder, int direction, int position)
     {
 
-        OrdersModel.Products product = productsList.get(position);
+
+        OrdersModel.Products product = orderProductList.get(position);
 
         if (direction == ItemTouchHelper.LEFT)
         {
-            updateOrderCost(product);
+            updateOrderCost(product,Tags.product_not_changed);
 
             choosedProductList.add(product);
             this.orderProductList.remove(position);
             this.adapter.notifyItemRemoved(position);
             if (orderProductList.size()==0)
             {
+                tv_no_product.setVisibility(View.VISIBLE);
                 btn_collected.setVisibility(View.VISIBLE);
-            }
+            }else
+                {
+                    tv_no_product.setVisibility(View.GONE);
+                    btn_collected.setVisibility(View.GONE);
+                }
 
 
         }else if (direction == ItemTouchHelper.RIGHT)
         {
-            this.orderProductList.remove(position);
-            this.adapter.notifyItemRemoved(position);
-            if (orderProductList.size()==0)
-            {
-                btn_collected.setVisibility(View.VISIBLE);
-            }
+
+            CreateDeleteAlertDialog(product,position);
+
         }
+    }
+
+
+    public void CreateDeleteAlertDialog(final OrdersModel.Products product, final int pos)
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setCancelable(true)
+                .create();
+
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_delete,null);
+        FrameLayout fl_delete = view.findViewById(R.id.fl_delete);
+        FrameLayout fl_cancel = view.findViewById(R.id.fl_cancel);
+
+
+        fl_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Products products = new Products(product.getId(),Tags.product_deleted);
+                choosedUploadProductsList.add(products);
+
+
+                orderProductList.remove(pos);
+                adapter.notifyItemRemoved(pos);
+                if (orderProductList.size()==0)
+                {
+                    tv_no_product.setVisibility(View.VISIBLE);
+
+                    btn_collected.setVisibility(View.VISIBLE);
+                }else
+                {
+                    tv_no_product.setVisibility(View.GONE);
+                    btn_collected.setVisibility(View.GONE);
+                }
+            }
+        });
+        fl_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setView(view);
+        dialog.show();
     }
 }

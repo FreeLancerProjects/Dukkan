@@ -12,7 +12,7 @@
         android:background="@color/white"
         android:fitsSystemWindows="true"
         android:fillViewport="true"
-
+        android:scrollbars="none"
         >
         <FrameLayout
             android:layout_width="match_parent"

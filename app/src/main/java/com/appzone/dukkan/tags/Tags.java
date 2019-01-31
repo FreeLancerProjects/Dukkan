@@ -32,6 +32,9 @@ public class Tags {
     public static final int discount_by_use_coupon = 1;
     public static final int discount_by_use_points = 2;
 
+    public static final int product_not_changed = 0;
+    public static final int product_alternative = 1;
+    public static final int product_deleted = 2;
 
 
 

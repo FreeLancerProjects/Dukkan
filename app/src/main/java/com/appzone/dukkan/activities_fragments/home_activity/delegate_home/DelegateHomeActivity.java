@@ -23,17 +23,20 @@ import android.util.Log;
 import android.view.View;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.Fragment_Delegate_Notification;
 import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_New_Order;
 import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Orders;
 import com.appzone.dukkan.activities_fragments.home_activity.delegate_home.fragment.Fragment_Delegate_Profile;
 import com.appzone.dukkan.activities_fragments.sign_in_activity.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
+import com.appzone.dukkan.tags.Tags;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
@@ -469,6 +472,14 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         finish();
     }
 
+    public void NavigateToOrderDetailsActivity(OrdersModel.Order order)
+    {
+        Intent intent = new Intent(this, OrderDetailsActivity.class);
+        intent.putExtra("order",order);
+        intent.putExtra("order_type", Tags.order_current);
+        startActivityForResult(intent,2);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -477,6 +488,15 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         for (Fragment fragment : fragmentList)
         {
             fragment.onActivityResult(requestCode, resultCode, data);
+        }
+
+        if(requestCode == 2 && resultCode == RESULT_OK)
+        {
+            if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+            {
+                fragment_delegate_orders.RefreshFragmentDelegateCurrentOrder();
+
+            }
         }
     }
 

@@ -249,4 +249,8 @@
     <string name="show_alternative">Show alternative</string>
     <string name="alternative_product">Alternative product</string>
     <string name="order_collected3">Order collected</string>
+    <string name="start_delivery">Start delivery</string>
+    <string name="finish">Finish</string>
+    <string name="dele">Delete ?</string>
+    <string name="products_cost3">Products cost</string>
 </resources>

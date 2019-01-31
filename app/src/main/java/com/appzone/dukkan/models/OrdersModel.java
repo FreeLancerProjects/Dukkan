@@ -178,7 +178,7 @@ public class OrdersModel implements Serializable{
 
     public class Products implements Serializable
     {
-
+        int id;
         private int feature_id;
         private int quantity;
         private int total;
@@ -187,6 +187,10 @@ public class OrdersModel implements Serializable{
         private Feature feature;
         private Products alternative;
 
+
+        public int getId() {
+            return id;
+        }
 
         public int getFeature_id() {
             return feature_id;

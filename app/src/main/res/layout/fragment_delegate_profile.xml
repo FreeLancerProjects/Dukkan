@@ -57,7 +57,8 @@
                         android:layout_gravity="center_horizontal"
                         app:civ_border_color="@color/green_text"
                         app:civ_border_width="1dp"
-                        app:civ_fill_color="@color/white" />
+                        app:civ_fill_color="@color/white"
+                        />
 
                     <TextView
                         android:id="@+id/tv_name"

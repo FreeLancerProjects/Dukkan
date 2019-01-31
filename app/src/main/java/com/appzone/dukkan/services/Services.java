@@ -1,6 +1,7 @@
 package com.appzone.dukkan.services;
 
 import com.appzone.dukkan.models.CouponModel;
+import com.appzone.dukkan.models.DelegateCollectingOrderUploadModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.OrderToUploadModel;
@@ -160,4 +161,8 @@ public interface Services {
     Call<ResponseBody> updateOrderStatus(@Path("order_id") int order_id,
                                          @Field("token") String token,
                                          @Field ("status")int order_status);
+
+    @POST("/api/update-order-products")
+    Call<ResponseBody> uploadCollectedProducts(@Body DelegateCollectingOrderUploadModel uploadModel);
+
 }

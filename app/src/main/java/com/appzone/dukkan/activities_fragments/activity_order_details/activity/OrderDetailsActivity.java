@@ -72,6 +72,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private BottomSheetBehavior behavior;
     private OrdersModel.Products product;
 
+    private boolean isOrderStatusChanged=false;
+
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -117,7 +119,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (fragment_DelegateCollecting_order_products!=null && fragment_DelegateCollecting_order_products.isAdded())
                 {
-                    fragment_DelegateCollecting_order_products.updateOrderCost(product);
+                    fragment_DelegateCollecting_order_products.updateOrderCost(product,Tags.product_alternative);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
             }
@@ -171,7 +173,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_New_Order_Details(order);
                 }else if (order_type.equals(Tags.order_current))
                 {
-                    DisplayFragment_Delegate_Current_Order_Details(order);
+                    DisplayFragment_Delegate_Current_Order_Details(false);
                 }
             }
     }
@@ -235,6 +237,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
         {
             fragmentManager.beginTransaction().hide(fragment_map_order_details).commit();
         }
+        if (fragment_delegate_order_products_details!=null && fragment_delegate_order_products_details.isAdded())
+        {
+            fragmentManager.beginTransaction().hide(fragment_delegate_order_products_details).commit();
+        }
         if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
@@ -255,16 +261,19 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
 
     }
-    public void DisplayFragment_Delegate_Current_Order_Details(OrdersModel.Order order)
+    public void DisplayFragment_Delegate_Current_Order_Details(boolean isOrderCollected)
     {
+        this.isOrderStatusChanged = isOrderCollected;
         if (fragment_map_order_details!=null && fragment_map_order_details.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_map_order_details).commit();
         }
-        if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
+
+        if (fragment_DelegateCollecting_order_products!=null && fragment_DelegateCollecting_order_products.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
         }
+
 
         if (fragment_delegate_Current_order_details ==null)
         {
@@ -275,9 +284,33 @@ public class OrderDetailsActivity extends AppCompatActivity {
         if (!fragment_delegate_Current_order_details.isAdded())
         {
             fragmentManager.beginTransaction().add(R.id.fragment_order_details_container, fragment_delegate_Current_order_details,"fragment_delegate_Current_order_details").addToBackStack("fragment_delegate_Current_order_details").commit();
+            if (isOrderCollected)
+            {
+                if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
+                {
+                    fragment_DelegateCollecting_order_products = null;
+                    fragmentManager.popBackStack("fragment_DelegateCollecting_order_products",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }else
+                    {
+                        fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
+                    }
+                fragment_delegate_Current_order_details.setOrderCollected();
+            }
         }else
         {
             fragmentManager.beginTransaction().show(fragment_delegate_Current_order_details).commit();
+            if (isOrderCollected)
+            {
+                if (fragment_DelegateCollecting_order_products !=null && fragment_DelegateCollecting_order_products.isAdded())
+                {
+                    fragment_DelegateCollecting_order_products = null;
+                    fragmentManager.popBackStack("fragment_DelegateCollecting_order_products",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }else
+                {
+                    fragmentManager.beginTransaction().hide(fragment_DelegateCollecting_order_products).commit();
+                }
+                fragment_delegate_Current_order_details.setOrderCollected();
+            }
         }
 
 
@@ -366,6 +399,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void setDeliveryStarted()
+    {
+        this.isOrderStatusChanged = true;
+    }
+    public void setDeliveryFinished()
+    {
+        Intent intent =  getIntent();
+        setResult(RESULT_OK,intent);
+        finish();    }
     public void AcceptOrder()
     {
         final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
@@ -543,12 +585,26 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }else if (fragment_client_order_details!=null && fragment_client_order_details.isVisible())
         {
             finish();
+        }else if (fragment_delegate_order_products_details!=null && fragment_delegate_order_products_details.isVisible())
+        {
+            DisplayFragment_Delegate_New_Order_Details(order);
         }else if (fragment_delegate_new_order_details!=null && fragment_delegate_new_order_details.isVisible())
         {
             finish();
         }else if (fragment_delegate_Current_order_details !=null && fragment_delegate_Current_order_details.isVisible())
         {
-            finish();
+            if (isOrderStatusChanged)
+            {
+                Intent intent =  getIntent();
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+
+            else
+                {
+                    finish();
+
+                }
         }
         else if (fragment_client_previous_order_details !=null && fragment_client_previous_order_details.isVisible())
         {
@@ -561,7 +617,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_New_Order_Details(order);
                 }else if (user_type.equals(Tags.user_delegate)&&order_type.equals(Tags.order_current))
                 {
-                    DisplayFragment_Delegate_Current_Order_Details(order);
+                    DisplayFragment_Delegate_Current_Order_Details(false);
                 }
             }
     }

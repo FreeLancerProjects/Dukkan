@@ -49,7 +49,7 @@ public class DelegateCollectOrderAdapter extends RecyclerView.Adapter<DelegateCo
             @Override
             public void onClick(View v) {
                 OrdersModel.Products products = productsList.get(holder.getAdapterPosition());
-                fragment.setItemToShowAlternativeProducts(products.getAlternative());
+                fragment.setItemToShowAlternativeProducts(products.getAlternative(),holder.getAdapterPosition());
             }
         });
 

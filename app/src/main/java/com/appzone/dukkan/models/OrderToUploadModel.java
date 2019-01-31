@@ -18,6 +18,7 @@ public class OrderToUploadModel implements Serializable {
     private int coupon_value;
     private String payment_method;
     private int discount_by_use;
+    private double tax;
     private double total_discount;
     private double order_total_price;
     private double delivery_cost;
@@ -90,6 +91,14 @@ public class OrderToUploadModel implements Serializable {
 
     public void setTotal_discount(double total_discount) {
         this.total_discount = total_discount;
+    }
+
+    public double getTax() {
+        return tax;
+    }
+
+    public void setTax(double tax) {
+        this.tax = tax;
     }
 
     public String getNotes() {

@@ -72,7 +72,7 @@ public class Fragment_Delegate_Previous_Order extends Fragment {
         recView.setAdapter(delegate_order_adapter);
         getOrders();
     }
-    private void getOrders()
+    public void getOrders()
     {
         Api.getService()
                 .getOrders(userModel.getToken(), Tags.order_old)

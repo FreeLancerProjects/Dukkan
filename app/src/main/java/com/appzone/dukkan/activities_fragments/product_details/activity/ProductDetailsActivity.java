@@ -262,7 +262,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             similarProductsList = (List<MainCategory.Products>) intent.getSerializableExtra("similar_products");
             alternativeProductList = (List<MainCategory.Products>) intent.getSerializableExtra("similar_products");;
-            alternativeProduct = alternativeProductList.get(0);
+            if (alternativeProductList.size()>0)
+            {
+                alternativeProduct = alternativeProductList.get(0);
+
+            }
             UpdateUi(product);
             UpdateBottomSheetUI(alternativeProduct);
             UpdateSimilarAdapterUI(similarProductsList);

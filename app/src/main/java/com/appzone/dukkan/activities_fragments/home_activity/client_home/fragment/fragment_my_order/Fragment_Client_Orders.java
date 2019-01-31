@@ -78,4 +78,13 @@ public class Fragment_Client_Orders extends Fragment {
         Fragment_Client_Current_Order fragment_client_current_order = (Fragment_Client_Current_Order) orderViewPagerAdapter.getItem(1);
         fragment_client_current_order.getOrders();
     }
+
+    public void RefreshFragment_New_Current_Order()
+    {
+
+        Fragment_Client_New_Order fragment_client_new_order = (Fragment_Client_New_Order) orderViewPagerAdapter.getItem(0);
+        fragment_client_new_order.getOrders();
+        Fragment_Client_Current_Order fragment_client_current_order = (Fragment_Client_Current_Order) orderViewPagerAdapter.getItem(1);
+        fragment_client_current_order.getOrders();
+    }
 }

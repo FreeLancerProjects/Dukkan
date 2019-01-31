@@ -33,10 +33,13 @@ import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
+import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
+import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +55,7 @@ public class Fragment_Delegate_Profile extends Fragment {
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_driver_container,ll_logout;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
     private ImageView image_twitter,image_facebook,image_instagram;
+    private CircleImageView image;
     private SimpleRatingBar rateBar;
     private String current_lang;
     private AlertDialog dialogUpdatePhone,dialogUpdatePassword,dialogContactUs;
@@ -104,6 +108,7 @@ public class Fragment_Delegate_Profile extends Fragment {
         tv_phone = view.findViewById(R.id.tv_phone);
         tv_lang = view.findViewById(R.id.tv_lang);
         rateBar = view.findViewById(R.id.rateBar);
+        image = view.findViewById(R.id.image);
 
         image_arrow1 = view.findViewById(R.id.image_arrow1);
         image_arrow2 = view.findViewById(R.id.image_arrow2);
@@ -242,6 +247,7 @@ public class Fragment_Delegate_Profile extends Fragment {
     {
         if (userModel!=null)
         {
+            Picasso.with(getActivity()).load(Uri.parse(Tags.IMAGE_URL+userModel.getUser().getAvatar())).fit().into(image);
             tv_name.setText(userModel.getUser().getName());
             tv_phone.setText("00966"+userModel.getUser().getPhone());
             tv_rate.setText("("+userModel.getUser().getRate()+")");

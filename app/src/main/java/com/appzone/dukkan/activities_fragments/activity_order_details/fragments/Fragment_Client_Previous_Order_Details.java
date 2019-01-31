@@ -22,7 +22,6 @@ import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.tags.Tags;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
@@ -40,7 +39,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
     private TextView tv_delegate_name,tv_rate,tv_order_number,tv_order_cost,tv_payment,tv_notes;
     private SimpleRatingBar rateBar;
 
-    private Button btn_display_bill,btn_request_again;
+    private Button btn_request_again;
     private RecyclerView recView;
     private RecyclerView.LayoutManager manager;
 
@@ -89,7 +88,6 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         tv_payment = view.findViewById(R.id.tv_payment);
         tv_notes = view.findViewById(R.id.tv_notes);
         btn_request_again = view.findViewById(R.id.btn_request_again);
-        btn_display_bill = view.findViewById(R.id.btn_display_bill);
 
         recView = view.findViewById(R.id.recView);
         manager = new LinearLayoutManager(getActivity());
@@ -110,12 +108,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
             }
         });
 
-        btn_display_bill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //DisplayBillPhoto();
-            }
-        });
+
 
         btn_request_again.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,30 +169,6 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
 
     }
 
-    private void DisplayBillPhoto(String url)
-    {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setCancelable(true)
-                .create();
-
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bill_photo,null);
-        Button btn_cancel  = view.findViewById(R.id.btn_cancel);
-        PhotoView image = view.findViewById(R.id.image);
-        Picasso.with(getActivity()).load(Uri.parse(Tags.IMAGE_URL+url)).fit().into(image);
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
-        dialog.setView(view);
-        dialog.show();
-    }
 
     private void DisplayOrderCost(final OrdersModel.Order order, double tax, double order_cost, double delivery_cost)
     {

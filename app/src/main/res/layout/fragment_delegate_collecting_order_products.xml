@@ -48,12 +48,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_above="@+id/fl"
+            >
+            <TextView
+                android:id="@+id/tv_no_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:text="@string/there_are_no_products_to_display"
+                android:visibility="gone"
+                />
+        </FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
             >
 
         </android.support.v7.widget.RecyclerView>
@@ -69,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
-                <TextView
+                <!--<TextView
                     android:id="@+id/tv_order_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,8 +96,8 @@
                     android:textColor="@color/white"
                     android:textSize="15sp"
                     android:background="@color/colorPrimary"
-                    android:visibility="gone"
-                    />
+                    android:visibility="ر"
+                    />-->
                 <Button
                     android:id="@+id/btn_collected"
                     android:layout_width="match_parent"

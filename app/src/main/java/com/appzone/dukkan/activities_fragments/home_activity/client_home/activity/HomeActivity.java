@@ -1337,6 +1337,13 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             fragment_client_orders.RefreshFragment_Current_Previous_Order();
         }
     }
+    private void RefreshFragmentClient_New_Current_Order()
+    {
+        if (fragment_client_orders!=null)
+        {
+            fragment_client_orders.RefreshFragment_New_Current_Order();
+        }
+    }
     ////////////////////////////////////
     public void setLast_selected_fragment(String fragment)
     {
@@ -1566,14 +1573,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         fragment_delivery_address.UpdateAddress(address);
         fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
     }
-    public void SaveListOf_Order_Order_Total_Cost(List<OrderItem> orderItemList,double total_order_price)
+    public void SaveListOf_Order_Order_Total_Cost(List<OrderItem> orderItemList,double total_order_price,double tax)
     {
         if (orderToUploadModel==null)
         {
             orderToUploadModel = new OrderToUploadModel();
         }
         this.total_order_cost = total_order_price;
-
+        orderToUploadModel.setTax(tax);
         orderToUploadModel.setOrderItemList(orderItemList);
     }
     public void Save_Order_Data(String name, String phone, String street_name, String feedback, CouponModel couponModel, String payment_method)
