@@ -18,6 +18,7 @@ import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.models.OrdersModel;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -138,7 +139,7 @@ public class Fragment_Delegate_New_Order_Details extends Fragment{
             tv_client_name.setText(order.getClient().getName());
 
         }
-        tv_order_cost.setText(getString(R.string.total2)+" "+order.getTotal()+" " +getString(R.string.rsa));
+        tv_order_cost.setText(getString(R.string.total2)+" "+new DecimalFormat("##.##").format(order.getTotal())+" " +getString(R.string.rsa));
         if (order.getPayment_method()== 1)
         {
             tv_payment.setText("Cash نقدي");

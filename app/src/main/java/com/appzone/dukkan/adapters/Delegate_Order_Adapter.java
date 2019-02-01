@@ -20,6 +20,7 @@ import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.share.TimeAgo;
 import com.appzone.dukkan.tags.Tags;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -172,7 +173,7 @@ public class Delegate_Order_Adapter extends RecyclerView.Adapter<Delegate_Order_
             tv_created_date.setText(d);
 
             tv_order_number.setText("#"+order.getId());
-            tv_order_total.setText(order.getTotal()+" "+context.getString(R.string.rsa));
+            tv_order_total.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+context.getString(R.string.rsa));
 
 
         }

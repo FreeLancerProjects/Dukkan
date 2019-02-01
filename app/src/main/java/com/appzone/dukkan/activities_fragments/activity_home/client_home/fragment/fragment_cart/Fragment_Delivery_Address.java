@@ -29,6 +29,7 @@ import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -404,7 +405,7 @@ public class Fragment_Delivery_Address extends Fragment {
         Button btn_coupon = view.findViewById(R.id.btn_coupon);
         Button btn_point = view.findViewById(R.id.btn_point);
 
-        tv_content.setText(getString(R.string.you_have_received_a_discount_of)+" "+couponModel.getCoupon_value()+" %"+" "+getString(R.string.on_the_price_of_the_products));
+        tv_content.setText(getString(R.string.you_have_received_a_discount_of)+" "+new DecimalFormat("##.##").format(couponModel.getCoupon_value())+" %"+" "+getString(R.string.on_the_price_of_the_products));
         if (current_lang.equals("ar"))
         {
             image_congratulation.setImageResource(R.drawable.ar_cong);
@@ -461,7 +462,7 @@ public class Fragment_Delivery_Address extends Fragment {
     {
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
-        tv_time.setText(current_date+" ( "+getString(R.string.delv_cost)+delivery_cost+" "+getString(R.string.rsa)+" )");
+        tv_time.setText(current_date+" ( "+getString(R.string.delv_cost)+new DecimalFormat("##.##").format(Double.parseDouble(delivery_cost))+" "+getString(R.string.rsa)+" )");
 
     }
     public void UpdateAddress(String address)

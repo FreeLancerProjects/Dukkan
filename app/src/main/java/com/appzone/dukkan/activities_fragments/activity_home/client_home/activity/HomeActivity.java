@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.Fragment_Client_Profile;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.Fragment_Offers;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.Fragment_Order_Finish_Congratulation;
@@ -52,8 +51,9 @@ import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragmen
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_home.sub_fragments.Fragment_Charging_Cards;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_home.sub_fragments.Fragment_Food_Department;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_my_order.Fragment_Client_Orders;
-import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
+import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
+import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.MainCategory;
@@ -94,6 +94,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements Fragment_Date_Time.Date_Time_Listener,Fragment_Map.AddressListener{
+
     private FragmentManager fragmentManager;
     private String current_lang = "";
     private AHBottomNavigation ah_bottom_nav;
@@ -104,7 +105,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private Fragment_Client_Profile fragment_client_profile;
     private Fragment_Search fragment_search;
     private Fragment_Order_Finish_Congratulation fragment_order_finish_congratulation;
+
     ////////////////////////////////////////
+
     private Fragment_MyCart fragment_myCart;
     private Fragment_Review_Purchases fragment_review_purchases;
     private Fragment_Delivery_Address fragment_delivery_address;
@@ -112,16 +115,22 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private Fragment_Date_Time fragment_date_time;
 
     ///////////////////////////////////////
+
     private Fragment_Food_Department fragment_food_department;
     private Fragment_Charging_Cards fragment_charging_cards;
+
     ///////////////////////////////////////
+
     private Fragment_Map fragment_map;
     private final String fineLoc = Manifest.permission.ACCESS_FINE_LOCATION;
     private final int loc_req = 11;
     private final int gps_req = 12;
     private OrderItemsSingleTone orderItemsSingleTone;
+
     ////////////////////////////////////////
+
     private MainCategory mainCategory;
+
     ////////////////////////////////////////
     private Snackbar snackbar;
     private Intent intentService;
@@ -142,21 +151,20 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private MainCategory.MainCategoryItems mainCategoryItems;
 
     @Override
-    protected void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base)
+    {
         Paper.init(base);
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         super.attachBaseContext(LanguageHelper.onAttach(base,current_lang));
     }
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         initView();
         getDataFromIntent();
     }
-
-
-
     private void initView()
     {
         Paper.init(this);
@@ -962,7 +970,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             fragmentManager.beginTransaction().hide(fragment_food_department).commit();
         }
     }
-
     public void DisplayFragmentMap()
     {
         fragment_map = Fragment_Map.newInstance();
@@ -977,7 +984,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         checkLocationPermission();
 
     }
-
     public void DisplayFragmentDateTime()
     {
         fragment_date_time = Fragment_Date_Time.newInstance();
@@ -991,7 +997,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
 
     }
-
     public void DisplayFragment_Order_Finish_Congratulation(OrdersModel.Order order)
     {
         orderItemsSingleTone.ClearCart();
@@ -1245,12 +1250,11 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         gpsDialog.getWindow().getAttributes().windowAnimations = R.style.custom_dialog_animation;
         gpsDialog.show();
     }
-
-    private void openGps() {
+    private void openGps()
+    {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivityForResult(intent,gps_req);
     }
-
     private boolean isGpsOpen()
     {
         if (locationManager == null)
@@ -1261,7 +1265,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
     }
-
     ///////////////////////////////////
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ListenToLocationUpdate(Location location)
@@ -1406,6 +1409,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     {
                         CreateToast(getString(R.string.gps_perm_denied));
                     }
+
+
             }
         }
     }
@@ -1449,6 +1454,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         }else if ((fragment_offers!=null&&fragment_offers.isVisible())||(fragment_myCart!=null&&fragment_myCart.isVisible())||(fragment_client_orders!=null&&fragment_client_orders.isVisible())||(fragment_client_profile!=null&&fragment_client_profile.isVisible()))
         {
+
             DisplayFragmentHome();
 
         }
@@ -1524,7 +1530,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         userModel = null;
         NavigateToSignInActivity();
     }
-
     public void dismissSnackBar()
     {
         if (snackbar!=null)
@@ -1552,7 +1557,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
-        Log.e("delivery_cost",delivery_cost+"_");
 
         fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.beginTransaction().show(fragment_myCart).commit();
@@ -1624,6 +1628,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     public void UploadOrder(int discount_by_use, double discount_point, double discount_points_cost, double final_total_order_price)
     {
+        Log.e("final_total_order_price",final_total_order_price+"");
         orderToUploadModel.setOrder_total_price(final_total_order_price);
         orderToUploadModel.setDiscount_by_use(discount_by_use);
         orderToUploadModel.setDiscount_point(discount_point);
@@ -1726,6 +1731,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         dialog.setView(view);
         dialog.show();
     }
+
     private void CreateToast(String msg)
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
@@ -1736,9 +1742,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
     }
-
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         Back();
     }
     @Override
@@ -1754,7 +1760,5 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         super.onDestroy();
 
     }
-
-
 
 }

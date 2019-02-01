@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,11 +21,13 @@ import android.widget.TextView;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
+import com.appzone.dukkan.adapters.ClientPreviousDetailsProductAdapter;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,15 +37,16 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
     private static final String TAG = "ORDER";
     private OrderDetailsActivity activity;
     private ImageView image_back;
-    private LinearLayout ll_back;
+    private LinearLayout ll_back,ll_delegate_data_container;
     private CircleImageView image;
+    private AppBarLayout app_bar;
     private TextView tv_delegate_name,tv_rate,tv_order_number,tv_order_cost,tv_payment,tv_notes;
     private SimpleRatingBar rateBar;
 
     private Button btn_request_again;
     private RecyclerView recView;
     private RecyclerView.LayoutManager manager;
-
+    private ClientPreviousDetailsProductAdapter adapter;
     private String current_lang;
     private OrdersModel.Order order;
     @Nullable
@@ -77,6 +81,24 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
 
         }
 
+        ll_delegate_data_container = view.findViewById(R.id.ll_delegate_data_container);
+        app_bar = view.findViewById(R.id.app_bar);
+        //////////////////////////////////////////
+        app_bar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                int appBarRange = app_bar.getTotalScrollRange();
+                if ((appBarRange+verticalOffset)<=70)
+                {
+                    ll_delegate_data_container.setVisibility(View.GONE);
+                }else
+                    {
+                        ll_delegate_data_container.setVisibility(View.VISIBLE);
+
+                    }
+            }
+        });
+        /////////////////////////////////////////
         ll_back = view.findViewById(R.id.ll_back);
         image = view.findViewById(R.id.image);
         tv_delegate_name = view.findViewById(R.id.tv_delegate_name);
@@ -92,7 +114,10 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         recView = view.findViewById(R.id.recView);
         manager = new LinearLayoutManager(getActivity());
         recView.setLayoutManager(manager);
-
+        recView.setDrawingCacheEnabled(true);
+        recView.setHasFixedSize(true);
+        recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        recView.setItemViewCacheSize(25);
 
         Bundle bundle = getArguments();
         if (bundle!=null)
@@ -139,7 +164,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
             }
 
             tv_order_number.setText("#"+order.getId());
-            tv_order_cost.setText(order.getTotal()+" "+getString(R.string.rsa));
+            tv_order_cost.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+getString(R.string.rsa));
 
             if (order.getNote()!=null  || !TextUtils.isEmpty(order.getNote()))
             {
@@ -161,6 +186,9 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
                 tv_payment.setText(getString(R.string.visa));
 
             }
+
+            adapter = new ClientPreviousDetailsProductAdapter(getActivity(),order.getProducts());
+            recView.setAdapter(adapter);
 
 
 

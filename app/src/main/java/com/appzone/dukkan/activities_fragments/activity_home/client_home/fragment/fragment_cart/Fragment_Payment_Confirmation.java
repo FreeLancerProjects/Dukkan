@@ -25,6 +25,7 @@ import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -200,22 +201,22 @@ public class Fragment_Payment_Confirmation extends Fragment {
 
         ll_coupon.setVisibility(View.VISIBLE);
         ll_point.setVisibility(View.GONE);
-        tv_coupon_value.setText(String.valueOf(coupon_value)+" %");
+        tv_coupon_value.setText(new DecimalFormat("##.##").format(coupon_value)+" %");
         double order_cost_after_discount_coupon = (coupon_value/100)*total_order_cost;
         discount_coupon_points_cost = order_cost_after_discount_coupon;
 
-        tv_coupon_cost.setText(Math.round(order_cost_after_discount_coupon)+" "+getString(R.string.rsa));
+        tv_coupon_cost.setText(new DecimalFormat("##.##").format(order_cost_after_discount_coupon)+" "+getString(R.string.rsa));
         card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
         card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
 
 
-        tv_delivery_cost.setText(Math.round(delivery_cost)+" "+getString(R.string.rsa));
+        tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
 
-        tv_product_cost.setText(Math.round(total_order_cost)+" "+getString(R.string.rsa));
+        tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
         double order_cost_after_discount = total_order_cost-order_cost_after_discount_coupon;
         final_total_order_price = order_cost_after_discount+delivery_cost;
 
-        tv_total.setText(String.valueOf(Math.round(final_total_order_price))+" "+getString(R.string.rsa));
+        tv_total.setText(new DecimalFormat("##.##").format(final_total_order_price)+" "+getString(R.string.rsa));
 
     }
     private void UpdatePointUI()
@@ -225,7 +226,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         ll_point.setVisibility(View.VISIBLE);
         ll_coupon.setVisibility(View.GONE);
         double point_cost = userModel.getUser().getPoints()*couponModel.getClient_point_cost();
-        tv_point_cost.setText(String.valueOf(point_cost)+" "+getString(R.string.rsa));
+        tv_point_cost.setText(new DecimalFormat("##.##").format(point_cost)+" "+getString(R.string.rsa));
 
         card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
         card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
@@ -240,11 +241,11 @@ public class Fragment_Payment_Confirmation extends Fragment {
 
             discount_coupon_points_cost = discount_point * couponModel.getClient_point_cost();
 
-            tv_point_cost.setText(String.valueOf(Math.round(remain_point_cost)+" "+getString(R.string.rsa)));
+            tv_point_cost.setText(new DecimalFormat("##.##").format(remain_point_cost)+" "+getString(R.string.rsa));
 
-            tv_product_cost.setText(Math.round(total_order_cost)+" "+getString(R.string.rsa));
-            tv_delivery_cost.setText(String.valueOf(Math.round(delivery_cost))+" "+getString(R.string.rsa));
-            tv_total.setText("0 "+getString(R.string.rsa));
+            tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
+            tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+            tv_total.setText("0"+getString(R.string.rsa));
             final_total_order_price = 0;
 
         }else
@@ -252,13 +253,14 @@ public class Fragment_Payment_Confirmation extends Fragment {
                 discount_point = userModel.getUser().getPoints();
                 discount_coupon_points_cost = point_cost;
 
-                tv_delivery_cost.setText(String.valueOf(Math.round(delivery_cost))+" "+getString(R.string.rsa));
-                tv_product_cost.setText(String.valueOf(Math.round(total_order_cost)+" "+getString(R.string.rsa)));
+
+                tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+                tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
 
                 double order_cost_after_discount = total_order_cost-point_cost;
                 final_total_order_price = order_cost_after_discount+delivery_cost;
 
-                tv_total.setText(Math.round(final_total_order_price)+" "+getString(R.string.rsa));
+                tv_total.setText(new DecimalFormat("##.##").format(final_total_order_price)+" "+getString(R.string.rsa));
 
             }
 

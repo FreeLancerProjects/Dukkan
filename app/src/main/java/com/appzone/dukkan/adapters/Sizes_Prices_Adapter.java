@@ -16,6 +16,7 @@ import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.product_details.activity.ProductDetailsActivity;
 import com.appzone.dukkan.models.ProductSize_OfferModel;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,7 +118,7 @@ public class Sizes_Prices_Adapter extends RecyclerView.Adapter<Sizes_Prices_Adap
                 if (productSize_offerModel.isOffer())
                 {
                     ll_discount.setVisibility(View.VISIBLE);
-                    tv_discount.setText(productSize_offerModel.getDiscount()+"%");
+                    tv_discount.setText(new DecimalFormat("##.##").format(Integer.parseInt(productSize_offerModel.getDiscount()))+"%");
                 }else
                     {
                         ll_discount.setVisibility(View.GONE);

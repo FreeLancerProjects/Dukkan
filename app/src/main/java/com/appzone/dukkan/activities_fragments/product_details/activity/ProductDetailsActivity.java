@@ -42,6 +42,7 @@ import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -93,7 +94,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager managerSize,managerProduct;
     private Button btn_add_alter_product,btn_cancel;
     private AlternativeProductItem alternativeProductItem=null;
-    private int alternativeProductTotalPrice =0;
+    private double alternativeProductTotalPrice =0;
     List<MainCategory.Products> productsList;
     private String alternativeProductName="";
     private int selectedProductId;
@@ -278,7 +279,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
     private void UpdateBottomSheetUI(MainCategory.Products alternativeProduct)
     {
-        tv_amount.setText(String.valueOf(counter));
+        tv_amount.setText(new DecimalFormat("##.##").format(counter));
 
         if (alternativeProduct!=null)
         {
@@ -614,8 +615,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
     private void updateCounter(int counter)
     {
-        tv_counter.setText(String.valueOf(counter));
-        tv_amount.setText(String.valueOf(counter));
+        tv_counter.setText(new DecimalFormat("##.##").format(counter));
+        tv_amount.setText(new DecimalFormat("##.##").format(counter));
     }
     private void UpdateProductName(String name)
     {
@@ -817,12 +818,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (productSize_offerModel.isOffer())
         {
             tv_price_before_discount.setVisibility(View.VISIBLE);
-            tv_price_before_discount.setText(productSize_offerModel.getPrice_before_discount()+" "+getString(R.string.rsa));
-            tv_price_after_discount.setText(productSize_offerModel.getPrice_after_discount()+" "+getString(R.string.rsa));
+            tv_price_before_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_before_discount()))+" "+getString(R.string.rsa));
+            tv_price_after_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_after_discount()))+" "+getString(R.string.rsa));
         }else
         {
             tv_price_before_discount.setVisibility(View.GONE);
-            tv_price_after_discount.setText(productSize_offerModel.getPrice_before_discount()+" "+getString(R.string.rsa));
+            tv_price_after_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_before_discount()))+" "+getString(R.string.rsa));
 
         }
     }
@@ -842,19 +843,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (productSize_offerModel.isOffer())
         {
             alternativeProductTotalPrice = this.counter*Integer.parseInt(productSize_offerModel.getPrice_after_discount());
-            tv_total_price.setText(alternativeProductTotalPrice +" "+getString(R.string.rsa));
+            tv_total_price.setText(new DecimalFormat("##.##").format(alternativeProductTotalPrice) +" "+getString(R.string.rsa));
 
             tv_price_before_discount_product.setVisibility(View.VISIBLE);
-            tv_price_before_discount_product.setText(productSize_offerModel.getPrice_before_discount()+" "+getString(R.string.rsa));
+            tv_price_before_discount_product.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_before_discount()))+" "+getString(R.string.rsa));
             tv_price_before_discount_product.setPaintFlags(tv_price_before_discount_product.getPaintFlags()|Paint.STRIKE_THRU_TEXT_FLAG);
-            tv_price_after_discount_product.setText(productSize_offerModel.getPrice_after_discount()+" "+getString(R.string.rsa));
+            tv_price_after_discount_product.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_after_discount()))+" "+getString(R.string.rsa));
         }else
         {
             tv_price_before_discount_product.setVisibility(View.GONE);
-            tv_price_after_discount_product.setText(productSize_offerModel.getPrice_before_discount()+" "+getString(R.string.rsa));
+            tv_price_after_discount_product.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_before_discount()))+" "+getString(R.string.rsa));
 
             alternativeProductTotalPrice = this.counter*Integer.parseInt(productSize_offerModel.getPrice_before_discount());
-            tv_total_price.setText(alternativeProductTotalPrice +" "+getString(R.string.rsa));
+            tv_total_price.setText(new DecimalFormat("##.##").format(alternativeProductTotalPrice) +" "+getString(R.string.rsa));
 
         }
     }

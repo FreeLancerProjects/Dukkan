@@ -15,6 +15,7 @@ import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -84,11 +85,11 @@ public class DelegateShowProductAdapter extends RecyclerView.Adapter<DelegateSho
             if (products.getFeature()!=null)
             {
 
-                tv_price.setText(products.getFeature().getDiscount()+" "+context.getString(R.string.rsa));
+                tv_price.setText(new DecimalFormat("##.##").format(products.getFeature().getDiscount())+" "+context.getString(R.string.rsa));
 
             }else
                 {
-                    tv_price.setText(products.getProduct_price().getNet_price()+" "+context.getString(R.string.rsa));
+                    tv_price.setText(new DecimalFormat("##.##").format(products.getProduct_price().getNet_price())+" "+context.getString(R.string.rsa));
 
                 }
 

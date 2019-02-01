@@ -18,6 +18,7 @@ import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,9 +68,9 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
                 holder.image_decrement.clearAnimation();
                 holder.image_increment.startAnimation(animation);
                 int counter = Integer.parseInt(holder.tv_counter.getText().toString().trim())+1;
-                holder.tv_counter.setText(String.valueOf(counter));
+                holder.tv_counter.setText(new DecimalFormat("##.##").format(counter));
                 double total = counter*orderItem.getProduct_price();
-                holder.tv_price.setText(total+" "+context.getString(R.string.rsa));
+                holder.tv_price.setText(new DecimalFormat("##.##").format(total)+" "+context.getString(R.string.rsa));
                 fragment_review_purchases.Increment_Decrement(orderItem,counter);
             }
         });
@@ -88,9 +89,9 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
                     counter = 1;
                 }
                 double total = counter*orderItem.getProduct_price();
-                holder.tv_price.setText(total+" "+context.getString(R.string.rsa));
+                holder.tv_price.setText(new DecimalFormat("##.##").format(total)+" "+context.getString(R.string.rsa));
 
-                holder.tv_counter.setText(String.valueOf(counter));
+                holder.tv_counter.setText(new DecimalFormat("##.##").format(counter));
                 fragment_review_purchases.Increment_Decrement(orderItem,counter);
             }
         });
@@ -131,7 +132,7 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
             }
 
             tv_counter.setText(String.valueOf(orderItem.getProduct_quantity()));
-            tv_price.setText(String.valueOf(orderItem.getProduct_total_price())+" " + context.getString(R.string.rsa));
+            tv_price.setText(new DecimalFormat("##.##").format(orderItem.getProduct_total_price())+" " + context.getString(R.string.rsa));
             if (!TextUtils.isEmpty(orderItem.getProduct_image()))
             {
                 Picasso.with(context).load(Uri.parse(Tags.IMAGE_URL+orderItem.getProduct_image())).priority(Picasso.Priority.HIGH).fit().into(image);

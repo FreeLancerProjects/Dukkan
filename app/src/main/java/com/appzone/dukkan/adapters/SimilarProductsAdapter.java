@@ -19,6 +19,7 @@ import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -112,12 +113,12 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
 
                     double discount = (diff/price_before_discount)*100;
 
-                    tv_discount.setText(((int) discount)+" %");
+                    tv_discount.setText(new DecimalFormat("##.##").format((int) discount)+" %");
                     fl_discount_container.setVisibility(View.VISIBLE);
 
                     tv_before_discount.setPaintFlags(tv_before_discount.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-                    tv_before_discount.setText(products.getFeatures().get(0).getOld_price().getNet_price()+" "+context.getString(R.string.rsa));
-                    tv_after_discount.setText(products.getFeatures().get(0).getDiscount()+" "+context.getString(R.string.rsa));
+                    tv_before_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(products.getFeatures().get(0).getOld_price().getNet_price()))+" "+context.getString(R.string.rsa));
+                    tv_after_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(products.getFeatures().get(0).getDiscount()))+" "+context.getString(R.string.rsa));
 
 
 
@@ -130,7 +131,7 @@ public class SimilarProductsAdapter extends RecyclerView.Adapter<SimilarProducts
                     if (products.getSize_prices().size()>0)
                     {
                         tv_before_discount.setText("");
-                        tv_after_discount.setText(products.getSize_prices().get(0).getNet_price()+" "+context.getString(R.string.rsa));
+                        tv_after_discount.setText(new DecimalFormat("##.##").format(Double.parseDouble(products.getSize_prices().get(0).getNet_price()))+" "+context.getString(R.string.rsa));
 
                     }
                     fl_discount_container.setVisibility(View.INVISIBLE);

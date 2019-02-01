@@ -31,6 +31,7 @@ import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -148,7 +149,7 @@ public class Fragment_Review_Purchases extends Fragment {
     }
 
     private void updateProductCost(double total) {
-        tv_product_cost.setText(String.valueOf(total)+" "+getString(R.string.rsa));
+        tv_product_cost.setText(new DecimalFormat("##.##").format(total)+" "+getString(R.string.rsa));
 
     }
 
@@ -181,14 +182,14 @@ public class Fragment_Review_Purchases extends Fragment {
     }
     private void UpdateTaxUI(int tax)
     {
-        tv_tax.setText(String.valueOf(tax)+" %");
+        tv_tax.setText(new DecimalFormat("##.##").format(tax)+" %");
 
         net_total_order_price = getTotalOrderPrice(orderItemList);
         double price_after_tax = net_total_order_price*((double) tax/100.0);
 
         total_order_cost_after_tax = getTotalOrderPrice(orderItemList) + price_after_tax;
 
-        tv_total.setText(String.valueOf(total_order_cost_after_tax)+" "+getString(R.string.rsa));
+        tv_total.setText(new DecimalFormat("##.##").format(total_order_cost_after_tax)+" "+getString(R.string.rsa));
 
     }
     private void getTax()

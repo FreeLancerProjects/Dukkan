@@ -38,6 +38,7 @@ import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -210,7 +211,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
                 }
 
-                tv_price.setText(total_item_cost+" "+getString(R.string.rsa));
+                tv_price.setText(new DecimalFormat("##.##").format(total_item_cost)+" "+getString(R.string.rsa));
 
             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
