@@ -93,7 +93,7 @@ public class ClientPreviousDetailsProductAdapter extends RecyclerView.Adapter<Cl
 
                 }
 
-                tv_amount.setText(products.getQuantity()+"");
+                tv_amount.setText(new DecimalFormat("#").format(products.getQuantity())+"");
 
 
         }

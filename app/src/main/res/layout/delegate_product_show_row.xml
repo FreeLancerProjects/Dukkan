@@ -65,6 +65,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="13sp"
                     android:singleLine="true"
+                    android:gravity="center"
                     />
             </LinearLayout>
             <LinearLayout

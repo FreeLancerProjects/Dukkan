@@ -162,6 +162,15 @@ public interface Services {
                                          @Field("token") String token,
                                          @Field ("status")int order_status);
 
+    @Multipart
+    @POST("/api/order-update_status/{order_id}")
+    Call<ResponseBody> uploadBillPhoto_OrderStatus(@Path("order_id") int order_id,
+                                                   @Part("token") RequestBody token,
+                                                   @Part ("status")RequestBody order_status,
+                                                   @Part MultipartBody.Part bill_photo
+
+    );
+
     @POST("/api/update-order-products")
     Call<ResponseBody> uploadCollectedProducts(@Body DelegateCollectingOrderUploadModel uploadModel);
 

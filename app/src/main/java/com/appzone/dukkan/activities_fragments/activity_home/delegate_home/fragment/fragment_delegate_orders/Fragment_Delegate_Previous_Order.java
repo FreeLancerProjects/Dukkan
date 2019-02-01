@@ -24,6 +24,7 @@ import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +98,15 @@ public class Fragment_Delegate_Previous_Order extends Fragment {
                                     ll_no_order.setVisibility(View.VISIBLE);
                                 }
                             }
-                        }
+                        }else
+                            {
+                                Log.e("code",response.code()+"");
+                                try {
+                                    Log.e("error_body",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                     }
 
                     @Override

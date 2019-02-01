@@ -163,7 +163,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
 
             }
 
-            tv_order_number.setText("#"+order.getId());
+            tv_order_number.setText("#"+new DecimalFormat("#").format(order.getId()));
             tv_order_cost.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+getString(R.string.rsa));
 
             if (order.getNote()!=null  || !TextUtils.isEmpty(order.getNote()))

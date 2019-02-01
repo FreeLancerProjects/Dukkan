@@ -18,6 +18,8 @@ import com.appzone.dukkan.activities_fragments.activity_home.client_home.activit
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.tags.Tags;
 
+import java.text.DecimalFormat;
+
 public class Fragment_Order_Finish_Congratulation extends Fragment {
     public static final String TAG = "order";
     private TextView tv_order_id;
@@ -98,7 +100,7 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
     }
 
     private void UpdateUI(OrdersModel.Order order) {
-        tv_order_id.setText(getString(R.string.your_order_successfully_confirmed_your_order_number_is)+" #"+order.getId());
+        tv_order_id.setText(getString(R.string.your_order_successfully_confirmed_your_order_number_is)+" #"+new DecimalFormat("#").format(order.getId()));
 
     }
 }

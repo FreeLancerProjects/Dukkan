@@ -19,7 +19,6 @@ import com.appzone.dukkan.share.TimeAgo;
 import com.appzone.dukkan.tags.Tags;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -149,19 +148,20 @@ public class Client_Order_Adapter extends RecyclerView.Adapter<Client_Order_Adap
             Paper.init(context);
             String lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
 
-            String order_date = order.getCreated_at();
-            SimpleDateFormat originalDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",new Locale(lang));
-            try {
-                Date parse = originalDate.parse(order_date);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(parse);
-                String d = TimeAgo.getTimeAgo(calendar.getTimeInMillis(),context);
-                tv_date.setText(d);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            long time = order.getMilli_time()*1000;
 
-            tv_order_number.setText("#"+order.getId());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd-MM-yyyy ",new Locale(lang));
+            String date = dateFormat.format(new Date(calendar.getTimeInMillis()));
+            tv_date.setText(date);
+
+            String d = TimeAgo.getTimeAgo(time,context);
+            tv_created_date.setText(d);
+
+
+            tv_order_number.setText("#"+new DecimalFormat("#").format(order.getId()));
             tv_order_total.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+context.getString(R.string.rsa));
 
 

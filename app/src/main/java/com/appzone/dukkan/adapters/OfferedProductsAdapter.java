@@ -172,7 +172,7 @@ public class OfferedProductsAdapter extends RecyclerView.Adapter{
 
                     double discount = (diff/price_before_discount)*100;
 
-                    tv_discount.setText(((int) discount)+" %");
+                    tv_discount.setText((new DecimalFormat("#").format((int) discount))+" %");
                     fl_discount_container.setVisibility(View.VISIBLE);
 
                     tv_before_discount.setPaintFlags(tv_before_discount.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);

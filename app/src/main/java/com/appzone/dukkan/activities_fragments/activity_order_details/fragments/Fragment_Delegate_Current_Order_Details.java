@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
@@ -42,6 +43,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import io.paperdb.Paper;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +69,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private UserSingleTone userSingleTone;
     private UserModel userModel;
     private String image_bill_path="";
+    private Uri uri;
+    private AlertDialog dialog_bill;
 
 
 
@@ -295,17 +300,21 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
     }
     private void StartDelivery()
     {
+        RequestBody order_status_part = Common.getRequestBodyText(String.valueOf(Tags.status_delegate_delivering_order));
+        RequestBody token_part = Common.getRequestBodyText(userModel.getToken());
+        MultipartBody.Part bill_photo_part = Common.getMultiPart(getActivity(),uri,"bill_image");
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         Api.getService()
-                .updateOrderStatus(order.getId(),userModel.getToken(),Tags.status_delegate_delivering_order)
+                .uploadBillPhoto_OrderStatus(order.getId(),token_part,order_status_part,bill_photo_part)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful())
                         {
+                            dialog_bill.dismiss();
                             btn_start.setVisibility(View.GONE);
                             btn_finish.setVisibility(View.VISIBLE);
                             activity.dismissSnackBar();
@@ -315,6 +324,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
                             Log.e("success","true");
                         }else
                         {
+                            dialog.dismiss();
+                            dialog_bill.dismiss();
                             activity.CreateSnackBar(getString(R.string.failed));
                             Log.e("code",response.code()+"");
                         }
@@ -324,6 +335,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         try {
                             dialog.dismiss();
+                            dialog_bill.dismiss();
                             activity.CreateSnackBar(getString(R.string.something));
 
                             Log.e("error",t.getMessage());
@@ -372,34 +384,44 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
 
     public void CreateBillAlertDialog()
     {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+         dialog_bill = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
                 .create();
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bill_photo,null);
 
+        FrameLayout fl =view.findViewById(R.id.fl);
+
         image =view.findViewById(R.id.image);
         image_upload_icon =view.findViewById(R.id.image_upload_icon);
         Button btn_upload = view.findViewById(R.id.btn_upload);
 
-        image.setOnClickListener(new View.OnClickListener() {
+        fl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("eee","eeee");
                 Check_ReadPermission(img_req);
             }
         });
         btn_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StartDelivery();
+                if (uri!=null)
+                {
+                    StartDelivery();
+
+                }else
+                    {
+                        Toast.makeText(activity, R.string.ch_bill_img, Toast.LENGTH_SHORT).show();
+                    }
 
             }
         });
-        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
-        dialog.setView(view);
-        dialog.show();
+        dialog_bill.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog_bill.setCanceledOnTouchOutside(false);
+        dialog_bill.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog_bill.setView(view);
+        dialog_bill.show();
     }
 
     private void Check_ReadPermission(int img_req)
@@ -436,10 +458,28 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         if (requestCode == img_req && resultCode == Activity.RESULT_OK && data!=null)
         {
             image_upload_icon.setVisibility(View.GONE);
-            Uri uri = data.getData();
+            uri = data.getData();
             image_bill_path = Common.getImagePath(getActivity(),uri);
             Bitmap bitmap = BitmapFactory.decodeFile(image_bill_path);
             image.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == img_req)
+        {
+            if (grantResults.length>0)
+            {
+                if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
+                {
+                    select_photo(img_req);
+                }else
+                    {
+                        Toast.makeText(activity,getString(R.string.access_image_denied), Toast.LENGTH_LONG).show();
+                    }
+            }
         }
     }
 

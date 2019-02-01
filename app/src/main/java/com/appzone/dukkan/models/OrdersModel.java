@@ -34,6 +34,8 @@ public class OrdersModel implements Serializable{
         private double discount_point;
         private long milli_time;
         private long accepted_time;
+        private String bill_image;
+        private int chat_room_id;
         private Client client;
         private Delegate delegate;
         private List<Products> products;
@@ -100,6 +102,14 @@ public class OrdersModel implements Serializable{
 
         public String getCreated_at() {
             return created_at;
+        }
+
+        public String getBill_image() {
+            return bill_image;
+        }
+
+        public int getChat_room_id() {
+            return chat_room_id;
         }
 
         public long getMilli_time() {

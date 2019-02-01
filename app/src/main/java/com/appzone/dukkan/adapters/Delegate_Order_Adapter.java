@@ -172,7 +172,7 @@ public class Delegate_Order_Adapter extends RecyclerView.Adapter<Delegate_Order_
             String d = TimeAgo.getTimeAgo(time,context);
             tv_created_date.setText(d);
 
-            tv_order_number.setText("#"+order.getId());
+            tv_order_number.setText("#"+new DecimalFormat("#").format(order.getId()));
             tv_order_total.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+context.getString(R.string.rsa));
 
 

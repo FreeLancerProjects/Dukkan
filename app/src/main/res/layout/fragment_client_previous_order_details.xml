@@ -424,11 +424,12 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/btn_login_bg"
         android:textColor="@color/white"
         android:textSize="15sp"
         android:text="@string/request_again"
         />
+    
 </FrameLayout>
 

@@ -111,7 +111,7 @@ public class DelegateCollectOrderAdapter extends RecyclerView.Adapter<DelegateCo
 
                 }
 
-                tv_amount.setText(products.getQuantity()+"");
+                tv_amount.setText(new DecimalFormat("#").format(products.getQuantity())+"");
 
             if (products.getAlternative()==null)
             {
