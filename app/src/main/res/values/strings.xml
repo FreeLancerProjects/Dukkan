@@ -253,4 +253,5 @@
     <string name="finish">Finish</string>
     <string name="dele">Delete ?</string>
     <string name="products_cost3">Products cost</string>
+    <string name="upload_bill_photo">Upload bill photo</string>
 </resources>

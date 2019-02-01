@@ -255,5 +255,6 @@
     <string name="finish">تم التوصيل</string>
     <string name="dele">حذف ؟</string>
     <string name="products_cost3">اجمالي قيمة المنتجات</string>
+    <string name="upload_bill_photo">رفع صورة الفاتورة</string>
 
 </resources>

@@ -1,11 +1,22 @@
 package com.appzone.dukkan.activities_fragments.activity_order_details.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,19 +50,23 @@ import retrofit2.Response;
 public class Fragment_Delegate_Current_Order_Details extends Fragment{
     private static final String TAG = "ORDER";
     private OrderDetailsActivity activity;
-    private ImageView image_back,image_arrow,image_chat;
+    private ImageView image_back,image_arrow,image_chat,image,image_upload_icon;
     private LinearLayout ll_back,ll_notes;
     private String current_lang;
     private Button btn_show_products,btn_start,btn_finish;
     private TextView tv_current_time,tv_client_name,tv_address,tv_payment,tv_notes,tv_delivery_time_type;
     private FrameLayout fl_map;
     private OrdersModel.Order order;
+    private final String read_permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private int img_req=1;
     private TextView tv_hour,tv_minute,tv_second;
     private long now;
     private Handler handler;
     private Runnable runnable;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
+    private String image_bill_path="";
+
 
 
     @Nullable
@@ -149,7 +164,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StartDelivery();
+                CreateBillAlertDialog();
             }
         });
         btn_finish.setOnClickListener(new View.OnClickListener() {
@@ -164,10 +179,6 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
 
 
     }
-
-
-
-
 
     private void StartTimer() {
 
@@ -239,7 +250,6 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         }
 
 
-        Log.e("staus",order.getStatus()+"_");
         switch (order.getStatus())
         {
             case Tags.status_delegate_accept_order:
@@ -283,7 +293,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         btn_show_products.setEnabled(false);
         btn_start.setVisibility(View.VISIBLE);
     }
-    private void StartDelivery() {
+    private void StartDelivery()
+    {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -320,7 +331,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
                     }
                 });
     }
-    private void FinishDelivery() {
+    private void FinishDelivery()
+    {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
@@ -358,9 +370,82 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
                 });
     }
 
+    public void CreateBillAlertDialog()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setCancelable(true)
+                .create();
+
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bill_photo,null);
+
+        image =view.findViewById(R.id.image);
+        image_upload_icon =view.findViewById(R.id.image_upload_icon);
+        Button btn_upload = view.findViewById(R.id.btn_upload);
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Check_ReadPermission(img_req);
+            }
+        });
+        btn_upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StartDelivery();
+
+            }
+        });
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setView(view);
+        dialog.show();
+    }
+
+    private void Check_ReadPermission(int img_req)
+    {
+        if (ContextCompat.checkSelfPermission(getActivity(),read_permission)!= PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(getActivity(),new String[]{read_permission},img_req);
+        }else
+        {
+            select_photo(img_req);
+        }
+    }
+
+
+    private void select_photo(int img_req) {
+        Intent intent ;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        }else
+        {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        }
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType("image/*");
+        startActivityForResult(intent,img_req);
+    }
 
     @Override
-    public void onDestroyView() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == img_req && resultCode == Activity.RESULT_OK && data!=null)
+        {
+            image_upload_icon.setVisibility(View.GONE);
+            Uri uri = data.getData();
+            image_bill_path = Common.getImagePath(getActivity(),uri);
+            Bitmap bitmap = BitmapFactory.decodeFile(image_bill_path);
+            image.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void onDestroyView()
+    {
         super.onDestroyView();
         if (runnable!=null&& handler!=null)
         {
