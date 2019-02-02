@@ -8,5 +8,7 @@
 >
     <include layout="@layout/product_details_content_layout"/>
     <include layout="@layout/product_alternative_bottom_sheet_layout"/>
+    <include layout="@layout/bottom_sheet_choose_alternative_or_not_layout"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

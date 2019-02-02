@@ -1,5 +1,6 @@
 package com.appzone.dukkan.activities_fragments.activity_order_details.fragments;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +20,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.adapters.ClientPreviousDetailsProductAdapter;
+import com.appzone.dukkan.models.OrderItemListModel;
 import com.appzone.dukkan.models.OrdersModel;
+import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Fragment_Client_Previous_Order_Details extends Fragment {
     private static final String TAG = "ORDER";
@@ -64,7 +74,8 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         fragment_client_previous_order_details.setArguments(bundle);
         return fragment_client_previous_order_details;
     }
-    private void initView(View view) {
+    private void initView(View view)
+    {
         activity = (OrderDetailsActivity) getActivity();
         Paper.init(activity);
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
@@ -138,7 +149,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         btn_request_again.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //DisplayOrderCost();
+                getOrderProducts();
             }
         });
 
@@ -164,7 +175,7 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
             }
 
             tv_order_number.setText("#"+new DecimalFormat("#").format(order.getId()));
-            tv_order_cost.setText(new DecimalFormat("##.##").format(order.getTotal())+" "+getString(R.string.rsa));
+            tv_order_cost.setText(new DecimalFormat("##.##").format(getProductsCost(order.getProducts()))+" "+getString(R.string.rsa));
 
             if (order.getNote()!=null  || !TextUtils.isEmpty(order.getNote()))
             {
@@ -196,8 +207,23 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         }
 
     }
+    private double getProductsCost(List<OrdersModel.Products> productsList)
+    {
+        double cost=0.0;
 
+        for (OrdersModel.Products products :productsList)
+        {
+            if (products.getFeature()!=null)
+            {
+                cost += (products.getQuantity()*products.getFeature().getDiscount());
+            }else
+            {
+                cost += (products.getQuantity()*products.getProduct_price().getNet_price());
 
+            }
+        }
+        return cost;
+    }
     private void DisplayOrderCost(final OrdersModel.Order order, double tax, double order_cost, double delivery_cost)
     {
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -221,8 +247,6 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                activity.SendOrderAgain(order);
             }
         });
 
@@ -239,4 +263,46 @@ public class Fragment_Client_Previous_Order_Details extends Fragment {
         dialog.setView(view);
         dialog.show();
     }
+
+    private void getOrderProducts() {
+        final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        Api.getService()
+                .getProductsToSendAgain(order.getId())
+                .enqueue(new Callback<OrderItemListModel>() {
+                    @Override
+                    public void onResponse(Call<OrderItemListModel> call, Response<OrderItemListModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            activity.dismissSnackBar();
+                            dialog.dismiss();
+                            if (response.body()!=null)
+                            {
+                                activity.SendOrderAgain(response.body().getData());
+                            }
+                        }else
+                            {
+                                activity.dismissSnackBar();
+
+                                dialog.dismiss();
+                                Toast.makeText(activity,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OrderItemListModel> call, Throwable t) {
+
+                        try {
+                            dialog.dismiss();
+                            activity.CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+
+    }
+
+
 }

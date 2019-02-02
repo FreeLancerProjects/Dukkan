@@ -4,6 +4,7 @@ import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DelegateCollectingOrderUploadModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.OrderItemListModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.ProductPaginationModel;
@@ -174,4 +175,6 @@ public interface Services {
     @POST("/api/update-order-products")
     Call<ResponseBody> uploadCollectedProducts(@Body DelegateCollectingOrderUploadModel uploadModel);
 
+    @GET("/api/repeat-order")
+    Call<OrderItemListModel> getProductsToSendAgain(@Query("order_id") int order_id);
 }

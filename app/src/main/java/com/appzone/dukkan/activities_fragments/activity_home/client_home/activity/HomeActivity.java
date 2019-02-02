@@ -1376,12 +1376,37 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             UpdateCartNotification(orderItemsSingleTone.getItemsCount());
         }else if (requestCode == 2 && resultCode==RESULT_OK)
         {
-            RefreshFragmentClient_Previous_New_Order();
+            if (data!=null)
+            {
+                if (data.hasExtra("data"))
+                {
+                    List<OrderItem> orderItemList = (List<OrderItem>) data.getSerializableExtra("data");
+                    UpdateFragmentCart(orderItemList);
+                }else
+                    {
+                        RefreshFragmentClient_Previous_New_Order();
+
+                    }
+            }else
+                {
+                    RefreshFragmentClient_Previous_New_Order();
+
+                }
         }
 
 
 
     }
+
+    private void UpdateFragmentCart(List<OrderItem> orderItemList) {
+        UpdateCartNotification(orderItemList.size());
+        if (orderItemsSingleTone==null)
+        {
+            orderItemsSingleTone = OrderItemsSingleTone.newInstance();
+        }
+        orderItemsSingleTone.AddListOrderItems(orderItemList);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {

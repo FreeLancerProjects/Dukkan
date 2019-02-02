@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,20 +88,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private OrderItemsSingleTone orderItemsSingleTone;
     /////////////////////////////////////////////////////////
-    private BottomSheetBehavior behavior;
-    private View root;
-    private ImageView image_product,image_close;
-    private TextView tv_product_name,tv_price_before_discount_product,tv_price_after_discount_product,tv_amount,tv_total_price,tv_no_alternative_product;
+    private BottomSheetBehavior behavior,behavior2;
+    private View root,root2;
+    private ImageView image_product,image_product2,image_close,image_close2;
+    private TextView tv_product_name,tv_product_name2,tv_price_before_discount_product,tv_price_after_discount_product,tv_amount,tv_total_price,tv_price,tv_amount2,tv_no_alternative_product;
     private RecyclerView recViewSize,recViewProduct;
     private RecyclerView.LayoutManager managerSize,managerProduct;
-    private Button btn_add_alter_product,btn_cancel;
+    private Button btn_add_alter_product,btn_add_alter_product2,btn_cancel2,btn_add_current_product;
     private AlternativeProductItem alternativeProductItem=null;
+    private LinearLayout ll_alternative_container,ll_no_alternative_product;
     private double alternativeProductTotalPrice =0;
     List<MainCategory.Products> productsList;
     private String alternativeProductName="";
     private int selectedProductId;
     private int current_page =1;
     private boolean canStartTimer=false;
+
 
 
     @Override
@@ -124,6 +128,67 @@ public class ProductDetailsActivity extends AppCompatActivity {
         imgsEndPointList = new ArrayList<>();
         productsList = new ArrayList<>();
 
+        ////////////////////////////////////////////////////////////
+        root2 = findViewById(R.id.root2);
+        image_product2 = findViewById(R.id.image_product2);
+        tv_product_name2 = findViewById(R.id.tv_product_name2);
+        tv_amount2 = findViewById(R.id.tv_amount2);
+        tv_price = findViewById(R.id.tv_price);
+
+        btn_add_current_product = findViewById(R.id.btn_add_current_product);
+        ll_alternative_container = findViewById(R.id.ll_alternative_container);
+        ll_no_alternative_product = findViewById(R.id.ll_no_alternative_product);
+
+        behavior2 = BottomSheetBehavior.from(root2);
+        behavior2.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING)
+                {
+                    behavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        image_close2 = findViewById(R.id.image_close2);
+        image_close2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
+        btn_add_alter_product2 = findViewById(R.id.btn_add_alter_product2);
+        btn_cancel2 = findViewById(R.id.btn_cancel2);
+        btn_cancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                NotNeedToAddAlternativeProduct();
+            }
+        });
+        btn_add_current_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                NotNeedToAddAlternativeProduct();
+            }
+        });
+        btn_add_alter_product2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                behavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                UpdateBottomSheetUI(alternativeProduct);
+                OpenSheet();
+
+            }
+        });
         ////////////////////////////////////////////////////////////
         root = findViewById(R.id.root);
         behavior = BottomSheetBehavior.from(root);
@@ -163,14 +228,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
         recViewProduct.setItemViewCacheSize(25);
         recViewProduct.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         btn_add_alter_product = findViewById(R.id.btn_add_alter_product);
-        btn_cancel = findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
+        //btn_cancel = findViewById(R.id.btn_cancel);
+        /*btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CloseSheet();
                 NotNeedToAddAlternativeProduct();
             }
-        });
+        });*/
         btn_add_alter_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,7 +315,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                UpdateBottomSheetUI(alternativeProduct);
+
                 PrepareItemToAddToCart();
 
             }
@@ -265,17 +330,92 @@ public class ProductDetailsActivity extends AppCompatActivity {
             selectedProductId = product.getId();
 
             similarProductsList = (List<MainCategory.Products>) intent.getSerializableExtra("similar_products");
-            alternativeProductList = (List<MainCategory.Products>) intent.getSerializableExtra("similar_products");;
-            if (alternativeProductList.size()>0)
+            alternativeProductList = (List<MainCategory.Products>) intent.getSerializableExtra("similar_products");
+            alternativeProduct = product;
+            /*if (alternativeProductList.size()>0)
             {
                 alternativeProduct = alternativeProductList.get(0);
 
-            }
+            }*/
             UpdateUi(product);
-            UpdateBottomSheetUI(alternativeProduct);
             UpdateSimilarAdapterUI(similarProductsList);
             UpdateAlternativeAdapterUI(alternativeProductList);
         }
+    }
+    private void UpdateUi(MainCategory.Products product)
+    {
+        Log.e("prname",product.getName_ar());
+        UpdateBottomSheetUI2(product);
+
+        UpdateAdapter(product);
+        if (current_lang.equals("ar"))
+        {
+            product_name = product.getName_ar();
+
+
+        }else
+        {
+            product_name = product.getName_en();
+
+        }
+
+        UpdateProductName(product_name);
+        UpdateViewPagerImages(product);
+
+
+
+    }
+    private void UpdateBottomSheetUI2(MainCategory.Products alternativeProduct)
+    {
+        Log.e("name",alternativeProduct.getName_ar());
+        tv_amount2.setText(new DecimalFormat("#").format(counter));
+
+        if (alternativeProduct!=null)
+        {
+            ll_alternative_container.setVisibility(View.VISIBLE);
+            ll_no_alternative_product.setVisibility(View.GONE);
+            if (alternativeProduct.getImage().size()>0)
+            {
+                Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+alternativeProduct.getImage().get(0))).fit().into(image_product2);
+
+            }
+
+            if (current_lang.equals("ar"))
+            {
+                if (productSize_offerModel!=null)
+                {
+                    tv_product_name2.setText(alternativeProduct.getName_ar()+" "+productSize_offerModel.getAr_name());
+
+                }
+            }else
+            {
+                if (productSize_offerModel!=null)
+                {
+                    tv_product_name2.setText(alternativeProduct.getName_en()+" "+productSize_offerModel.getEn_name());
+
+                }
+
+            }
+
+            if (productSize_offerModel!=null)
+            {
+                if (productSize_offerModel.isOffer())
+                {
+                    tv_price.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_after_discount()))+" "+getString(R.string.rsa));
+                }else
+                {
+                    tv_price.setText(new DecimalFormat("##.##").format(Double.parseDouble(productSize_offerModel.getPrice_before_discount()))+" "+getString(R.string.rsa));
+
+                }
+            }
+
+
+
+        }else
+            {
+                ll_alternative_container.setVisibility(View.GONE);
+                ll_no_alternative_product.setVisibility(View.VISIBLE);
+            }
     }
     private void UpdateBottomSheetUI(MainCategory.Products alternativeProduct)
     {
@@ -328,7 +468,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     orderItem = new OrderItem("",product.getId(),productSize_offerModel.getFeature_id(),productSize_offerModel.getId(),product.getName_ar(),product.getName_en(),productSize_offerModel.getAr_name(),productSize_offerModel.getEn_name(),counter,Integer.parseInt(productSize_offerModel.getPrice_after_discount()),total_price);
 
                 }
-                OpenSheet();
+                UpdateBottomSheetUI2(product);
+                behavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
+                //OpenSheet();
             }else
             {
                 Toast.makeText(ProductDetailsActivity.this, R.string.ch_size, Toast.LENGTH_SHORT).show();
@@ -347,7 +489,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
             }
 
-            OpenSheet();
+            UpdateBottomSheetUI2(product);
+            behavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            //OpenSheet();
 
         }
 
@@ -417,10 +562,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void OpenSheet()
 
     {
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        },1000);
     }
     private void CloseSheet()
     {
+        alternative_productSize_offerModel = null;
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
     }
@@ -530,27 +681,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 });
     }
 
-    private void UpdateUi(MainCategory.Products product)
-    {
 
-        UpdateAdapter(product);
-        if (current_lang.equals("ar"))
-        {
-            product_name = product.getName_ar();
-
-
-        }else
-        {
-            product_name = product.getName_en();
-
-        }
-
-        UpdateProductName(product_name);
-        UpdateViewPagerImages(product);
-
-
-
-    }
 
     private void UpdateViewPagerImages(MainCategory.Products product)
     {
@@ -894,7 +1025,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
         UpdateBottomSheetUI(alternativeProduct);
 
     }
-
     public void setItemEndPoint(String endPoint) {
         StopTimer();
         Intent intent = new Intent(this, Activity_Show_Image.class);
@@ -1021,6 +1151,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         if (behavior.getState()==BottomSheetBehavior.STATE_EXPANDED)
         {
             CloseSheet();
+        }else if (behavior2.getState()==BottomSheetBehavior.STATE_EXPANDED)
+        {
+            behavior2.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }else
             {
                 super.onBackPressed();

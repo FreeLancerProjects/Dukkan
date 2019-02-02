@@ -131,7 +131,7 @@ public class CartAdapter extends RecyclerView.Adapter <CartAdapter.MyHolder> {
 
             }
 
-            tv_counter.setText(String.valueOf(orderItem.getProduct_quantity()));
+            tv_counter.setText(new DecimalFormat("##.##").format(orderItem.getProduct_quantity()));
             tv_price.setText(new DecimalFormat("##.##").format(orderItem.getProduct_total_price())+" " + context.getString(R.string.rsa));
             if (!TextUtils.isEmpty(orderItem.getProduct_image()))
             {

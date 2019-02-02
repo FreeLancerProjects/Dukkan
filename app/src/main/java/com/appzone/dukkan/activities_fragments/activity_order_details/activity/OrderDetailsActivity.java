@@ -29,6 +29,7 @@ import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.
 import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.Fragment_Map_Order_Details;
 import com.appzone.dukkan.activities_fragments.activity_chat.ChatActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.UserChatModel;
 import com.appzone.dukkan.models.UserModel;
@@ -38,7 +39,9 @@ import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -500,8 +503,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     }
 
-    public void SendOrderAgain(OrdersModel.Order order)
+    public void SendOrderAgain(List<OrderItem> orderItemList)
     {
+        Intent intent = getIntent();
+        intent.putExtra("data", (Serializable) orderItemList);
+        setResult(RESULT_OK,intent);
+        finish();
         /*ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);

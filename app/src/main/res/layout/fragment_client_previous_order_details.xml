@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="55dp"
         >
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
@@ -417,19 +417,30 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <Button
-        android:id="@+id/btn_request_again"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/btn_login_bg"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        android:text="@string/request_again"
-        />
+        android:background="@color/white"
+
+
+        >
+        <Button
+            android:id="@+id/btn_request_again"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+
+            android:background="@drawable/btn_login_bg"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="@string/request_again"
+            />
+    </FrameLayout>
+
     
 </FrameLayout>
 

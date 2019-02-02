@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +35,9 @@ import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -399,7 +399,6 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         fl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("eee","eeee");
                 Check_ReadPermission(img_req);
             }
         });
@@ -460,8 +459,8 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
             image_upload_icon.setVisibility(View.GONE);
             uri = data.getData();
             image_bill_path = Common.getImagePath(getActivity(),uri);
-            Bitmap bitmap = BitmapFactory.decodeFile(image_bill_path);
-            image.setImageBitmap(bitmap);
+            Picasso.with(getActivity()).load(new File(image_bill_path)).fit().into(image);
+
         }
     }
 
@@ -472,7 +471,7 @@ public class Fragment_Delegate_Current_Order_Details extends Fragment{
         {
             if (grantResults.length>0)
             {
-                if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
+                if (grantResults[0]== PackageManager.PERMISSION_GRANTED)
                 {
                     select_photo(img_req);
                 }else

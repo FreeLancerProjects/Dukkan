@@ -86,7 +86,11 @@ public class OrderItemsSingleTone {
         return pos;
     }
 
-
+    public void AddListOrderItems(List<OrderItem> orderItemList)
+    {
+        this.orderItemList.clear();
+        this.orderItemList.addAll(orderItemList);
+    }
     public List<OrderItem> getOrderItemList() {
         return orderItemList;
     }

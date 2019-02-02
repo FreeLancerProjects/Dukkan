@@ -101,7 +101,7 @@
     <string name="There_are_no_departments_to_display">There are no departments to display</string>
     <string name="there_are_no_products_to_display">There are no products to display</string>
     <string name="discount">Discount</string>
-    <string name="rsa">RSA</string>
+    <string name="rsa">SR</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="similar_products">Similar products</string>
     <string name="ch_size">Choose Size</string>
@@ -255,4 +255,10 @@
     <string name="products_cost3">Products cost</string>
     <string name="upload_bill_photo">Upload bill photo</string>
     <string name="ch_bill_img">Choose bill photo</string>
+    <string name="suggest_an_alternative">Suggest an alternative</string>
+    <string name="not_need_an_alternative">Not need an alternative</string>
+    <string name="in_the_event_any_alternative">In the event that this product is not available or if the quantity is in force, the delegate will deliver the product without any alternative</string>
+    <string name="no_an_alternative_produce_add_this_current_product">There are no an alternative produce add this current product ?</string>
+    <string name="add_current_product">Add current product</string>
+    <string name="suggestions_from_dukkan">Suggestions from Dukkan</string>
 </resources>

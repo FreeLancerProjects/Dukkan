@@ -184,11 +184,8 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
     public void updateOrderCost(OrdersModel.Products product,int status)
     {
-        Log.e("quantity",product.getQuantity()+"");
         double product_cost = getProductCost(product);
-        Log.e("product_cost",product_cost+"_");
         order_total_cost += product_cost;
-        Log.e("order_total_cost1",order_total_cost+"_");
 
        /* tv_order_price.setText(getString(R.string.products_cost3)+" "+order_total_cost+" "+getString(R.string.rsa));
         tv_order_price.setVisibility(View.VISIBLE);*/
@@ -216,8 +213,9 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
     }
     private void PrepareOrderToUpload()
     {
+        Log.e("size",choosedUploadProductsList.size()+"");
+        Log.e("data",choosedUploadProductsList.get(0).getProduct_id()+"");
 
-        Log.e("order_total_cost",order_total_cost+"_");
         uploadModel.setOrder_id(order.getId());
         uploadModel.setTotal_order_cost(order_total_cost);
         uploadModel.setProductsList(choosedUploadProductsList);
@@ -268,19 +266,12 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         double cost;
         if (product.getFeature()!=null)
         {
-            Log.e("quantity3", product.getQuantity()+"_");
-            Log.e("p_cost3", product.getFeature().getDiscount()+"_");
-
             cost = product.getQuantity()*product.getFeature().getDiscount();
-            Log.e("cost2", cost+"_");
 
         }else
             {
-                Log.e("quantity2", product.getQuantity()+"_");
-                Log.e("p_cost", product.getProduct_price().getNet_price()+"_");
 
                 cost = product.getQuantity()*product.getProduct_price().getNet_price();
-                Log.e("cost", cost+"_");
 
             }
             return cost;
@@ -297,12 +288,15 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
 
         OrdersModel.Products product = orderProductList.get(position);
+        Products product2 = new Products(product.getId(),Tags.product_not_changed);
 
         if (direction == ItemTouchHelper.LEFT)
         {
             updateOrderCost(product,Tags.product_not_changed);
 
+            choosedUploadProductsList.add(product2);
             choosedProductList.add(product);
+
             this.orderProductList.remove(position);
             this.adapter.notifyItemRemoved(position);
             if (orderProductList.size()==0)
