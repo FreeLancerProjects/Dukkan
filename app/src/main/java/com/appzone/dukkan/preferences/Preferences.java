@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.appzone.dukkan.models.ChatRoom_UserIdModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.tags.Tags;
 import com.google.gson.Gson;
@@ -200,17 +201,19 @@ public class Preferences {
 
     }
 
-    public void create_update_chat_user_id(Context context,String chat_user_id)
+    public void create_update_chat_user_id_room_id(Context context, ChatRoom_UserIdModel chatRoom_userIdModel)
     {
         SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("chat_user_id",chat_user_id);
+        String data = new Gson().toJson(chatRoom_userIdModel);
+        editor.putString("data",data);
         editor.apply();
     }
 
-    public String getChatUserId(Context context)
+    public ChatRoom_UserIdModel getChatUserData(Context context)
     {
         SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
-        return preferences.getString("chat_user_id","");
+        ChatRoom_UserIdModel model = new Gson().fromJson(preferences.getString("data",""),ChatRoom_UserIdModel.class);
+        return model ;
     }
 }

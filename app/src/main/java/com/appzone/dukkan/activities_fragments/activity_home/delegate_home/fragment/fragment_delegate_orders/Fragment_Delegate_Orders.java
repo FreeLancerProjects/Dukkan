@@ -71,5 +71,9 @@ public class Fragment_Delegate_Orders extends Fragment {
         fragment_delegate_previous_order.getOrders();
     }
 
+    public void setPage(int index)
+    {
+        pager.setCurrentItem(index);
+    }
 
 }

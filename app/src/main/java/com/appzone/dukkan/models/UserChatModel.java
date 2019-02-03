@@ -4,14 +4,16 @@ import java.io.Serializable;
 
 public class UserChatModel implements Serializable {
     private int id;
+    private int room_id;
     private String name;
     private String phone;
     private String image;
     private String user_type;
     private double rate;
 
-    public UserChatModel(int id, String name, String phone, String image, String user_type, double rate) {
+    public UserChatModel(int id, int room_id, String name, String phone, String image, String user_type, double rate) {
         this.id = id;
+        this.room_id = room_id;
         this.name = name;
         this.phone = phone;
         this.image = image;
@@ -25,6 +27,14 @@ public class UserChatModel implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(int room_id) {
+        this.room_id = room_id;
     }
 
     public String getName() {

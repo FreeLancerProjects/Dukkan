@@ -520,14 +520,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public void NavigateToChatActivity()
     {
+        Log.e("room",order.getChat_room_id()+"_");
         UserChatModel userChatModel = null;
         if (user_type.equals(Tags.user_client))
         {
-             userChatModel = new UserChatModel(order.getDelegate().getId(),order.getDelegate().getName(),order.getDelegate().getPhone(),order.getDelegate().getAvatar(),Tags.user_delegate,order.getDelegate().getRate());
+             userChatModel = new UserChatModel(order.getDelegate().getId(),order.getChat_room_id(),order.getDelegate().getName(),order.getDelegate().getPhone(),order.getDelegate().getAvatar(),Tags.user_delegate,order.getDelegate().getRate());
         }else if (user_type.equals(Tags.user_delegate))
         {
 
-             userChatModel = new UserChatModel(order.getClient().getId(),order.getClient().getName(),order.getClient().getPhone(),"",Tags.user_client,0);
+             userChatModel = new UserChatModel(order.getClient().getId(),order.getChat_room_id(),order.getClient().getName(),order.getClient().getPhone(),"",Tags.user_client,0);
 
         }
 

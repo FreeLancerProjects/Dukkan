@@ -36,6 +36,27 @@ public class Tags {
     public static final int product_alternative = 1;
     public static final int product_deleted = 2;
 
+    public static final int msg_text = 1;
+    public static final int msg_img = 2;
+
+    public static final int NEW_ORDER_NOTIFICATION = 1;
+    public static final int ACCEPTED_ORDER_NOTIFICATION  = 2;
+    public static final int COLLECTING_ORDER_NOTIFICATION  = 3;
+    public static final int COLLECTED_ORDER_NOTIFICATION  = 4;
+    public static final int DELIVERING_ORDER_NOTIFICATION  = 5;
+    public static final int DELIVERED_ORDER_NOTIFICATION  = 6;
+    public static final int NEW_MESSAGE_NOTIFICATION = 7;
+    public static final int TYPING_MESSAGE_NOTIFICATION  = 8;
+    public static final int START_TYPING = 1;
+    public static final int END_TYPING   = 0;
+
+
+
+
+
+
+
+
 
 
 

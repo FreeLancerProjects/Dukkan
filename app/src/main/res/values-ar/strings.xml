@@ -263,5 +263,7 @@
     <string name="no_an_alternative_produce_add_this_current_product">لا يوجد منتج بديل هل تريد إضافة المنتج الحالي ؟</string>
     <string name="add_current_product">إضافة المنتج الحالي</string>
     <string name="suggestions_from_dukkan">مقترحات من دكان</string>
+    <string name="new_order">طلب جديد</string>
+    <string name="order_delivered">تم التوصيل</string>
 
 </resources>

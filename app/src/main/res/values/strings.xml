@@ -261,4 +261,6 @@
     <string name="no_an_alternative_produce_add_this_current_product">There are no an alternative produce add this current product ?</string>
     <string name="add_current_product">Add current product</string>
     <string name="suggestions_from_dukkan">Suggestions from Dukkan</string>
+    <string name="new_order">New order</string>
+    <string name="order_delivered">Order delivered</string>
 </resources>

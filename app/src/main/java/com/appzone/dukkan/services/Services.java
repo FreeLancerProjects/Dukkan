@@ -4,6 +4,8 @@ import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DelegateCollectingOrderUploadModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.MessageModel;
+import com.appzone.dukkan.models.MessageModelList;
 import com.appzone.dukkan.models.OrderItemListModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
@@ -177,4 +179,15 @@ public interface Services {
 
     @GET("/api/repeat-order")
     Call<OrderItemListModel> getProductsToSendAgain(@Query("order_id") int order_id);
+
+    @GET("/api/chat-room/{room_id}")
+    Call<MessageModelList> getMessage(@Path("room_id") int room_id,
+                                      @Query("token") String token,
+                                      @Query("page") int page_index
+
+    );
+    @POST("/api/send-chat-message")
+    Call<MessageModel> sendMessage(@Body MessageModel messageModel,
+                                   @Query("token") String token
+                                   );
 }

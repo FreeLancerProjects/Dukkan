@@ -1,20 +1,20 @@
 package com.appzone.dukkan.activities_fragments.activity_chat;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
@@ -23,33 +23,51 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.adapters.ChatAdapter;
 import com.appzone.dukkan.language_helper.LanguageHelper;
+import com.appzone.dukkan.models.ChatRoom_UserIdModel;
+import com.appzone.dukkan.models.MessageModel;
+import com.appzone.dukkan.models.MessageModelList;
+import com.appzone.dukkan.models.TypingModel;
 import com.appzone.dukkan.models.UserChatModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
+import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 import pl.tajchert.waitingdots.DotsTextView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
+
     private LinearLayout ll_back,ll_rate,ll_typing;
-    private ImageView image_back,image_client,image_call,image_client_typing,image_upload;
+    private ImageView image_back,image_client,image_call,image_client_typing;
     private CircleImageView image_delegate,image_delegate_typing;
     private TextView tv_delegate,tv_name,tv_rate;
     private SimpleRatingBar rateBar;
     private RecyclerView recView;
     private LinearLayoutManager manager;
-    private ProgressBar progBar;
+    private ChatAdapter adapter;
+    private ProgressBar progBar,progBar_loadMore;
     private DotsTextView tv_wait_dot;
     private Button btn_send;
     private EditText edt_msg_content;
@@ -58,30 +76,38 @@ public class ChatActivity extends AppCompatActivity {
     private UserChatModel userChatModel;
     private Preferences preferences;
     private String current_lang;
-    private final String read_perm = Manifest.permission.READ_EXTERNAL_STORAGE;
-    private final int read_req = 1,img_req = 22;
+    private int page_index = 1;
+    private List<MessageModel> messageModelList;
+    private boolean isLoading = false,startTyping = false;
+    private MediaPlayer mediaPlayer;
+    private MyAsyncTask myAsyncTask;
 
     @Override
-    protected void attachBaseContext(Context base) {
+    protected void attachBaseContext(Context base)
+    {
         Paper.init(base);
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         super.attachBaseContext(LanguageHelper.onAttach(base,current_lang));
     }
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initView();
         getDataFromIntent();
     }
-
-
-
-    private void initView() {
+    private void initView()
+    {
+        messageModelList = new ArrayList<>();
         userSingleTone = UserSingleTone.getInstance();
         userModel = userSingleTone.getUserModel();
         preferences = Preferences.getInstance();
+
+        if (!EventBus.getDefault().isRegistered(this))
+        {
+            EventBus.getDefault().register(this);
+        }
         Paper.init(this);
         current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
         LanguageHelper.setLocality(this,current_lang);
@@ -102,7 +128,6 @@ public class ChatActivity extends AppCompatActivity {
         image_client = findViewById(R.id.image_client);
         image_call = findViewById(R.id.image_call);
         image_client_typing = findViewById(R.id.image_client_typing);
-        image_upload = findViewById(R.id.image_upload);
         image_delegate = findViewById(R.id.image_delegate);
         image_delegate_typing = findViewById(R.id.image_delegate_typing);
         tv_delegate = findViewById(R.id.tv_delegate);
@@ -116,6 +141,11 @@ public class ChatActivity extends AppCompatActivity {
         recView.setLayoutManager(manager);
         progBar = findViewById(R.id.progBar);
         progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+
+        progBar_loadMore = findViewById(R.id.progBar_loadMore);
+        progBar_loadMore.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+
+
         tv_wait_dot = findViewById(R.id.tv_wait_dot);
         btn_send = findViewById(R.id.btn_send);
         edt_msg_content = findViewById(R.id.edt_msg_content);
@@ -142,22 +172,69 @@ public class ChatActivity extends AppCompatActivity {
                 String msg = edt_msg_content.getText().toString().trim();
                 if (!TextUtils.isEmpty(msg))
                 {
+                    edt_msg_content.setText("");
+                    startTyping = false;
                     SendMessage(msg);
                 }
             }
         });
 
-        image_upload.setOnClickListener(new View.OnClickListener() {
+        recView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View v) {
-                CheckReadPermission();
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                if (dy<0)
+                {
+                    LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                    int lastVisibleItem = manager.findLastVisibleItemPosition();
+                    int threshold = messageModelList.size()-10;
+                    if (lastVisibleItem < threshold && !isLoading)
+                    {
+                        isLoading = true;
+                        int page_index = ChatActivity.this.page_index +1;
+                        progBar_loadMore.setVisibility(View.VISIBLE);
+                        loadMore(page_index);
+                    }
+                }
             }
         });
+
+        edt_msg_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String msg = edt_msg_content.getText().toString().trim();
+                if (msg.length()>0)
+                {
+                    if (!startTyping)
+                    {
+                        startTyping =true;
+                        ChangeTyping(Tags.START_TYPING);
+                    }
+                }else
+                    {
+                        ChangeTyping(Tags.END_TYPING);
+
+                        startTyping =false;
+
+                    }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
-
-
-
-    private void getDataFromIntent() {
+    private void getDataFromIntent()
+    {
         Intent intent = getIntent();
         if (intent!=null)
         {
@@ -165,11 +242,11 @@ public class ChatActivity extends AppCompatActivity {
             UpdateUI(this.userChatModel);
         }
     }
-
     private void UpdateUI(UserChatModel userChatModel)
     {
 
-        preferences.create_update_chat_user_id(this,String.valueOf(userChatModel.getId()));
+        ChatRoom_UserIdModel model = new ChatRoom_UserIdModel(userChatModel.getId(),userChatModel.getRoom_id());
+        preferences.create_update_chat_user_id_room_id(this,model);
         if (userModel.getUser().getRole().equals(Tags.user_client))
         {
             Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+userChatModel.getImage())).fit().into(image_delegate);
@@ -194,71 +271,249 @@ public class ChatActivity extends AppCompatActivity {
             image_client.setVisibility(View.VISIBLE);
             image_client_typing.setVisibility(View.VISIBLE);
         }
+
         tv_name.setText(userChatModel.getName());
-    }
 
-    private void CheckReadPermission()
+        getMessages();
+    }
+    private void getMessages()
     {
-        if (ContextCompat.checkSelfPermission(this,read_perm)!= PackageManager.PERMISSION_GRANTED)
-        {
-            String perm [] ={read_perm};
-            ActivityCompat.requestPermissions(this,perm,read_req);
-        }else
-            {
-                SelectImage();
-            }
-    }
+        Log.e("room",userChatModel.getRoom_id()+"_");
+        Api.getService()
+                .getMessage(userChatModel.getRoom_id(),userModel.getToken(),page_index)
+                .enqueue(new Callback<MessageModelList>() {
+                    @Override
+                    public void onResponse(Call<MessageModelList> call, Response<MessageModelList> response) {
+                        if (response.isSuccessful())
+                        {
+                            progBar.setVisibility(View.GONE);
+
+                            if (response.body()!=null)
+                            {
+                                if (response.body().getData().size()>0)
+                                {
+                                    messageModelList.clear();
+                                    messageModelList.addAll(response.body().getData());
+
+                                    if (adapter == null)
+                                    {
+                                        adapter = new ChatAdapter(messageModelList,userModel.getUser().getId(),userChatModel.getImage(),ChatActivity.this);
+                                        recView.setAdapter(adapter);
+                                        recView.scrollToPosition(messageModelList.size()-1);
+
+                                    }else
+                                        {
+                                            adapter.notifyDataSetChanged();
+                                            recView.scrollToPosition(messageModelList.size()-1);
+
+                                        }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == read_req)
-        {
-            if (grantResults.length>0)
-            {
-                if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
-                {
-                    SelectImage();
-                }else
-                    {
-                        Toast.makeText(this, R.string.access_image_denied, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }else
+                            {
+                                try {
+                                    progBar.setVisibility(View.GONE);
+
+                                    Log.e("Error_code",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                     }
-            }
+
+                    @Override
+                    public void onFailure(Call<MessageModelList> call, Throwable t) {
+                        try {
+                            progBar.setVisibility(View.GONE);
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+    private void loadMore(final int page_index)
+    {
+        Api.getService()
+                .getMessage(userChatModel.getRoom_id(),userModel.getToken(),page_index)
+                .enqueue(new Callback<MessageModelList>() {
+                    @Override
+                    public void onResponse(Call<MessageModelList> call, Response<MessageModelList> response) {
+                        if (response.isSuccessful())
+                        {
+                            progBar_loadMore.setVisibility(View.GONE);
+
+                            if (response.body()!=null)
+                            {
+
+                                if (response.body().getData().size()>0)
+                                {
+                                    messageModelList.addAll(response.body().getData());
+                                    ChatActivity.this.page_index  = response.body().getCurrent_page();
+                                    adapter.notifyDataSetChanged();
+                                    isLoading = false;
+
+
+                                }else
+                                    {
+                                        isLoading = false;
+
+                                    }
+                            }
+                        }else
+                        {
+
+                            try {
+                                isLoading = false;
+                                progBar_loadMore.setVisibility(View.GONE);
+
+                                Log.e("Error_code",response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MessageModelList> call, Throwable t) {
+                        try {
+                            progBar.setVisibility(View.GONE);
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+    private void SendMessage(String msg)
+    {
+        Calendar calendar = Calendar.getInstance();
+        MessageModel messageModel = new MessageModel(userChatModel.getRoom_id(),userModel.getUser().getId(),userChatModel.getId(),msg,Tags.msg_text,calendar.getTimeInMillis());
+        Api.getService()
+                .sendMessage(messageModel,userModel.getToken())
+                .enqueue(new Callback<MessageModel>() {
+                    @Override
+                    public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null)
+                            {
+                                messageModelList.add(response.body());
+
+                                if (adapter == null)
+                                {
+                                    if (messageModelList.size()>0)
+                                    {
+                                        adapter = new ChatAdapter(messageModelList,userModel.getUser().getId(),userChatModel.getImage(),ChatActivity.this);
+                                        recView.setAdapter(adapter);
+                                        adapter.notifyItemInserted(messageModelList.size()-1);
+                                        recView.scrollToPosition(messageModelList.size()-1);
+                                    }
+
+                                }else
+                                    {
+                                        adapter.notifyItemInserted(messageModelList.size()-1);
+                                        recView.scrollToPosition(messageModelList.size()-1);
+                                    }
+
+
+                            }
+                        }else
+                            {
+                                try {
+                                    Log.e("error_code",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MessageModel> call, Throwable t) {
+                        try {
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
+    private void ChangeTyping(int startTyping)
+    {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getLastMessage(MessageModel messageModel)
+    {
+        if (adapter == null)
+        {
+
+            messageModelList.add(messageModel);
+            adapter = new ChatAdapter(messageModelList,userModel.getUser().getId(),userChatModel.getImage(),ChatActivity.this);
+            recView.setAdapter(adapter);
+            adapter.notifyItemInserted(messageModelList.size()-1);
+            recView.scrollToPosition(messageModelList.size()-1);
+
+        }else
+        {
+            messageModelList.add(messageModel);
+            adapter.notifyItemInserted(messageModelList.size()-1);
+            recView.scrollToPosition(messageModelList.size()-1);
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void ListenForTyping(TypingModel typingModel)
+    {
+
+        if (typingModel.getUser_id()== userChatModel.getId())
+        {
+            if (typingModel.getStatus() == Tags.START_TYPING)
+            {
+                if (myAsyncTask ==null)
+                {
+                    myAsyncTask = new MyAsyncTask();
+                }
+
+                myAsyncTask.execute();
+
+                ll_typing.setVisibility(View.VISIBLE);
+            }else
+                {
+                    if (mediaPlayer!=null)
+                    {
+                        mediaPlayer.release();
+                    }
+                    ll_typing.setVisibility(View.GONE);
+
+                }
         }
     }
 
-    private void SelectImage() {
-
-        Intent intent ;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        }else
-        {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
+    public class MyAsyncTask extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mediaPlayer = MediaPlayer.create(ChatActivity.this,R.raw.typing);
 
         }
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setType("image/*");
-        startActivityForResult(intent,img_req);
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mediaPlayer.start();
+            return null;
+        }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == img_req && resultCode == RESULT_OK && data!=null)
+    protected void onDestroy()
+    {
+        if (EventBus.getDefault().isRegistered(this))
         {
-            Uri uri = data.getData();
-            UploadImage(uri);
+            EventBus.getDefault().unregister(this);
         }
-    }
 
-    private void UploadImage(Uri uri) {
-        //MultipartBody.Part image_part = Common.getMultiPart(this,uri,"");
-    }
-
-    private void SendMessage(String msg) {
+        if (mediaPlayer!=null)
+        {
+            mediaPlayer.release();
+        }
+        super.onDestroy();
     }
 }

@@ -58,6 +58,7 @@ import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.OrderItem;
+import com.appzone.dukkan.models.PageModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.SimilarProductModel;
@@ -171,6 +172,11 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
         LanguageHelper.setLocality(this,current_lang);
 
+        if (!EventBus.getDefault().isRegistered(this))
+        {
+            EventBus.getDefault().register(this);
+        }
+
         userSingleTone =  UserSingleTone.getInstance();
         userModel = userSingleTone.getUserModel();
         preferences = Preferences.getInstance();
@@ -275,6 +281,20 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                                 }
                             },3000);
                 }
+            }else if (intent.hasExtra("status"))
+            {
+                if (intent.getIntExtra("status",0) == 2)
+                {
+                    DisplayFragmentClientOrders();
+                    fragment_client_orders.setPage(1);
+
+                }else if (intent.getIntExtra("status",0) == 3)
+                {
+                    DisplayFragmentClientOrders();
+                    fragment_client_orders.setPage(2);
+                }
+
+
             }
         }
     }
@@ -1278,6 +1298,20 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             }
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void ListenForNotification(PageModel pageModel)
+    {
+        if (pageModel.getStatus() == 1)
+        {
+            RefreshFragmentClient_New_Current_Order();
+
+        }else if (pageModel.getStatus() == 2)
+        {
+
+            RefreshFragmentClient_Current_Previous_Order();
+        }
+    }
     ///////////////////////////////////
     public void NavigateToProductDetailsActivity(MainCategory.Products product, List<MainCategory.Products> similarProducts)
     {
@@ -1335,14 +1369,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     private void RefreshFragmentClient_Current_Previous_Order()
     {
-        if (fragment_client_orders!=null)
+        if (fragment_client_orders!=null && fragment_client_orders.isAdded())
         {
             fragment_client_orders.RefreshFragment_Current_Previous_Order();
         }
     }
     private void RefreshFragmentClient_New_Current_Order()
     {
-        if (fragment_client_orders!=null)
+        if (fragment_client_orders!=null&&fragment_client_orders.isAdded())
         {
             fragment_client_orders.RefreshFragment_New_Current_Order();
         }
@@ -1778,6 +1812,11 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         if (intentService!=null)
         {
             StopLocationUpdate();
+        }
+
+        if (EventBus.getDefault().isRegistered(this))
+        {
+            EventBus.getDefault().unregister(this);
         }
 
         orderItemsSingleTone.ClearCart();

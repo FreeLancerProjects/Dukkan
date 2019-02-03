@@ -150,6 +150,15 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             {
                 CreateWelcomeNotification();
             }
+        }else if (intent!=null && intent.hasExtra("status"))
+        {
+            if (intent.getIntExtra("status",0) == 1)
+            {
+                DisplayFragmentDriverOrders();
+                fragment_delegate_orders.setPage(0);
+
+            }
+
         }
     }
 
