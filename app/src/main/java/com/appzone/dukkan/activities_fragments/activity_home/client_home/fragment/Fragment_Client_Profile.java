@@ -34,6 +34,7 @@ import com.appzone.dukkan.remote.Api;
 import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import io.paperdb.Paper;
@@ -253,11 +254,11 @@ public class Fragment_Client_Profile extends Fragment {
         if (userModel!=null)
         {
             tv_name.setText(userModel.getUser().getName());
-            tv_phone.setText("00966"+userModel.getUser().getPhone());
+            tv_phone.setText("+"+new DecimalFormat("#").format(966)+""+new DecimalFormat("#").format(Integer.parseInt(userModel.getUser().getPhone())));
 
             if (userModel.getUser().getAlternative_phone()!=null||!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
             {
-                tv_alter_phone.setText("00966"+userModel.getUser().getAlternative_phone());
+                tv_alter_phone.setText("+"+new DecimalFormat("#").format(966)+""+new DecimalFormat("#").format(Integer.parseInt(userModel.getUser().getAlternative_phone())));
             }else
                 {
                     tv_alter_phone.setText(R.string.no_alternative_phone);
@@ -266,10 +267,10 @@ public class Fragment_Client_Profile extends Fragment {
 
                 if (userModel.getUser().getPoints()>0)
                 {
-                    tv_points.setText(String.valueOf(userModel.getUser().getPoints()));
+                    tv_points.setText(new DecimalFormat("#").format(userModel.getUser().getPoints()));
                 }else
                     {
-                        tv_points.setText("0");
+                        tv_points.setText(new DecimalFormat("#").format(0));
 
                     }
         }
@@ -612,7 +613,8 @@ public class Fragment_Client_Profile extends Fragment {
         dialogContactUs.show();
     }
 
-    private void UpdatePhone(String m_phone) {
+    private void UpdatePhone(String m_phone)
+    {
 
 
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
@@ -667,7 +669,8 @@ public class Fragment_Client_Profile extends Fragment {
                 });
     }
 
-    private void UpdateAlterPhone(String m_phone) {
+    private void UpdateAlterPhone(String m_phone)
+    {
 
 
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
@@ -779,7 +782,7 @@ public class Fragment_Client_Profile extends Fragment {
     {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
         dialog.show();
-        String ph = "00966"+m_phone;
+        String ph = m_phone;
         Api.getService()
                 .sendContactUs(m_name,ph,m_msg)
                 .enqueue(new Callback<ResponseModel>() {

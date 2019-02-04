@@ -102,15 +102,17 @@ public class Fragment_Map extends Fragment implements OnMapReadyCallback {
         tv_title = view.findViewById(R.id.tv_title);
         fl_address_container = view.findViewById(R.id.fl_address_container);
 
+
         Paper.init(getActivity());
         current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
         if (current_lang.equals("ar")) {
+
             image_back.setImageResource(R.drawable.arrow_right);
             image_arrow.setImageResource(R.drawable.arrow_right);
 
         } else {
             image_back.setImageResource(R.drawable.arrow_left);
-            image_arrow.setImageResource(R.drawable.arrow_right);
+            image_arrow.setImageResource(R.drawable.arrow_left);
 
         }
 

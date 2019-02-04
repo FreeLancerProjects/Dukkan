@@ -207,7 +207,7 @@ public class Fragment_Client_Order_Details extends Fragment {
 
 
 
-    private void updateStepView(int completePosition)
+    public void updateStepView(int completePosition)
     {
         switch (completePosition)
         {

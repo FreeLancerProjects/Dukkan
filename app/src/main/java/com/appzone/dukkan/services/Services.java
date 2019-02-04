@@ -14,6 +14,7 @@ import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.models.Terms_Condition_Model;
+import com.appzone.dukkan.models.TypingModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.models.WeekOfferModel;
 
@@ -190,4 +191,8 @@ public interface Services {
     Call<MessageModel> sendMessage(@Body MessageModel messageModel,
                                    @Query("token") String token
                                    );
+    @POST("/api/chat-typing")
+    Call<ResponseModel> typing(@Body TypingModel typingModel,
+                               @Query("token") String token
+                               );
 }

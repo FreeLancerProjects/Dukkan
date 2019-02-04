@@ -23,7 +23,7 @@ import io.paperdb.Paper;
 
 public class Fragment_Home extends Fragment {
 
-    private ImageView image_back;
+    //private ImageView image_back;
     private AppBarLayout app_bar;
     private LinearLayout ll_toolbar_container,ll_search;
     private ImageView image_collapse,image_arrow;
@@ -52,17 +52,17 @@ public class Fragment_Home extends Fragment {
         ll_search = view.findViewById(R.id.ll_search);
 
         app_bar = view.findViewById(R.id.app_bar);
-        image_back = view.findViewById(R.id.image_back);
+        //image_back = view.findViewById(R.id.image_back);
         Paper.init(getActivity());
         String current_lang = Paper.book().read("lang", Locale.getDefault().getLanguage());
-        if (current_lang.equals("ar"))
+        /*if (current_lang.equals("ar"))
         {
             image_back.setImageResource(R.drawable.arrow_right);
         }else
         {
             image_back.setImageResource(R.drawable.arrow_left);
 
-        }
+        }*/
         image_collapse = view.findViewById(R.id.image_collapse);
         image_arrow = view.findViewById(R.id.image_arrow);
         fl_departments = view.findViewById(R.id.fl_departments);

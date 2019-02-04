@@ -37,6 +37,7 @@ import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -249,8 +250,8 @@ public class Fragment_Delegate_Profile extends Fragment {
         {
             Picasso.with(getActivity()).load(Uri.parse(Tags.IMAGE_URL+userModel.getUser().getAvatar())).fit().into(image);
             tv_name.setText(userModel.getUser().getName());
-            tv_phone.setText("00966"+userModel.getUser().getPhone());
-            tv_rate.setText("("+userModel.getUser().getRate()+")");
+            tv_phone.setText("+"+new DecimalFormat("#").format(966)+" "+new DecimalFormat("#").format(Integer.parseInt(userModel.getUser().getPhone())));
+            tv_rate.setText("("+new DecimalFormat("#").format(userModel.getUser().getRate())+")");
             SimpleRatingBar.AnimationBuilder builder = rateBar.getAnimationBuilder();
             builder.setDuration(1500);
             builder.setRepeatCount(0);

@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -23,11 +24,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.appzone.dukkan.R;
-import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
-import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.Fragment_Delegate_Notification;
+import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.Fragment_Delegate_Profile;
 import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_New_Order;
 import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.fragment_delegate_orders.Fragment_Delegate_Orders;
-import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.fragment.Fragment_Delegate_Profile;
+import com.appzone.dukkan.activities_fragments.activity_order_details.activity.OrderDetailsActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.OrdersModel;
@@ -58,7 +58,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
 
     private FragmentManager fragmentManager;
     private AHBottomNavigation ahBottomNavigation;
-    private Fragment_Delegate_Notification fragment_delegate_notification;
+    //private Fragment_Delegate_Notification fragment_delegate_notification;
     private Fragment_Delegate_Orders fragment_delegate_orders;
     private Fragment_Delegate_Profile fragment_delegate_profile;
     private String current_lang = "";
@@ -105,11 +105,11 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         ahBottomNavigation.setInactiveColor(ContextCompat.getColor(this,R.color.gray_text));
 
         AHBottomNavigationItem item1 = new AHBottomNavigationItem(getString(R.string.me),R.drawable.bottom_nav_user,R.color.gray_text);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.nav_bottom_notfication,R.color.gray_text);
+        //AHBottomNavigationItem item2 = new AHBottomNavigationItem(getString(R.string.my_notification),R.drawable.nav_bottom_notfication,R.color.gray_text);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem(getString(R.string.my_order),R.drawable.bottom_nav_cart,R.color.gray_text);
 
         ahBottomNavigation.addItem(item1);
-        ahBottomNavigation.addItem(item2);
+       // ahBottomNavigation.addItem(item2);
         ahBottomNavigation.addItem(item3);
 
         ahBottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -125,11 +125,9 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
 
                         break;
                     case 1:
-                        DisplayFragmentDriverNotification();
-
-                        break;
-                    case 2:
                         DisplayFragmentDriverOrders();
+
+                        //DisplayFragmentDriverNotification();
 
                         break;
 
@@ -155,7 +153,14 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             if (intent.getIntExtra("status",0) == 1)
             {
                 DisplayFragmentDriverOrders();
-                fragment_delegate_orders.setPage(0);
+                new Handler()
+                        .postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                fragment_delegate_orders.setPage(0);
+
+                            }
+                        },100);
 
             }
 
@@ -268,9 +273,9 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
 
     private void DisplayFragmentDriverProfile()
     {
-        if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded()) {
+       /* if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded()) {
             fragmentManager.beginTransaction().hide(fragment_delegate_notification).commit();
-        }
+        }*/
         if (fragment_delegate_orders !=null&& fragment_delegate_orders.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_delegate_orders).commit();
@@ -310,7 +315,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         }
 
 
-        if (fragment_delegate_notification ==null)
+        /*if (fragment_delegate_notification ==null)
         {
             fragment_delegate_notification = Fragment_Delegate_Notification.newInstance();
         }
@@ -326,7 +331,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             fragmentManager.beginTransaction().add(R.id.fragment_driver_home_container, fragment_delegate_notification,"fragment_delegate_notification").addToBackStack("fragment_delegate_notification").commit();
             UpdateBottomNavPos(1);
         }
-
+*/
 
 
     }
@@ -337,10 +342,10 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             fragmentManager.beginTransaction().hide(fragment_delegate_profile).commit();
         }
 
-        if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded())
+      /*  if (fragment_delegate_notification !=null&& fragment_delegate_notification.isAdded())
         {
             fragmentManager.beginTransaction().hide(fragment_delegate_notification).commit();
-        }
+        }*/
 
         if (fragment_delegate_orders == null)
         {

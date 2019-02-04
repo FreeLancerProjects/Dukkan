@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
+import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
 
 import java.io.File;
 
@@ -73,17 +77,42 @@ public class Common {
         return snackbar;
 
     }
-    public static void CreateUserNotSignInAlertDialog(Context context, String msg)
+    public static void CreateUserNotSignInAlertDialog(final Context context, String msg)
     {
+        final HomeActivity homeActivity = (HomeActivity) context;
         final AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(true)
                 .create();
 
+
         View view = LayoutInflater.from(context).inflate(R.layout.custom_dialog,null);
-        Button doneBtn = view.findViewById(R.id.doneBtn);
+        Button btn_sign_in = view.findViewById(R.id.btn_sign_in);
+        Button btn_sign_up = view.findViewById(R.id.btn_sign_up);
+        Button btn_cancel = view.findViewById(R.id.btn_cancel);
+
         TextView tv_msg = view.findViewById(R.id.tv_msg);
         tv_msg.setText(msg);
-        doneBtn.setOnClickListener(new View.OnClickListener() {
+        btn_sign_in.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(homeActivity, SignInActivity.class);
+                homeActivity.startActivity(intent);
+                homeActivity.finish();
+
+            }
+        });
+
+        btn_sign_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(homeActivity, SignUpActivity.class);
+                intent.putExtra("type","1");
+                homeActivity.startActivity(intent);
+                homeActivity.finish();
+
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();

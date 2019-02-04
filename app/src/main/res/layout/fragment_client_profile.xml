@@ -124,6 +124,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:gravity="center"
+                android:text="dfdfds"
                 />
 
 
@@ -154,7 +155,9 @@
                 android:longClickable="false"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:text="dfsd"
+                />
 
             <ImageView
                 android:id="@+id/image_arrow1"
@@ -271,7 +274,9 @@
                 android:layout_weight=".8"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:text="ddsfd"
+                />
 
             <ImageView
                 android:id="@+id/image_arrow4"

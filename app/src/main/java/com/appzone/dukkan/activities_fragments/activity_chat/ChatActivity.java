@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +31,7 @@ import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.ChatRoom_UserIdModel;
 import com.appzone.dukkan.models.MessageModel;
 import com.appzone.dukkan.models.MessageModelList;
+import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.TypingModel;
 import com.appzone.dukkan.models.UserChatModel;
 import com.appzone.dukkan.models.UserModel;
@@ -81,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
     private boolean isLoading = false,startTyping = false;
     private MediaPlayer mediaPlayer;
     private MyAsyncTask myAsyncTask;
+    private TypingModel typingModel;
 
     @Override
     protected void attachBaseContext(Context base)
@@ -147,6 +150,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         tv_wait_dot = findViewById(R.id.tv_wait_dot);
+        tv_wait_dot.setPeriod(1500);
         btn_send = findViewById(R.id.btn_send);
         edt_msg_content = findViewById(R.id.edt_msg_content);
         ll_back.setOnClickListener(new View.OnClickListener() {
@@ -201,6 +205,26 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        recView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom)
+                {
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (messageModelList.size()>0)
+                                    {
+                                        recView.smoothScrollToPosition(messageModelList.size()-1);
+
+                                    }
+                                }
+                            },10);
+                }
+            }
+        });
         edt_msg_content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -250,6 +274,9 @@ public class ChatActivity extends AppCompatActivity {
         if (userModel.getUser().getRole().equals(Tags.user_client))
         {
             Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+userChatModel.getImage())).fit().into(image_delegate);
+            Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+userChatModel.getImage())).fit().into(image_delegate_typing);
+
+            image_delegate_typing.setVisibility(View.VISIBLE);
             image_delegate.setVisibility(View.VISIBLE);
             tv_delegate.setVisibility(View.VISIBLE);
 
@@ -262,14 +289,15 @@ public class ChatActivity extends AppCompatActivity {
             builder.start();
             ll_rate.setVisibility(View.VISIBLE);
 
-            Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+userChatModel.getImage())).fit().into(image_delegate_typing);
-            image_delegate_typing.setVisibility(View.VISIBLE);
+            image_client.setVisibility(View.GONE);
+            image_client_typing.setVisibility(View.GONE);
 
 
         }else if (userModel.getUser().getRole().equals(Tags.user_delegate))
         {
             image_client.setVisibility(View.VISIBLE);
             image_client_typing.setVisibility(View.VISIBLE);
+
         }
 
         tv_name.setText(userChatModel.getName());
@@ -434,8 +462,47 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void ChangeTyping(int startTyping)
+    private void ChangeTyping(int typing)
     {
+        if (typingModel==null)
+        {
+            typingModel = new TypingModel(userChatModel.getRoom_id(),userChatModel.getId(),typing);
+        }else
+            {
+                typingModel.setRoom_id(userChatModel.getRoom_id());
+                typingModel.setReceiver_id(userChatModel.getId());
+                typingModel.setStatus(typing);
+            }
+
+
+            Api.getService()
+                    .typing(typingModel,userModel.getToken())
+                    .enqueue(new Callback<ResponseModel>() {
+                        @Override
+                        public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                            if (response.isSuccessful())
+                            {
+                                Log.e("success","success");
+                            }else
+                                {
+                                    Log.e("Error",response.code()+"");
+                                    try {
+                                        Log.e("Error",response.errorBody().string()+"");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseModel> call, Throwable t) {
+
+                            try {
+                                Log.e("Error",t.getMessage());
+                            }catch (Exception e){}
+                        }
+                    });
 
     }
 
@@ -462,28 +529,26 @@ public class ChatActivity extends AppCompatActivity {
     public void ListenForTyping(TypingModel typingModel)
     {
 
-        if (typingModel.getUser_id()== userChatModel.getId())
+        if (typingModel.getRoom_id() == userChatModel.getRoom_id())
         {
             if (typingModel.getStatus() == Tags.START_TYPING)
             {
-                if (myAsyncTask ==null)
-                {
-                    myAsyncTask = new MyAsyncTask();
-                }
 
+                myAsyncTask = new MyAsyncTask();
                 myAsyncTask.execute();
 
                 ll_typing.setVisibility(View.VISIBLE);
             }else
+            {
+                if (mediaPlayer!=null)
                 {
-                    if (mediaPlayer!=null)
-                    {
-                        mediaPlayer.release();
-                    }
-                    ll_typing.setVisibility(View.GONE);
-
+                    mediaPlayer.release();
                 }
+                ll_typing.setVisibility(View.GONE);
+
+            }
         }
+
     }
 
     public class MyAsyncTask extends AsyncTask<Void,Void,Void>

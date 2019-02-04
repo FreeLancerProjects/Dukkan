@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,7 @@ import com.appzone.dukkan.activities_fragments.activity_order_details.fragments.
 import com.appzone.dukkan.activities_fragments.activity_chat.ChatActivity;
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.OrderItem;
+import com.appzone.dukkan.models.OrderStatusModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.UserChatModel;
 import com.appzone.dukkan.models.UserModel;
@@ -39,6 +41,11 @@ import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -99,6 +106,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
         userModel = userSingleTone.getUserModel();
         this.user_type = userModel.getUser().getRole();
         Paper.init(this);
+        if (!EventBus.getDefault().isRegistered(this))
+        {
+            EventBus.getDefault().register(this);
+        }
         current_lang = Paper.book().read("lang",Locale.getDefault().getLanguage());
         LanguageHelper.setLocality(this,current_lang);
         fragmentManager = getSupportFragmentManager();
@@ -144,6 +155,22 @@ public class OrderDetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void UpdateOrderStatus(final OrderStatusModel orderStatusModel)
+    {
+        if (fragment_client_order_details!=null && fragment_client_order_details.isAdded())
+        {
+            new Handler()
+                    .postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragment_client_order_details.updateStepView(orderStatusModel.getOrder_status());
+                        }
+                    },1000);
+        }
     }
 
     private void getDataFromIntent()
@@ -483,6 +510,11 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             finish();
                         }else
                         {
+                            try {
+                                Log.e("error",response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             dismissSnackBar();
                             dialog.dismiss();
                             Toast.makeText(OrderDetailsActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
@@ -629,6 +661,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     DisplayFragment_Delegate_Current_Order_Details(false);
                 }
             }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (EventBus.getDefault().isRegistered(this))
+        {
+            EventBus.getDefault().unregister(this);
+        }
+        super.onDestroy();
     }
 }
 

@@ -233,7 +233,16 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                         DisplayFragmentMyCart();
                         break;
                     case 3:
-                        DisplayFragmentClientOrders();
+                        if (userModel!=null)
+                        {
+                            UpdateBottomNavPos(position);
+                            DisplayFragmentClientOrders();
+
+                        }else
+                            {
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+
+                            }
                         break;
                     case 4:
                         if (userModel!=null)
@@ -286,12 +295,26 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 if (intent.getIntExtra("status",0) == 2)
                 {
                     DisplayFragmentClientOrders();
-                    fragment_client_orders.setPage(1);
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fragment_client_orders.setPage(1);
+
+                                }
+                            },100);
 
                 }else if (intent.getIntExtra("status",0) == 3)
                 {
                     DisplayFragmentClientOrders();
-                    fragment_client_orders.setPage(2);
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fragment_client_orders.setPage(2);
+
+                                }
+                            },100);
                 }
 
 

@@ -41,18 +41,38 @@
         android:gravity="center"
         />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:weightSum="3"
 
         >
         <Button
-            android:id="@+id/doneBtn"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_sign_in"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="40dp"
             android:background="#00000000"
-            android:text="@string/ok"
+            android:text="@string/sign_in"
+            android:textColor="@color/white"
+            />
+        <Button
+            android:id="@+id/btn_sign_up"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:background="#00000000"
+            android:text="@string/sign_up"
+            android:textColor="@color/white"
+            />
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:background="#00000000"
+            android:text="@string/cancel"
             android:textColor="@color/white"
             />
 
