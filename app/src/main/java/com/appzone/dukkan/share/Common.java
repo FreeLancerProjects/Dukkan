@@ -95,6 +95,7 @@ public class Common {
         btn_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent intent = new Intent(homeActivity, SignInActivity.class);
                 homeActivity.startActivity(intent);
                 homeActivity.finish();
@@ -105,8 +106,10 @@ public class Common {
         btn_sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
                 Intent intent = new Intent(homeActivity, SignUpActivity.class);
                 intent.putExtra("type","1");
+                intent.putExtra("from","home");
                 homeActivity.startActivity(intent);
                 homeActivity.finish();
 

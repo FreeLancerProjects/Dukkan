@@ -140,7 +140,8 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         updateUserFireBaseToken();
 
     }
-    private void getDataFromIntent() {
+    private void getDataFromIntent()
+    {
         Intent intent = getIntent();
         if (intent!=null && intent.hasExtra("signup"))
         {
@@ -506,11 +507,42 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
 
         if(requestCode == 2 && resultCode == RESULT_OK)
         {
-            if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
-            {
-                fragment_delegate_orders.RefreshFragmentDelegateCurrentOrder();
 
-            }
+            if (data!=null)
+            {
+                if (data.hasExtra("status"))
+                {
+                    int status = data.getIntExtra("status",-1);
+
+                    if (status==0 || status == 1 ||status == 3)
+                    {
+                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+                        {
+                            fragment_delegate_orders.RefreshFragmentDelegateNew_CurrentOrder();
+
+
+                        }
+
+
+                    }
+                }else
+                    {
+                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+                        {
+                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+
+                        }
+                    }
+
+            }else
+                {
+                    if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+                    {
+                        fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+
+                    }
+                }
+
         }
     }
 
@@ -555,7 +587,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
     public void onUpdated() {
         if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
         {
-            fragment_delegate_orders.RefreshFragmentDelegateCurrentOrder();
+            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
         }
     }
 }

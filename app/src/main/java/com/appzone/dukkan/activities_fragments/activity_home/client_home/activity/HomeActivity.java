@@ -147,7 +147,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private OrderToUploadModel orderToUploadModel = null;
     public String payment_method="",delivery_cost="0.0";
     public CouponModel couponModel;
-    public double total_order_cost = 0.0;
+    public double total_order_cost_after_tax = 0.0;
     private String last_selected_fragment="";
     private MainCategory.MainCategoryItems mainCategoryItems;
 
@@ -230,7 +230,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                             }
                         break;
                     case 2:
-                        DisplayFragmentMyCart();
+                        if (userModel!=null)
+                        {
+                            DisplayFragmentMyCart();
+
+                        }else
+                            {
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+
+                            }
                         break;
                     case 3:
                         if (userModel!=null)
@@ -1396,6 +1404,17 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
             fragment_client_orders.RefreshFragment_Current_Previous_Order();
         }
+
+        new Handler()
+                .postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (fragment_client_profile!=null&&fragment_client_profile.isAdded())
+                        {
+                            fragment_client_profile.UpdateProfile();
+                        }
+                    }
+                },50);
     }
     private void RefreshFragmentClient_New_Current_Order()
     {
@@ -1635,7 +1654,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         startActivity(intent);
     }
     @Override
-    public void onDate_Time_Set(int time_type , String delivery_cost,String current_date) {
+    public void onDate_Time_Set(int time_type , String delivery_cost,String current_date)
+    {
 
         this.time_type = time_type;
         this.delivery_cost = delivery_cost;
@@ -1659,14 +1679,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         fragment_delivery_address.UpdateAddress(address);
         fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
     }
-    public void SaveListOf_Order_Order_Total_Cost(List<OrderItem> orderItemList, double total_order_cost_after_tax, double tax)
+    public void SaveListOf_Order_Order_Total_Cost(List<OrderItem> orderItemList, double net_total_order_price, double total_order_cost_after_tax, double tax)
     {
         if (orderToUploadModel==null)
         {
             orderToUploadModel = new OrderToUploadModel();
         }
-        this.total_order_cost = total_order_cost_after_tax;
-        Log.e("cost",this.total_order_cost+"");
+        this.total_order_cost_after_tax = total_order_cost_after_tax;
+        orderToUploadModel.setOrder_total_price_net(net_total_order_price);
         orderToUploadModel.setTax(tax);
         orderToUploadModel.setOrderItemList(orderItemList);
     }

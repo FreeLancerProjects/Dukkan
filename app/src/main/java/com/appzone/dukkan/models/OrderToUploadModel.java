@@ -20,6 +20,7 @@ public class OrderToUploadModel implements Serializable {
     private int discount_by_use;
     private double tax;
     private double total_discount;
+    private double order_total_price_net;
     private double order_total_price;
     private double delivery_cost;
     private double discount_point;
@@ -99,6 +100,14 @@ public class OrderToUploadModel implements Serializable {
 
     public void setTax(double tax) {
         this.tax = tax;
+    }
+
+    public double getOrder_total_price_net() {
+        return order_total_price_net;
+    }
+
+    public void setOrder_total_price_net(double order_total_price_net) {
+        this.order_total_price_net = order_total_price_net;
     }
 
     public String getNotes() {

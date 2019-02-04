@@ -110,7 +110,7 @@ public class Fragment_Review_Purchases extends Fragment {
             @Override
             public void onClick(View v) {
 
-                activity.SaveListOf_Order_Order_Total_Cost(orderItemList,total_order_cost_after_tax,tax);
+                activity.SaveListOf_Order_Order_Total_Cost(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
                 activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
             }
         });

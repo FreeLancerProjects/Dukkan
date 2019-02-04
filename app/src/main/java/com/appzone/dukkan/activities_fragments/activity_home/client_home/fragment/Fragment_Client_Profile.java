@@ -249,6 +249,7 @@ public class Fragment_Client_Profile extends Fragment {
         UpdateUI(userModel);
     }
 
+
     private void UpdateUI(UserModel userModel)
     {
         if (userModel!=null)
@@ -812,6 +813,30 @@ public class Fragment_Client_Profile extends Fragment {
                     }
                 });
 
+    }
+
+
+    public void UpdateProfile()
+    {
+        Api.getService()
+                .getUserData(userModel.getToken())
+                .enqueue(new Callback<UserModel>() {
+                    @Override
+                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            if (response.body()!=null)
+                            {
+                                UpdateUserData(response.body());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserModel> call, Throwable t) {
+
+                    }
+                });
     }
 
     private void UpdateUserData(UserModel userModel)

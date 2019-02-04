@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.appzone.dukkan.R;
+import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up.Fragment_Delegate_SignUp;
 import com.appzone.dukkan.activities_fragments.activity_sign_up.fragment_sign_up.Fragment_Terms_Conditions;
@@ -39,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
     private String type="";
     private View root;
     private Snackbar snackbar;
+    private boolean isFromHome = false;
     @Override
     protected void attachBaseContext(Context base) {
         Paper.init(base);
@@ -92,6 +94,13 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
         Intent intent = getIntent();
         if (intent!=null)
         {
+            if (intent.hasExtra("from"))
+            {
+                if (intent.getStringExtra("from").equals("home"))
+                {
+                    isFromHome=true;
+                }
+            }
             type = intent.getStringExtra("type");
 
             UpdateUI(type);
@@ -230,13 +239,27 @@ public class SignUpActivity extends AppCompatActivity implements Fragment_Terms_
 
         }else
             {
-                NavigateToSignInActivity();
+                if (isFromHome)
+                {
+                    NavigateToHome();
+                }else
+                    {
+                        NavigateToSignInActivity();
+
+                    }
             }
     }
 
     private void NavigateToSignInActivity()
     {
         Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void NavigateToHome()
+    {
+        Intent intent = new Intent(SignUpActivity.this, HomeActivity.class);
         startActivity(intent);
         finish();
     }

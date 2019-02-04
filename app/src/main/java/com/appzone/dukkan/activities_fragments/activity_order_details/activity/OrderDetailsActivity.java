@@ -456,7 +456,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             dialog.dismiss();
                             Toast.makeText(OrderDetailsActivity.this, getString(R.string.succ), Toast.LENGTH_SHORT).show();
                             Intent intent = getIntent();
-                            intent.putExtra("accepted",true);
+                            intent.putExtra("status",1);
                             setResult(RESULT_OK,intent);
                             finish();
                         }else
@@ -505,7 +505,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             dialog.dismiss();
                             Toast.makeText(OrderDetailsActivity.this, getString(R.string.succ), Toast.LENGTH_SHORT).show();
                             Intent intent = getIntent();
-                            intent.putExtra("accepted",false);
+                            intent.putExtra("status",0);
                             setResult(RESULT_OK,intent);
                             finish();
                         }else
@@ -535,6 +535,53 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     }
 
+    public void CancelOrder()
+    {
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .Accept_Refuse_order(order.getId(),userModel.getToken(),Tags.order_accepted)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful())
+                        {
+                            dismissSnackBar();
+                            dialog.dismiss();
+                            Toast.makeText(OrderDetailsActivity.this, getString(R.string.succ), Toast.LENGTH_SHORT).show();
+                            Intent intent = getIntent();
+                            intent.putExtra("status",2);
+                            setResult(RESULT_OK,intent);
+                            finish();
+                        }else
+                        {
+                            if (response.code()==404)
+                            {
+                                CreateAlertDialogString(getString(R.string.the_order_accepted_by_another_delegate));
+                            }else
+                            {
+                                dismissSnackBar();
+                                dialog.dismiss();
+                                Toast.makeText(OrderDetailsActivity.this, R.string.failed, Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
+    }
     public void SendOrderAgain(List<OrderItem> orderItemList)
     {
         Intent intent = getIntent();

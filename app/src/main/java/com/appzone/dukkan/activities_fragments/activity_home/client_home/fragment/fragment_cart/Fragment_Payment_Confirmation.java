@@ -38,8 +38,8 @@ public class Fragment_Payment_Confirmation extends Fragment {
     private EditText edt_card_number,edt_expire,edt_password;
     private LinearLayout ll_coupon,ll_point;
     private FrameLayout fl_continue,fl_back;
-    private CardView card_coupon,card_point;
-    private Button btn_coupon,btn_point;
+    private CardView card_coupon,card_point,card_nothing;
+    private Button btn_coupon,btn_point,btn_nothing;
     private HomeActivity activity;
     private double total_order_cost=0.0,coupon_value=0.0,delivery_cost=0.0;
     private String payment_method="";
@@ -68,7 +68,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         activity = (HomeActivity) getActivity();
         userSingleTone = UserSingleTone.getInstance();
         userModel = userSingleTone.getUserModel();
-        this.total_order_cost = activity.total_order_cost;
+        this.total_order_cost = activity.total_order_cost_after_tax;
         this.payment_method = activity.payment_method;
         this.couponModel = activity.couponModel;
         if (couponModel!=null)
@@ -108,8 +108,11 @@ public class Fragment_Payment_Confirmation extends Fragment {
 
         card_coupon = view.findViewById(R.id.card_coupon);
         card_point = view.findViewById(R.id.card_point);
+        card_nothing = view.findViewById(R.id.card_nothing);
+
         btn_coupon = view.findViewById(R.id.btn_coupon);
         btn_point = view.findViewById(R.id.btn_point);
+        btn_nothing = view.findViewById(R.id.btn_nothing);
 
         tv_point = view.findViewById(R.id.tv_point);
         tv_point_cost = view.findViewById(R.id.tv_point_cost);
@@ -136,7 +139,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         fl_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.DisplayFragmentDelivery_Address(activity.total_order_cost);
+                activity.DisplayFragmentDelivery_Address(activity.total_order_cost_after_tax);
             }
         });
 
@@ -153,12 +156,19 @@ public class Fragment_Payment_Confirmation extends Fragment {
                 UpdatePointUI();
             }
         });
+        btn_nothing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateNothingUI();
+            }
+        });
+
         updateUI();
 
 
     }
-
-    private void updateUI() {
+    private void updateUI()
+    {
 
 
         if (payment_method.equals(Tags.payment_cash))
@@ -171,27 +181,49 @@ public class Fragment_Payment_Confirmation extends Fragment {
             card_cash.setVisibility(View.GONE);
         }
 
+        updateNothingUI();
+
         if (userModel.getUser().getCoupon()==0 && userModel.getUser().getPoints()>0.0)
         {
             card_coupon.setVisibility(View.VISIBLE);
             card_point.setVisibility(View.VISIBLE);
-            UpdateCouponUI(coupon_value);
         }else if (userModel.getUser().getCoupon()==0 && userModel.getUser().getPoints()==0.0)
         {
             card_coupon.setVisibility(View.VISIBLE);
             card_point.setVisibility(View.GONE);
-            UpdateCouponUI(coupon_value);
         }
         else if (userModel.getUser().getCoupon()==1 && userModel.getUser().getPoints()>0)
         {
             card_coupon.setVisibility(View.GONE);
             card_point.setVisibility(View.VISIBLE);
-            UpdatePointUI();
+            updateNothingUI();
+
+        }else if (userModel.getUser().getCoupon()==1&&userModel.getUser().getPoints()==0)
+        {
+            card_point.setVisibility(View.GONE);
+            card_coupon.setVisibility(View.GONE);
+
+
         }
 
 
 
 
+
+    }
+
+    private void updateNothingUI() {
+        discount_by_use = 0;
+        card_nothing.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
+        card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
+        card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
+        ll_coupon.setVisibility(View.GONE);
+        ll_point.setVisibility(View.GONE);
+
+        tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+        tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
+        double delivery_order_cost = delivery_cost+total_order_cost;
+        tv_total.setText(new DecimalFormat("##.##").format(delivery_order_cost)+" "+getString(R.string.rsa));
 
     }
 
@@ -208,6 +240,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         tv_coupon_cost.setText(new DecimalFormat("##.##").format(order_cost_after_discount_coupon)+" "+getString(R.string.rsa));
         card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
         card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
+        card_nothing.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
 
 
         tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
@@ -228,6 +261,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         double point_cost = userModel.getUser().getPoints()*couponModel.getClient_point_cost();
         tv_point_cost.setText(new DecimalFormat("##.##").format(point_cost)+" "+getString(R.string.rsa));
 
+        card_nothing.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
         card_coupon.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
         card_point.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
 

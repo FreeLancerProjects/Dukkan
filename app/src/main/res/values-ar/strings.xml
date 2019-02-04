@@ -240,8 +240,8 @@
     <string name="no_alternative_products">لا توجد منتجات بديلة</string>
     <string name="not_need_to_add_alternative">لا اريد إضافة منتج بديل</string>
     <string name="coupon_not_active">الكوبون غير مفعل</string>
-    <string name="use_coupon">إستخدام الكوبون</string>
-    <string name="use_points">إستخدام النقط</string>
+    <string name="use_coupon">قيمة الطلب عند إستخدام الكوبون</string>
+    <string name="use_points">قيمة الطلب عند إستخدام النقط</string>
     <string name="type_the_word">اكتب كلمة </string>
     <string name="to_get_the_discount">للحصول على الخصم</string>
     <string name="or">أو</string>
@@ -265,5 +265,6 @@
     <string name="suggestions_from_dukkan">مقترحات من دكان</string>
     <string name="new_order">طلب جديد</string>
     <string name="order_delivered">تم التوصيل</string>
+    <string name="cancel_order">إلغاء الطلب</string>
 
 </resources>

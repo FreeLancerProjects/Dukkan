@@ -59,11 +59,12 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
     private List<OrdersModel.Products> orderProductList,productsList;
     private List<OrdersModel.Products> choosedProductList;
     private TextView tv_order_price,tv_no_product;
-    private Button btn_collected;
+    private Button btn_collected,btn_cancel;
     private double order_total_cost=0.0;
     private int alternativeItemPos =-1;
     private List<Products> choosedUploadProductsList;
     private DelegateCollectingOrderUploadModel uploadModel;
+    private int total_products_deleted = 0;
 
 
     @Nullable
@@ -108,6 +109,8 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         ll_back = view.findViewById(R.id.ll_back);
         //tv_order_price = view.findViewById(R.id.tv_order_price);
         btn_collected = view.findViewById(R.id.btn_collected);
+        btn_cancel = view.findViewById(R.id.btn_cancel);
+
         tv_no_product = view.findViewById(R.id.tv_no_product);
 
         recView = view.findViewById(R.id.recView);
@@ -131,6 +134,12 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
             @Override
             public void onClick(View v) {
                 PrepareOrderToUpload();
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         Bundle bundle = getArguments();
@@ -334,6 +343,8 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                total_products_deleted+=1;
+
                 Products products = new Products(product.getId(),Tags.product_deleted);
                 choosedUploadProductsList.add(products);
 
@@ -344,7 +355,14 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
                 {
                     tv_no_product.setVisibility(View.VISIBLE);
 
-                    btn_collected.setVisibility(View.VISIBLE);
+                    if (total_products_deleted < order.getProducts().size())
+                    {
+                        btn_collected.setVisibility(View.VISIBLE);
+
+                    }else
+                        {
+
+                        }
                 }else
                 {
                     tv_no_product.setVisibility(View.GONE);

@@ -85,6 +85,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="@string/cancel_order"
+                    android:background="@color/discount_color"
+                    android:visibility="gone"
+                    />
                 <!--<TextView
                     android:id="@+id/tv_order_price"
                     android:layout_width="match_parent"

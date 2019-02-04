@@ -195,4 +195,8 @@ public interface Services {
     Call<ResponseModel> typing(@Body TypingModel typingModel,
                                @Query("token") String token
                                );
+
+    @FormUrlEncoded
+    @POST("api/me")
+    Call<UserModel> getUserData(@Field("token") String token);
 }
