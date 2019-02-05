@@ -115,8 +115,7 @@ public interface Services {
 
     @FormUrlEncoded
     @POST("/api/forget")
-    Call<ResponseModel> forgetPassword(@Field("email") String email,
-                                       @Field("phone") String phone);
+    Call<ResponseModel> forgetPassword(@Field("phone") String phone);
 
 
     @FormUrlEncoded

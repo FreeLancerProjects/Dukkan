@@ -123,5 +123,50 @@
             </FrameLayout>
 
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_update"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/ll_follow"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+
+            tools:ignore="RtlCompat">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:longClickable="false"
+                >
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/cart"
+                    android:padding="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:text="@string/update_order"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    />
+
+            </LinearLayout>
+        </FrameLayout>
+
+
     </LinearLayout>
 </FrameLayout>

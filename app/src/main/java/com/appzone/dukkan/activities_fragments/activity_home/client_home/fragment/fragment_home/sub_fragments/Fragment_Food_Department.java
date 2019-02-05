@@ -53,7 +53,7 @@ public class Fragment_Food_Department extends Fragment {
         progBar = view.findViewById(R.id.progBar);
         progBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getActivity(),R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         recView = view.findViewById(R.id.recView);
-        manager = new GridLayoutManager(getActivity(),3);
+        manager = new GridLayoutManager(getActivity(),2);
         recView.setLayoutManager(manager);
         recView.setHasFixedSize(true);
         recView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);

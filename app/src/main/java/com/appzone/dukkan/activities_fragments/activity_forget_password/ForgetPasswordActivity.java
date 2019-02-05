@@ -8,7 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -96,10 +95,9 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         String m_email = edt_email.getText().toString().trim();
 
         if (!TextUtils.isEmpty(m_phone)&&
-                m_phone.length()==9&&
-                !TextUtils.isEmpty(m_email))
+                m_phone.length()==9)
         {
-            edt_email.setError(null);
+           // edt_email.setError(null);
             edt_phone.setError(null);
             Common.CloseKeyBoard(this,edt_phone);
             ResetPassword(m_phone,m_email);
@@ -118,7 +116,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
             }
 
-            if (TextUtils.isEmpty(m_email))
+            /*if (TextUtils.isEmpty(m_email))
             {
                 edt_email.setError(getString(R.string.field_req));
 
@@ -130,20 +128,21 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             }else
                 {
                     edt_email.setError(null);
-                }
+                }*/
         }
     }
 
 
 
     private void ResetPassword(String m_phone, String m_email) {
+
         String p_phone ="00966"+m_phone;
         final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.show();
         Api.getService()
-                .forgetPassword(m_email,p_phone)
+                .forgetPassword(p_phone)
                 .enqueue(new Callback<ResponseModel>() {
                     @Override
                     public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {

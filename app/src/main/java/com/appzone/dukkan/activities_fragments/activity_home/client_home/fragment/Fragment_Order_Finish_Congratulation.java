@@ -24,7 +24,7 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
     public static final String TAG = "order";
     private TextView tv_order_id;
     private ImageView image_done;
-    private FrameLayout fl_follow_order,fl_back;
+    private FrameLayout fl_follow_order,fl_back,fl_update;
     private HomeActivity activity;
     private OrdersModel.Order order;
     @Nullable
@@ -51,6 +51,8 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
         tv_order_id = view.findViewById(R.id.tv_order_id);
         fl_follow_order = view.findViewById(R.id.fl_follow_order);
         fl_back = view.findViewById(R.id.fl_back);
+        fl_update = view.findViewById(R.id.fl_update);
+
         Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.image_congtaulation);
         image_done = view.findViewById(R.id.image_done);
         image_done.clearAnimation();
@@ -91,6 +93,13 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
             public void onClick(View v) {
 
                 activity.NavigateToOrderDetailsActivity(order, Tags.order_new);
+            }
+        });
+
+        fl_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

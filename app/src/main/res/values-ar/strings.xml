@@ -268,5 +268,7 @@
     <string name="cancel_order">إلغاء الطلب لعدم توافر المنتجات</string>
     <string name="alternative_phone">رقم جوال بديل</string>
     <string name="call">اتصال</string>
+    <string name="membership_id">رقم العضوية</string>
+    <string name="update_order">عدل على طلبك</string>
 
 </resources>

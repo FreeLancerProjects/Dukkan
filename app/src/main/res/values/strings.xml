@@ -266,4 +266,6 @@
     <string name="cancel_order">Products are unavailable cancel order</string>
     <string name="alternative_phone">Alternative phone</string>
     <string name="call">Call</string>
+    <string name="membership_id">Membership id</string>
+    <string name="update_order">Update order</string>
 </resources>

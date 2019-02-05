@@ -1,15 +1,12 @@
 package com.appzone.dukkan.activities_fragments.activity_splash;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
@@ -23,7 +20,7 @@ import com.appzone.dukkan.tags.Tags;
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView image;
-    private ProgressBar prgBar;
+    //private ProgressBar prgBar;
     private Preferences preferences;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
@@ -36,9 +33,9 @@ public class SplashActivity extends AppCompatActivity {
         userSingleTone = UserSingleTone.getInstance();
 
         image = findViewById(R.id.image);
-        prgBar = findViewById(R.id.progBar);
+       /* prgBar = findViewById(R.id.progBar);
         prgBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this,R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-
+*/
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.fade);
         image.startAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {

@@ -42,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Fragment_Client_Profile extends Fragment {
-    private TextView tv_name,tv_phone,tv_alter_phone,tv_lang,tv_points;
+    private TextView tv_name,tv_phone,tv_alter_phone,tv_lang,tv_points,tv_member_ship;
     private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4,image_arrow5;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_logout,ll_data_container,ll_alter_phone;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
@@ -95,6 +95,8 @@ public class Fragment_Client_Profile extends Fragment {
         });
         /////////////////////////////////////////////
         tv_points = view.findViewById(R.id.tv_points);
+        tv_member_ship = view.findViewById(R.id.tv_member_ship);
+
         tv_lang = view.findViewById(R.id.tv_lang);
 
         image_arrow1 = view.findViewById(R.id.image_arrow1);
@@ -255,6 +257,7 @@ public class Fragment_Client_Profile extends Fragment {
         {
             tv_name.setText(userModel.getUser().getName());
             tv_phone.setText("00966"+userModel.getUser().getPhone());
+            tv_member_ship.setText("");
 
             if (userModel.getUser().getAlternative_phone()!=null||!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
             {

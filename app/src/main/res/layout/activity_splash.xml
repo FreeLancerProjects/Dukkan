@@ -24,5 +24,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="120dp"
         android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
         />
 </FrameLayout>
