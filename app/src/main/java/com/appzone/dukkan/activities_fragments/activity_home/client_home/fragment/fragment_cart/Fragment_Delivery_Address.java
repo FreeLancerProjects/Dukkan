@@ -229,6 +229,8 @@ public class Fragment_Delivery_Address extends Fragment {
     private void updateUI(double total_order)
     {
 
+        Log.e("total_order",total_order+"");
+
         if (userModel!=null)
         {
             edt_phone.setText(userModel.getUser().getPhone());
@@ -276,17 +278,14 @@ public class Fragment_Delivery_Address extends Fragment {
                             {
                                 couponModel = response.body();
 
-
+                                Log.e("tttt",userModel.getUser().getCoupon()+"");
                                 if (userModel.getUser().getCoupon()== 0)
                                 {
                                     couponModel2 = couponModel;
 
                                     if (couponModel!=null)
                                     {
-                                        if (total_order >= couponModel.getMinimum_order_cost()&&userModel.getUser().getPoints()>0)
-                                        {
-                                            CreateDialogUseCoupon_Point(couponModel);
-                                        }else if (total_order >= couponModel.getMinimum_order_cost())
+                                        if (total_order >= couponModel.getMinimum_order_cost())
                                         {
                                             CreateCongratulationDialog(couponModel);
                                         }

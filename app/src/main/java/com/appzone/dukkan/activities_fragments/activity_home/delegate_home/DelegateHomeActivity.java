@@ -508,17 +508,29 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         if(requestCode == 2 && resultCode == RESULT_OK)
         {
 
+            Log.e("1","1");
             if (data!=null)
             {
+                Log.e("2","2");
+
                 if (data.hasExtra("status"))
                 {
                     int status = data.getIntExtra("status",-1);
+                    Log.e("status",status+"_");
 
-                    if (status==0 || status == 1 ||status == 3)
+                    if (status==0 || status == 1 ||status == 2)
                     {
                         if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
                         {
-                            fragment_delegate_orders.RefreshFragmentDelegateNew_CurrentOrder();
+                            new Handler()
+                                    .postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            fragment_delegate_orders.RefreshFragmentDelegateNew_CurrentOrder();
+
+                                        }
+                                    },1000);
 
 
                         }
@@ -527,9 +539,18 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
                     }
                 }else
                     {
+                        Log.e("3","3");
+
                         if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
                         {
-                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+                            new Handler()
+                                    .postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+
+                                        }
+                                    },1000);
 
                         }
                     }
@@ -538,8 +559,14 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
                 {
                     if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
                     {
-                        fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+                        new Handler()
+                                .postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
 
+                                    }
+                                },1000);
                     }
                 }
 

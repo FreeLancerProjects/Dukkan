@@ -265,4 +265,5 @@
     <string name="order_delivered">Order delivered</string>
     <string name="cancel_order">Cancel order</string>
     <string name="alternative_phone">Alternative phone</string>
+    <string name="call">Call</string>
 </resources>

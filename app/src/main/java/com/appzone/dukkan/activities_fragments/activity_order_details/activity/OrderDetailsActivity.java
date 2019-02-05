@@ -599,7 +599,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public void NavigateToChatActivity()
     {
-        Log.e("room",order.getChat_room_id()+"_");
         UserChatModel userChatModel = null;
         if (user_type.equals(Tags.user_client))
         {
@@ -607,7 +606,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }else if (user_type.equals(Tags.user_delegate))
         {
 
-             userChatModel = new UserChatModel(order.getClient().getId(),order.getChat_room_id(),order.getClient().getName(),order.getClient().getPhone(),"",Tags.user_client,0);
+             userChatModel = new UserChatModel(order.getClient().getId(),order.getChat_room_id(),order.getClient().getName(),order.getClient_phone(),"",Tags.user_client,0);
+             userChatModel.setAlter_phone(order.getClient_alternative_phone());
 
         }
 

@@ -7,6 +7,7 @@ public class UserChatModel implements Serializable {
     private int room_id;
     private String name;
     private String phone;
+    private String alter_phone="";
     private String image;
     private String user_type;
     private double rate;
@@ -75,5 +76,13 @@ public class UserChatModel implements Serializable {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public String getAlter_phone() {
+        return alter_phone;
+    }
+
+    public void setAlter_phone(String alter_phone) {
+        this.alter_phone = alter_phone;
     }
 }

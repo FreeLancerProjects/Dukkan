@@ -267,5 +267,6 @@
     <string name="order_delivered">تم التوصيل</string>
     <string name="cancel_order">إلغاء الطلب</string>
     <string name="alternative_phone">رقم جوال بديل</string>
+    <string name="call">اتصال</string>
 
 </resources>

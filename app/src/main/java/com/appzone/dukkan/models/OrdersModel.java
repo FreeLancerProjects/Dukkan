@@ -21,6 +21,8 @@ public class OrdersModel implements Serializable{
         private double lng;
         private String address;
         private String street;
+        private String client_phone;
+        private String client_alternative_phone;
         private String note;
         private double total;
         private int coupon_value;
@@ -54,6 +56,14 @@ public class OrdersModel implements Serializable{
 
         public String getAddress() {
             return address;
+        }
+
+        public String getClient_phone() {
+            return client_phone;
+        }
+
+        public String getClient_alternative_phone() {
+            return client_alternative_phone;
         }
 
         public String getStreet() {
