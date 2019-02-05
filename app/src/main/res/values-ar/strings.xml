@@ -265,7 +265,7 @@
     <string name="suggestions_from_dukkan">مقترحات من دكان</string>
     <string name="new_order">طلب جديد</string>
     <string name="order_delivered">تم التوصيل</string>
-    <string name="cancel_order">إلغاء الطلب</string>
+    <string name="cancel_order">إلغاء الطلب لعدم توافر المنتجات</string>
     <string name="alternative_phone">رقم جوال بديل</string>
     <string name="call">اتصال</string>
 

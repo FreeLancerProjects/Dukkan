@@ -565,8 +565,10 @@ public class ChatActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getLastMessage(MessageModel messageModel)
     {
+        Log.e("msg1515",messageModel.getMsg());
         if (adapter == null)
         {
+            Log.e("11112222","11112222");
 
             messageModelList.add(messageModel);
             adapter = new ChatAdapter(messageModelList,userModel.getUser().getId(),userChatModel.getImage(),ChatActivity.this);
@@ -576,6 +578,8 @@ public class ChatActivity extends AppCompatActivity {
 
         }else
         {
+            Log.e("11112222","8888888888");
+
             messageModelList.add(messageModel);
             adapter.notifyItemInserted(messageModelList.size()-1);
             recView.scrollToPosition(messageModelList.size()-1);

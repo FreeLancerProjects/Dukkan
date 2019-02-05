@@ -222,9 +222,6 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
     }
     private void PrepareOrderToUpload()
     {
-        Log.e("size",choosedUploadProductsList.size()+"");
-        Log.e("data",choosedUploadProductsList.get(0).getProduct_id()+"");
-
         uploadModel.setOrder_id(order.getId());
         uploadModel.setTotal_order_cost(order_total_cost);
         uploadModel.setProductsList(choosedUploadProductsList);
@@ -361,7 +358,7 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
 
                     }else
                         {
-
+                            btn_cancel.setVisibility(View.VISIBLE);
                         }
                 }else
                 {
