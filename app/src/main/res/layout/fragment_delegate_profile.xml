@@ -206,7 +206,7 @@
 
 
                         <TextView
-                            android:id="@+id/tv_declined_order"
+                            android:id="@+id/tv_done_order"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -411,7 +411,7 @@
 
 
                         <TextView
-                            android:id="@+id/my_receivable"
+                            android:id="@+id/tv_my_receivable"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -576,17 +576,26 @@
                 android:padding="8dp"
                 android:weightSum="1">
 
-                <TextView
-                    android:id="@+id/tv_phone"
+                <FrameLayout
                     android:layout_width="0dp"
+                    android:layout_weight=".8"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight=".8"
                     android:clickable="false"
                     android:longClickable="false"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    >
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/image_arrow1"
@@ -596,7 +605,9 @@
                     android:clickable="false"
                     android:longClickable="false"
                     android:padding="11dp"
-                    android:src="@drawable/arrow_blue_right" />
+                    android:src="@drawable/arrow_blue_right"
+
+                    />
             </LinearLayout>
 
             <View
@@ -622,7 +633,9 @@
                     android:text="@string/password"
                     android:textColor="@color/colorPrimary"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+
+                    />
 
                 <ImageView
                     android:id="@+id/image_arrow2"
@@ -632,7 +645,9 @@
                     android:clickable="false"
                     android:longClickable="false"
                     android:padding="11dp"
-                    android:src="@drawable/arrow_blue_right" />
+                    android:src="@drawable/arrow_blue_right"
+
+                    />
             </LinearLayout>
 
             <View
@@ -648,15 +663,28 @@
                 android:padding="8dp"
                 android:weightSum="1">
 
-                <TextView
-                    android:id="@+id/tv_lang"
+                <FrameLayout
                     android:layout_width="0dp"
+                    android:layout_weight=".8"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight=".8"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:clickable="false"
+                    android:longClickable="false"
+
+                    >
+                    <TextView
+                        android:id="@+id/tv_lang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        />
+                </FrameLayout>
+
 
                 <ImageView
                     android:id="@+id/image_arrow3"
@@ -664,7 +692,10 @@
                     android:layout_height="35dp"
                     android:layout_weight=".2"
                     android:padding="11dp"
-                    android:src="@drawable/arrow_blue_right" />
+                    android:src="@drawable/arrow_blue_right"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    />
             </LinearLayout>
 
             <View
@@ -689,6 +720,8 @@
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:text="@string/sign_out"
+                    android:clickable="false"
+                    android:longClickable="false"
                     />
 
                 <ImageView
@@ -697,7 +730,10 @@
                     android:layout_height="35dp"
                     android:layout_weight=".2"
                     android:padding="11dp"
-                    android:src="@drawable/arrow_blue_right" />
+                    android:src="@drawable/arrow_blue_right"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    />
             </LinearLayout>
 
             <View

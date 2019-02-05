@@ -112,20 +112,25 @@
                 android:text="@string/points"
                 />
 
-            <TextView
-                android:id="@+id/tv_points"
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_weight=".7"
-                android:clickable="false"
-                android:longClickable="false"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="dfdfds"
-                />
+                android:layout_height="wrap_content"
+                >
+               <TextView
+                   android:id="@+id/tv_points"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center_vertical"
+                   android:clickable="false"
+                   android:longClickable="false"
+                   android:textColor="@color/black"
+                   android:textSize="15sp"
+                   android:textStyle="bold"
+                   android:gravity="center"
+                   />
+            </FrameLayout>
+
 
 
 
@@ -145,19 +150,25 @@
              android:padding="8dp"
              android:weightSum="1">
 
-            <TextView
-                android:id="@+id/tv_phone"
+            <FrameLayout
                 android:layout_width="0dp"
+                android:layout_weight=".8"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight=".8"
-                android:clickable="false"
-                android:longClickable="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:text="dfsd"
-                />
+                >
+               <TextView
+                   android:id="@+id/tv_phone"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center_vertical"
+                   android:clickable="false"
+                   android:longClickable="false"
+                   android:textColor="@color/colorPrimary"
+                   android:textSize="15sp"
+                   android:textStyle="bold"
+                   />
+            </FrameLayout>
+
 
             <ImageView
                 android:id="@+id/image_arrow1"
@@ -183,17 +194,24 @@
              android:padding="8dp"
              android:weightSum="1">
 
-            <TextView
-                android:id="@+id/tv_alter_phone"
+            <FrameLayout
                 android:layout_width="0dp"
+                android:layout_weight=".65"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight=".65"
-                android:clickable="false"
-                android:longClickable="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                >
+               <TextView
+                   android:id="@+id/tv_alter_phone"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center_vertical"
+                   android:clickable="false"
+                   android:longClickable="false"
+                   android:textColor="@color/colorPrimary"
+                   android:textSize="15sp"
+                   android:textStyle="bold" />
+            </FrameLayout>
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -266,17 +284,23 @@
              android:padding="8dp"
              android:weightSum="1">
 
-            <TextView
-                android:id="@+id/tv_lang"
+            <FrameLayout
                 android:layout_width="0dp"
+                android:layout_weight=".8"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight=".8"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:text="ddsfd"
-                />
+                >
+               <TextView
+                   android:id="@+id/tv_lang"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_gravity="center_vertical"
+                   android:textColor="@color/colorPrimary"
+                   android:textSize="15sp"
+                   android:textStyle="bold"
+                   />
+            </FrameLayout>
+
 
             <ImageView
                 android:id="@+id/image_arrow4"

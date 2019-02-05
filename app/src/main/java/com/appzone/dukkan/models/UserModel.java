@@ -35,7 +35,11 @@ public class UserModel implements Serializable{
         private int coupon;
         private int points;
         private int escaped_orders_count;
-
+        private int total_gain;
+        private int my_gain;
+        private int dukkan_gain;
+        private int user_orders_count;
+        private int dukkan_max_gain;
 
         public int getId() {
             return id;
@@ -107,6 +111,26 @@ public class UserModel implements Serializable{
 
         public int getEscaped_orders_count() {
             return escaped_orders_count;
+        }
+
+        public int getTotal_gain() {
+            return total_gain;
+        }
+
+        public int getMy_gain() {
+            return my_gain;
+        }
+
+        public int getDukkan_gain() {
+            return dukkan_gain;
+        }
+
+        public int getUser_orders_count() {
+            return user_orders_count;
+        }
+
+        public int getDukkan_max_gain() {
+            return dukkan_max_gain;
         }
     }
 }

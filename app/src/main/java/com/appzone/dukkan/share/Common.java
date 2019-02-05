@@ -28,8 +28,11 @@ import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_home.client_home.activity.HomeActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_in.SignInActivity;
 import com.appzone.dukkan.activities_fragments.activity_sign_up.SignUpActivity;
+import com.appzone.dukkan.models.OrderItem;
+import com.appzone.dukkan.preferences.Preferences;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -77,7 +80,7 @@ public class Common {
         return snackbar;
 
     }
-    public static void CreateUserNotSignInAlertDialog(final Context context, String msg)
+    public static void CreateUserNotSignInAlertDialog(final Context context, String msg, final List<OrderItem> orderItemList)
     {
         final HomeActivity homeActivity = (HomeActivity) context;
         final AlertDialog dialog = new AlertDialog.Builder(context)
@@ -95,6 +98,12 @@ public class Common {
         btn_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (orderItemList.size()>0)
+                {
+                    Preferences preferences = Preferences.getInstance();
+                    preferences.SaveCartItemProducts(context,orderItemList);
+                }
                 dialog.dismiss();
                 Intent intent = new Intent(homeActivity, SignInActivity.class);
                 homeActivity.startActivity(intent);
@@ -106,6 +115,11 @@ public class Common {
         btn_sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (orderItemList.size()>0)
+                {
+                    Preferences preferences = Preferences.getInstance();
+                    preferences.SaveCartItemProducts(context,orderItemList);
+                }
                 dialog.dismiss();
                 Intent intent = new Intent(homeActivity, SignUpActivity.class);
                 intent.putExtra("type","1");

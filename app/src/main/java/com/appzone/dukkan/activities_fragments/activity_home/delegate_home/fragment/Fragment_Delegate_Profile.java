@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.appzone.dukkan.R;
 import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.activities_fragments.terms_contact_us_activity.activity.Terms_Conditions_Activity;
+import com.appzone.dukkan.models.GainModel;
 import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
@@ -37,7 +38,7 @@ import com.appzone.dukkan.tags.Tags;
 import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
+import java.io.IOException;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -51,7 +52,7 @@ public class Fragment_Delegate_Profile extends Fragment {
     private DelegateHomeActivity activity;
     private Toolbar toolBar;
     private AppBarLayout app_bar;
-    private TextView tv_name,tv_phone,tv_lang,tv_rate;
+    private TextView tv_name,tv_phone,tv_lang,tv_rate,tv_total,tv_refused_order,tv_done_order,tv_credit_limit,tv_dukkan_receivable,tv_my_receivable;
     private ImageView image_arrow1,image_arrow2,image_arrow3,image_arrow4;
     private LinearLayout ll_phone,ll_password,ll_language,ll_share,ll_driver_container,ll_logout;
     private FrameLayout fl_terms,fl_contact_us,fl_about_app;
@@ -86,7 +87,7 @@ public class Fragment_Delegate_Profile extends Fragment {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-                int constant =80;
+                int constant =220;
                 if ((appBarLayout.getTotalScrollRange()+verticalOffset) <= constant)
                 {
                     ll_driver_container.setVisibility(View.GONE);
@@ -105,6 +106,15 @@ public class Fragment_Delegate_Profile extends Fragment {
         preferences = Preferences.getInstance();
         tv_name = view.findViewById(R.id.tv_name);
         tv_rate = view.findViewById(R.id.tv_rate);
+
+        tv_total = view.findViewById(R.id.tv_total);
+        tv_refused_order = view.findViewById(R.id.tv_refused_order);
+        tv_done_order = view.findViewById(R.id.tv_done_order);
+        tv_credit_limit = view.findViewById(R.id.tv_credit_limit);
+        tv_dukkan_receivable = view.findViewById(R.id.tv_dukkan_receivable);
+        tv_my_receivable = view.findViewById(R.id.tv_my_receivable);
+
+
 
         tv_phone = view.findViewById(R.id.tv_phone);
         tv_lang = view.findViewById(R.id.tv_lang);
@@ -250,16 +260,52 @@ public class Fragment_Delegate_Profile extends Fragment {
         {
             Picasso.with(getActivity()).load(Uri.parse(Tags.IMAGE_URL+userModel.getUser().getAvatar())).fit().into(image);
             tv_name.setText(userModel.getUser().getName());
-            tv_phone.setText("+"+new DecimalFormat("#").format(966)+" "+new DecimalFormat("#").format(Integer.parseInt(userModel.getUser().getPhone())));
-            tv_rate.setText("("+new DecimalFormat("#").format(userModel.getUser().getRate())+")");
+            tv_phone.setText("+966"+userModel.getUser().getPhone());
+            tv_rate.setText("("+userModel.getUser().getRate()+")");
             SimpleRatingBar.AnimationBuilder builder = rateBar.getAnimationBuilder();
             builder.setDuration(1500);
             builder.setRepeatCount(0);
             builder.setRatingTarget((float) userModel.getUser().getRate());
             builder.setInterpolator(new AccelerateInterpolator());
             builder.start();
+
+            tv_total.setText(userModel.getUser().getTotal_gain()+" "+getString(R.string.rsa));
+            tv_refused_order.setText(userModel.getUser().getEscaped_orders_count()+"");
+            tv_done_order.setText(userModel.getUser().getUser_orders_count()+"");
+            tv_my_receivable.setText(userModel.getUser().getMy_gain()+" "+getString(R.string.rsa));
+            tv_dukkan_receivable.setText(userModel.getUser().getDukkan_gain()+" "+getString(R.string.rsa));
+            getMaxGain();
+
         }
 
+    }
+
+    private void getMaxGain() {
+        Api.getService()
+                .getMaxGain().enqueue(new Callback<GainModel>() {
+            @Override
+            public void onResponse(Call<GainModel> call, Response<GainModel> response) {
+                if (response.isSuccessful())
+                {
+                    tv_credit_limit.setText(response.body().getDukkan_max_gain()+" "+getString(R.string.rsa));
+                }else
+                    {
+                        try {
+                            Log.e("Error",response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<GainModel> call, Throwable t) {
+                try {
+                    Log.e("Error",t.getMessage());
+                }catch (Exception e){}
+            }
+        });
     }
 
     private void CreateSocialMediaIntent(String uri)
@@ -542,7 +588,8 @@ public class Fragment_Delegate_Profile extends Fragment {
         dialogContactUs.show();
     }
 
-    private void UpdatePhone(String m_phone) {
+    private void UpdatePhone(String m_phone)
+    {
         final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.updating_phone));
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);

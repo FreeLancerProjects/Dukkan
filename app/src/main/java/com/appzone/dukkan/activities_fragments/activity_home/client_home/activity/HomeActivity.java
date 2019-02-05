@@ -137,10 +137,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private Intent intentService;
     private AlertDialog gpsDialog;
     private LocationManager locationManager;
-    public View root;
+    public  View root;
     private UserSingleTone userSingleTone;
     private Preferences preferences;
-    private UserModel userModel;
+    public UserModel userModel;
     private int time_type=-1;
     private double order_lat=0.0,order_lng=0.0;
     private String order_address="";
@@ -224,21 +224,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
 
 
                             }
                         break;
                     case 2:
-                        if (userModel!=null)
-                        {
-                            DisplayFragmentMyCart();
+                        DisplayFragmentMyCart();
 
-                        }else
-                            {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
-
-                            }
                         break;
                     case 3:
                         if (userModel!=null)
@@ -248,7 +241,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
 
                             }
                         break;
@@ -260,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
                             }
                         break;
                 }
@@ -270,6 +263,13 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         DisplayFragmentHome();
         updateUserFireBaseToken();
+
+        List<OrderItem> orderItemList = preferences.getCartItems(this);
+        if (orderItemList.size()>0)
+        {
+            UpdateCartNotification(orderItemList.size());
+            orderItemsSingleTone.AddListOrderItems(orderItemList);
+        }
 
 
     }
@@ -906,7 +906,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     {
         if (userModel==null)
         {
-            Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su));
+            Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
 
         }else
             {
@@ -1690,7 +1690,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setTax(tax);
         orderToUploadModel.setOrderItemList(orderItemList);
     }
-    public void Save_Order_Data(String name, String phone, String street_name, String feedback, CouponModel couponModel, String payment_method)
+    public void Save_Order_Data(String name, String phone,String alter_phone, String street_name, String feedback, CouponModel couponModel, String payment_method)
     {
         if (orderToUploadModel==null)
         {
@@ -1704,6 +1704,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setNotes(feedback);
         orderToUploadModel.setTime_type(time_type);
         orderToUploadModel.setDelivery_cost(Double.parseDouble(delivery_cost));
+        orderToUploadModel.setClient_alternative_phone(alter_phone);
+
         //orderToUploadModel.setOrder_total_price(final_total_order_cost);
 
         if (couponModel!=null)
@@ -1814,6 +1816,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         fl_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                preferences.clearCart(HomeActivity.this);
                 orderItemsSingleTone.ClearCart();
                 Clear_Order_Object();
                 UpdateCartNotification(0);

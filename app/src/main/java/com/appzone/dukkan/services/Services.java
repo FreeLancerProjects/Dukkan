@@ -3,6 +3,7 @@ package com.appzone.dukkan.services;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.DelegateCollectingOrderUploadModel;
 import com.appzone.dukkan.models.DeliveryCostModel;
+import com.appzone.dukkan.models.GainModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.MessageModel;
 import com.appzone.dukkan.models.MessageModelList;
@@ -199,4 +200,7 @@ public interface Services {
     @FormUrlEncoded
     @POST("api/me")
     Call<UserModel> getUserData(@Field("token") String token);
+
+    @GET("/api/get-max-gain")
+    Call<GainModel> getMaxGain();
 }

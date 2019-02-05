@@ -8,6 +8,7 @@ public class OrderToUploadModel implements Serializable {
     private int client_id;
     private String client_name;
     private String client_phone;
+    private String client_alternative_phone;
     private String client_address;
     private double lat;
     private double lng;
@@ -52,6 +53,14 @@ public class OrderToUploadModel implements Serializable {
 
     public void setClient_Phone(String client_Phone) {
         this.client_phone = client_Phone;
+    }
+
+    public String getClient_alternative_phone() {
+        return client_alternative_phone;
+    }
+
+    public void setClient_alternative_phone(String client_alternative_phone) {
+        this.client_alternative_phone = client_alternative_phone;
     }
 
     public String getClient_address() {

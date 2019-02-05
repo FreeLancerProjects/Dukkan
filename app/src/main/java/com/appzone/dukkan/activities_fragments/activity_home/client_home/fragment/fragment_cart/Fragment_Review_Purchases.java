@@ -28,6 +28,7 @@ import com.appzone.dukkan.adapters.CartAdapter;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.remote.Api;
+import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.OrderItemsSingleTone;
 
 import java.io.Serializable;
@@ -55,6 +56,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private OrderItemsSingleTone orderItemsSingleTone;
     private LinearLayout ll_empty_cart;
     private double total_order_cost_after_tax=0.0,net_total_order_price;
+
 
 
     @Nullable
@@ -110,8 +112,15 @@ public class Fragment_Review_Purchases extends Fragment {
             @Override
             public void onClick(View v) {
 
-                activity.SaveListOf_Order_Order_Total_Cost(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
-                activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
+                if (activity.userModel!=null)
+                {
+                    activity.SaveListOf_Order_Order_Total_Cost(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
+                    activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
+                }else
+                    {
+                        Common.CreateUserNotSignInAlertDialog(getActivity(),getString(R.string.si_su),orderItemList);
+                    }
+
             }
         });
 

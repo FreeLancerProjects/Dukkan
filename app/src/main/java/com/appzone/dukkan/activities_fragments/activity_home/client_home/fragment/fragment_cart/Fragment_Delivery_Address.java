@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class Fragment_Delivery_Address extends Fragment {
     private final static  String TAG = "cost";
     private ImageView image_arrow,image_arrow2,image_arrow_back,image_arrow_continue,image_visa,image_mada,image_cash;
-    private EditText edt_first_name,edt_last_name,edt_phone,edt_street,edt_feedback;
+    private EditText edt_first_name,edt_last_name,edt_phone,edt_alter_phone,edt_street,edt_feedback;
     private FrameLayout fl_choose_address,fl_continue,fl_back,fl_date;
     private TextView tv_address,tv_time,tv_cash;
     private LinearLayout ll_visa, ll_mada, ll_cash;
@@ -115,6 +115,8 @@ public class Fragment_Delivery_Address extends Fragment {
         edt_first_name = view.findViewById(R.id.edt_first_name);
         edt_last_name = view.findViewById(R.id.edt_last_name);
         edt_phone = view.findViewById(R.id.edt_phone);
+        edt_alter_phone = view.findViewById(R.id.edt_alter_phone);
+
         edt_street = view.findViewById(R.id.edt_street);
         edt_feedback = view.findViewById(R.id.edt_feedback);
 
@@ -476,6 +478,8 @@ public class Fragment_Delivery_Address extends Fragment {
         String m_first_name = edt_first_name.getText().toString().trim();
         String m_last_name = edt_last_name.getText().toString().trim();
         String m_phone = edt_phone.getText().toString().trim();
+        String m_alter_phone = edt_alter_phone.getText().toString().trim();
+
         String m_street_name = edt_street.getText().toString().trim();
         String m_feedback = edt_feedback.getText().toString().trim();
 
@@ -491,13 +495,29 @@ public class Fragment_Delivery_Address extends Fragment {
         {
             Common.CloseKeyBoard(getActivity(),edt_phone);
 
+
+            edt_alter_phone.setError(null);
             edt_first_name.setError(null);
             edt_last_name.setError(null);
             edt_phone.setError(null);
             edt_street.setError(null);
 
-            String d_name = m_first_name+" "+m_last_name;
-            DisplayFragmentPayment_Confirmation(d_name,m_phone,m_street_name,m_feedback, couponModel2,payment_method);
+            if (TextUtils.isEmpty(m_alter_phone))
+            {
+                String d_name = m_first_name+" "+m_last_name;
+                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, couponModel2,payment_method);
+
+            }
+
+            else if (!TextUtils.isEmpty(m_alter_phone)&& m_alter_phone.length()==9)
+            {
+                String d_name = m_first_name+" "+m_last_name;
+                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, couponModel2,payment_method);
+
+            }else if (!TextUtils.isEmpty(m_alter_phone)&& m_alter_phone.length()!=9)
+                {
+                    edt_alter_phone.setError(getString(R.string.inv_phone));
+                }
 
         }else
             {
@@ -556,9 +576,9 @@ public class Fragment_Delivery_Address extends Fragment {
 
     }
 
-    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone, String m_street_name, String m_feedback, CouponModel couponModel, String payment_method)
+    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone,String alter_phone, String m_street_name, String m_feedback, CouponModel couponModel, String payment_method)
     {
-        activity.Save_Order_Data(d_name,p_phone,m_street_name,m_feedback,couponModel,payment_method);
+        activity.Save_Order_Data(d_name,p_phone,alter_phone,m_street_name,m_feedback,couponModel,payment_method);
         activity.DisplayFragmentPayment_Confirmation(payment_method,couponModel);
 
     }

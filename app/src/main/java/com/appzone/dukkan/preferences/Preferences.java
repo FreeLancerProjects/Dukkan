@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.appzone.dukkan.models.ChatRoom_UserIdModel;
+import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.tags.Tags;
 import com.google.gson.Gson;
@@ -199,7 +200,12 @@ public class Preferences {
         preferences_chat_editor.clear();
         preferences_chat_editor.apply();
 
+        clearCart(context);
+
+
     }
+
+
 
     public void create_update_chat_user_id_room_id(Context context, ChatRoom_UserIdModel chatRoom_userIdModel)
     {
@@ -215,5 +221,37 @@ public class Preferences {
         SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
         ChatRoom_UserIdModel model = new Gson().fromJson(preferences.getString("data",""),ChatRoom_UserIdModel.class);
         return model ;
+    }
+
+    public void SaveCartItemProducts(Context context,List<OrderItem> orderItemList)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+
+        String gson = new Gson().toJson(orderItemList);
+
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("items",gson);
+        edit.apply();
+    }
+
+
+    public List<OrderItem> getCartItems(Context context)
+    {
+        List<OrderItem> orderItemList = new ArrayList<>();
+        SharedPreferences preferences = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+
+        String gson = preferences.getString("items","");
+
+        if (!TextUtils.isEmpty(gson))
+        {
+            orderItemList = new Gson().fromJson(gson,new TypeToken<List<OrderItem>>(){}.getType());
+        }
+        return orderItemList;
+    }
+    public void clearCart(Context context) {
+        SharedPreferences preferences_cart = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit_cart = preferences_cart.edit();
+        edit_cart.clear();
+        edit_cart.apply();
     }
 }
