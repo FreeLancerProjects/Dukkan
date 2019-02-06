@@ -497,6 +497,57 @@ public class FireBaseMessaging extends FirebaseMessagingService {
             }, 1);
         }
 
+
+        ////////////////////////////////////cancel order///////////////////////
+
+        else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
+
+
+            final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            builder.setContentTitle(map.get("delegate_name"));
+            builder.setContentText(getString(R.string.ord_cancel_sent_again));
+
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra("status", 4);
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+
+            final Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    builder.setLargeIcon(bitmap);
+                    if (manager != null) {
+                        manager.createNotificationChannel(channel);
+                        manager.notify(1, builder.build());
+                        EventBus.getDefault().post(new PageModel(0));
+
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Picasso.with(FireBaseMessaging.this).load(Uri.parse(Tags.IMAGE_URL + map.get("delegate_avatar"))).into(target);
+
+                }
+            }, 1);
+
+
+        }
+
         ///////////////////////////////////typing///////////////////////////////////////
         else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
 
@@ -515,6 +566,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
 
         }
+
 
 
     }
@@ -637,9 +689,110 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
     }
 
+
+
+    private void sendNewMsgNative(final Map<String, String> map, NotificationCompat.Builder builder) {
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        int msg_id = Integer.parseInt(map.get("msg_id"));
+        int room_id = Integer.parseInt(map.get("room_id"));
+        int sender_id = Integer.parseInt(map.get("sender_id"));
+        int receiver_id = Integer.parseInt(map.get("receiver_id"));
+        int msg_type = Integer.parseInt(map.get("msg_type"));
+        String user_name = map.get("user_name");
+        String user_phone = map.get("user_phone");
+
+        double rate = Double.parseDouble(map.get("user_rate"));
+        String user_avatar = map.get("user_avatar");
+        String msg = map.get("msg");
+
+        long msg_time = Long.parseLong(map.get("msg_time")) * 1000;
+
+        builder.setContentTitle(user_name);
+        builder.setContentText(msg);
+
+        final MessageModel messageModel = new MessageModel(room_id, sender_id, receiver_id, msg, msg_type, msg_time);
+        messageModel.setId(msg_id);
+
+
+        if (user_avatar.equals("0")) {
+
+            ////////////////////////////////////////
+            String ph_alter = map.get("user_alternative_phone");
+
+            UserChatModel userChatModel = new UserChatModel(sender_id, room_id, user_name, user_phone, "", Tags.user_client, 0);
+            userChatModel.setAlter_phone(ph_alter);
+
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("user_chat_data", userChatModel);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(pendingIntent);
+
+            builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            if (manager != null) {
+
+                manager.notify(1, builder.build());
+
+
+            }
+        } else {
+            UserChatModel userChatModel = new UserChatModel(sender_id, room_id, user_name, user_phone, user_avatar, Tags.user_delegate, rate);
+            String ph_alter = map.get("user_alternative_phone");
+            userChatModel.setAlter_phone(ph_alter);
+
+
+            Intent intent = new Intent(this, ChatActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("user_chat_data", userChatModel);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(pendingIntent);
+
+            builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            if (manager != null) {
+                manager.notify(1, builder.build());
+
+            }
+
+            final Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            new Handler(Looper.getMainLooper())
+                    .postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Picasso.with(FireBaseMessaging.this).load(Uri.parse(Tags.IMAGE_URL + map.get("user_avatar"))).into(target);
+
+                        }
+                    }, 1);
+
+        }
+
+    }
+
+
+
     private void createNotificationNative(final Map<String, String> map) {
+        UserModel userModel = getUserData();
+
+        String notification_type = map.get("type");
         String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.not;
-        final String notification_type = map.get("type");
+
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setSound(Uri.parse(sound_path));
@@ -647,98 +800,44 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         /////////////////////////////////////// chat ////////////////////////////////
         if (notification_type.equals(String.valueOf(Tags.NEW_MESSAGE_NOTIFICATION))) {
 
-            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+            ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+            ChatRoom_UserIdModel model = getChatRoomData();
+            String className = activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
 
-            int msg_id = Integer.parseInt(map.get("msg_id"));
-            int room_id = Integer.parseInt(map.get("room_id"));
-            int sender_id = Integer.parseInt(map.get("sender_id"));
-            int receiver_id = Integer.parseInt(map.get("receiver_id"));
-            int msg_type = Integer.parseInt(map.get("msg_type"));
-            String user_name = map.get("user_name");
-            String user_phone = map.get("user_phone");
-            double rate = Double.parseDouble(map.get("user_rate"));
-            String user_avatar = map.get("user_avatar");
-            String msg = map.get("msg");
-            long msg_time = Long.parseLong(map.get("msg_time")) * 1000;
+            if (className.equals("com.appzone.dukkan.activities_fragments.activity_chat.ChatActivity")) {
+                if (model != null)
+                {
 
-            builder.setContentTitle(user_name);
-            builder.setContentText(msg);
+                    int room_id = model.getRoomId();
 
-            final MessageModel messageModel = new MessageModel(room_id, sender_id, receiver_id, msg, msg_type, msg_time);
-            messageModel.setId(msg_id);
-
-
-            if (user_avatar.equals("0")) {
-                UserChatModel userChatModel = new UserChatModel(sender_id, room_id, user_name, user_phone, "", Tags.user_client, 0);
-
-                Intent intent = new Intent(this, ChatActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("user_chat_data", userChatModel);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                builder.setContentIntent(pendingIntent);
-                builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-
-                if (manager != null) {
-
-                    manager.notify(1, builder.build());
-
-                    EventBus.getDefault().post(messageModel);
-
+                    if (room_id == Integer.parseInt(map.get("room_id")) && userModel.getUser().getId()==Integer.parseInt(map.get("receiver_id")))
+                    {
+                        updateMessages(map);
+                    } else
+                    {
+                        sendNewMsgNative(map,builder);
+                    }
                 }
+
             } else {
-                UserChatModel userChatModel = new UserChatModel(sender_id, room_id, user_name, user_phone, user_avatar, Tags.user_delegate, rate);
 
-                Intent intent = new Intent(this, ChatActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("user_chat_data", userChatModel);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                builder.setContentIntent(pendingIntent);
-
-                builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-                if (manager != null) {
-
-                    manager.notify(1, builder.build());
-                    EventBus.getDefault().post(messageModel);
-
+                if (userModel.getUser().getId() == Integer.parseInt(map.get("receiver_id"))) {
+                    sendNewMsgNative(map,builder);
                 }
-
-                final Target target = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                };
-                new Handler(Looper.getMainLooper())
-                        .postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                Picasso.with(FireBaseMessaging.this).load(Uri.parse(Tags.IMAGE_URL + map.get("user_avatar"))).into(target);
-
-                            }
-                        }, 1);
-
             }
+
+
+
 
         }
 
 
         /////////////////////////////////////////////client_send_new_order/////////////////////////
         else if (notification_type.equals(String.valueOf(Tags.NEW_ORDER_NOTIFICATION))) {
-
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
             builder.setContentTitle(map.get("client_name"));
             builder.setContentText(getString(R.string.new_order));
 
@@ -751,6 +850,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
             builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (manager != null) {
                 manager.notify(1, builder.build());
+
             }
 
             ///////////////////delegate_accepted_order///////////////////////////
@@ -773,10 +873,12 @@ public class FireBaseMessaging extends FirebaseMessagingService {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     builder.setLargeIcon(bitmap);
+                    Log.e("6666", "1111111");
 
                     NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                     if (manager != null) {
+                        Log.e("d11111111", "1111111");
                         manager.notify(1, builder.build());
                         EventBus.getDefault().post(orderStatusModel);
                         EventBus.getDefault().post(new PageModel(0));
@@ -925,7 +1027,6 @@ public class FireBaseMessaging extends FirebaseMessagingService {
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     builder.setLargeIcon(bitmap);
                     if (manager != null) {
-
                         manager.notify(1, builder.build());
                         EventBus.getDefault().post(new PageModel(1));
                         EventBus.getDefault().post(orderStatusModel);
@@ -946,6 +1047,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
                 @Override
                 public void run() {
                     Picasso.with(FireBaseMessaging.this).load(Uri.parse(Tags.IMAGE_URL + map.get("delegate_avatar"))).into(target);
+
                 }
             }, 1);
         }
@@ -997,6 +1099,56 @@ public class FireBaseMessaging extends FirebaseMessagingService {
             }, 1);
         }
 
+
+        ////////////////////////////////////cancel order///////////////////////
+
+        else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
+
+
+            final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            builder.setContentTitle(map.get("delegate_name"));
+            builder.setContentText(getString(R.string.ord_cancel_sent_again));
+
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra("status", 4);
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentIntent(pendingIntent);
+
+            final Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    builder.setLargeIcon(bitmap);
+                    if (manager != null) {
+                        manager.notify(1, builder.build());
+                        EventBus.getDefault().post(new PageModel(0));
+
+                    }
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Picasso.with(FireBaseMessaging.this).load(Uri.parse(Tags.IMAGE_URL + map.get("delegate_avatar"))).into(target);
+
+                }
+            }, 1);
+
+
+        }
+
         ///////////////////////////////////typing///////////////////////////////////////
         else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
 
@@ -1015,7 +1167,6 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
 
         }
-
     }
 
 

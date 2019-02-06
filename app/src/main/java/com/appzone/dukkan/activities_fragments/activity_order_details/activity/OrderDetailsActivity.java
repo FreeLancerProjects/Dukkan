@@ -542,7 +542,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         Api.getService()
-                .Accept_Refuse_order(order.getId(),userModel.getToken(),Tags.order_accepted)
+                .updateOrderStatus(order.getId(),userModel.getToken(),Tags.status_cancel_order)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

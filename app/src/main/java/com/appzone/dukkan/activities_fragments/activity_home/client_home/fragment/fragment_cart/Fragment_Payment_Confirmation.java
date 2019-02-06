@@ -169,8 +169,10 @@ public class Fragment_Payment_Confirmation extends Fragment {
     }
     private void updateUI()
     {
-
-
+        if (delivery_cost == 0.0)
+        {
+            tv_delivery_cost.setText(R.string.del_for_free);
+        }
         if (payment_method.equals(Tags.payment_cash))
         {
             card_cash.setVisibility(View.VISIBLE);
@@ -220,7 +222,15 @@ public class Fragment_Payment_Confirmation extends Fragment {
         ll_coupon.setVisibility(View.GONE);
         ll_point.setVisibility(View.GONE);
 
-        tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+        if (delivery_cost == 0.0)
+        {
+            tv_delivery_cost.setText(R.string.del_for_free);
+
+        }else
+            {
+                tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+
+            }
         tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
         double delivery_order_cost = delivery_cost+total_order_cost;
         tv_total.setText(new DecimalFormat("##.##").format(delivery_order_cost)+" "+getString(R.string.rsa));
@@ -243,7 +253,15 @@ public class Fragment_Payment_Confirmation extends Fragment {
         card_nothing.setCardBackgroundColor(ContextCompat.getColor(getActivity(),R.color.gray2));
 
 
-        tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+        if (delivery_cost == 0.0)
+        {
+            tv_delivery_cost.setText(R.string.del_for_free);
+
+        }else
+        {
+            tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+
+        }
 
         tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
         double order_cost_after_discount = total_order_cost-order_cost_after_discount_coupon;
@@ -278,7 +296,16 @@ public class Fragment_Payment_Confirmation extends Fragment {
             tv_point_cost.setText(new DecimalFormat("##.##").format(remain_point_cost)+" "+getString(R.string.rsa));
 
             tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
-            tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+
+            if (delivery_cost == 0.0)
+            {
+                tv_delivery_cost.setText(R.string.del_for_free);
+
+            }else
+            {
+                tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+
+            }
             tv_total.setText("0"+getString(R.string.rsa));
             final_total_order_price = 0;
 
@@ -287,8 +314,16 @@ public class Fragment_Payment_Confirmation extends Fragment {
                 discount_point = userModel.getUser().getPoints();
                 discount_coupon_points_cost = point_cost;
 
+                if (delivery_cost == 0.0)
+                {
+                    tv_delivery_cost.setText(R.string.del_for_free);
 
-                tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+                }else
+                {
+                    tv_delivery_cost.setText(new DecimalFormat("##.##").format(delivery_cost)+" "+getString(R.string.rsa));
+
+                }
+
                 tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
 
                 double order_cost_after_discount = total_order_cost-point_cost;

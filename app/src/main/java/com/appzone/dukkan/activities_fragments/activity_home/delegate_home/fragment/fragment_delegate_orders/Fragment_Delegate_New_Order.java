@@ -131,36 +131,48 @@ public class Fragment_Delegate_New_Order extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data!=null)
         {
-            boolean isAccepted= data.getBooleanExtra("accepted",false);
-            if (isAccepted)
+
+
+            if (data.hasExtra("status"))
             {
-                orderList.remove(selectedPos);
-                delegate_order_adapter.notifyItemRemoved(selectedPos);
-
-                if (orderList.size()>0)
-                {
-                    ll_no_order.setVisibility(View.GONE);
-
-                }else
-                {
-                    ll_no_order.setVisibility(View.VISIBLE);
-                }
                 listener.onUpdated();
+
             }else
                 {
-                    orderList.remove(selectedPos);
-                    delegate_order_adapter.notifyItemRemoved(selectedPos);
-                    if (orderList.size()>0)
+                    boolean isAccepted= data.getBooleanExtra("accepted",false);
+                    if (isAccepted)
                     {
-                        ll_no_order.setVisibility(View.GONE);
+                        orderList.remove(selectedPos);
+                        delegate_order_adapter.notifyItemRemoved(selectedPos);
 
+                        if (orderList.size()>0)
+                        {
+                            ll_no_order.setVisibility(View.GONE);
+
+                        }else
+                        {
+                            ll_no_order.setVisibility(View.VISIBLE);
+                        }
+                        listener.onUpdated();
                     }else
                     {
-                        ll_no_order.setVisibility(View.VISIBLE);
+                        orderList.remove(selectedPos);
+                        delegate_order_adapter.notifyItemRemoved(selectedPos);
+                        if (orderList.size()>0)
+                        {
+                            ll_no_order.setVisibility(View.GONE);
+
+                        }else
+                        {
+                            ll_no_order.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
+
+
         }
     }
 

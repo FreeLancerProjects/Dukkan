@@ -268,4 +268,6 @@
     <string name="call">Call</string>
     <string name="membership_id">Membership id</string>
     <string name="update_order">Update order</string>
+    <string name="del_for_free">For free</string>
+    <string name="ord_cancel_sent_again">All products unavailable order cancelled and sent again</string>
 </resources>

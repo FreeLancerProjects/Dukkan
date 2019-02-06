@@ -492,7 +492,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         Intent intent = new Intent(this, OrderDetailsActivity.class);
         intent.putExtra("order",order);
         intent.putExtra("order_type", Tags.order_current);
-        startActivityForResult(intent,2);
+        startActivity(intent);
     }
 
 
@@ -505,26 +505,6 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             fragment.onActivityResult(requestCode, resultCode, data);
         }
 
-        new Handler()
-                .postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
-                        {
-
-                            fragment_delegate_orders.RefreshFragmentDelegateNew_CurrentOrder();
-
-
-                        }
-
-                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
-                        {
-                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
-
-                        }
-                    }
-                },1000);
 
 
 
@@ -581,20 +561,19 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
                         if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
                         {
 
-                            fragment_delegate_orders.RefreshFragmentDelegateNew_CurrentOrder();
+                            fragment_delegate_orders.RefreshFragment();
 
 
                         }
 
-                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+
+
+
+                        if (fragment_delegate_profile!=null && fragment_delegate_profile.isAdded())
                         {
-                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
+                            fragment_delegate_profile.UpdateProfile();
+                        }
 
-                        }
-                        if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
-                        {
-                            fragment_delegate_orders.RefreshFragmentDelegateCurrent_PreviousOrder();
-                        }
                     }
                 },1000);
 

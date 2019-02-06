@@ -588,7 +588,7 @@
                         android:id="@+id/tv_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_vertical|start"
                         android:clickable="false"
                         android:longClickable="false"
                         android:textColor="@color/colorPrimary"
@@ -623,19 +623,28 @@
                 android:padding="8dp"
                 android:weightSum="1">
 
-                <TextView
+                <FrameLayout
                     android:layout_width="0dp"
+                    android:layout_weight=".8"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight=".8"
                     android:clickable="false"
                     android:longClickable="false"
-                    android:text="@string/password"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        android:text="@string/password"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
 
-                    />
+                        />
+                </FrameLayout>
+
 
                 <ImageView
                     android:id="@+id/image_arrow2"
@@ -676,7 +685,7 @@
                         android:id="@+id/tv_lang"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center_vertical|start"
                         android:textColor="@color/colorPrimary"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -711,18 +720,27 @@
                 android:padding="8dp"
                 android:weightSum="1">
 
-                <TextView
+                <FrameLayout
                     android:layout_width="0dp"
+                    android:layout_weight=".8"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight=".8"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:text="@string/sign_out"
                     android:clickable="false"
                     android:longClickable="false"
-                    />
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:text="@string/sign_out"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        />
+                </FrameLayout>
+
 
                 <ImageView
                     android:id="@+id/image_arrow4"

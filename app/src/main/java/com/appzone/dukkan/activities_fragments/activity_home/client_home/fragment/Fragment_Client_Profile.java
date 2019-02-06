@@ -54,6 +54,7 @@ public class Fragment_Client_Profile extends Fragment {
     private UserModel userModel;
     private UserSingleTone userSingleTone;
     private Preferences preferences;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -257,7 +258,7 @@ public class Fragment_Client_Profile extends Fragment {
         {
             tv_name.setText(userModel.getUser().getName());
             tv_phone.setText("00966"+userModel.getUser().getPhone());
-            tv_member_ship.setText("");
+            tv_member_ship.setText(userModel.getUser().getMembership()+"");
 
             if (userModel.getUser().getAlternative_phone()!=null||!TextUtils.isEmpty(userModel.getUser().getAlternative_phone()))
             {

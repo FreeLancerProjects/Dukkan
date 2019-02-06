@@ -141,6 +141,11 @@ public interface Services {
     Call<UserModel> updateAlterPhone(@Field("token") String user_token,
                                      @Field("alternative_phone") String phone);
 
+    @Multipart
+    @POST("/api/edit-profile")
+    Call<UserModel> updateImage(@Part("token") RequestBody user_token,
+                                @Part MultipartBody.Part image);
+
     @FormUrlEncoded
     @POST("/api/edit-profile")
     Call<UserModel> updatePassword(
@@ -197,7 +202,7 @@ public interface Services {
                                );
 
     @FormUrlEncoded
-    @POST("api/me")
+    @POST("/api/me")
     Call<UserModel> getUserData(@Field("token") String token);
 
     @GET("/api/get-max-gain")

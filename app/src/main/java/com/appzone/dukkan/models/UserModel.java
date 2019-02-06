@@ -40,6 +40,7 @@ public class UserModel implements Serializable{
         private int dukkan_gain;
         private int user_orders_count;
         private int dukkan_max_gain;
+        private int membership;
 
         public int getId() {
             return id;
@@ -131,6 +132,10 @@ public class UserModel implements Serializable{
 
         public int getDukkan_max_gain() {
             return dukkan_max_gain;
+        }
+
+        public int getMembership() {
+            return membership;
         }
     }
 }

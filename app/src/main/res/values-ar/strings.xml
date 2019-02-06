@@ -270,5 +270,7 @@
     <string name="call">اتصال</string>
     <string name="membership_id">رقم العضوية</string>
     <string name="update_order">عدل على طلبك</string>
+    <string name="del_for_free">التوصيل مجاني</string>
+    <string name="ord_cancel_sent_again">جميع منتجات الطلب غير متوفره تم ارسال الطلب مره اخرى للمندوبين اخرين</string>
 
 </resources>

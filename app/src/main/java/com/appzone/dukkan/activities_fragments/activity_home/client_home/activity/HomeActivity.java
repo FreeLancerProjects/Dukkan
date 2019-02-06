@@ -324,6 +324,18 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                                 }
                             },100);
                 }
+                else if (intent.getIntExtra("status",0) == 4)
+                {
+                    DisplayFragmentClientOrders();
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fragment_client_orders.setPage(0);
+
+                                }
+                            },100);
+                }
 
 
             }
@@ -1333,7 +1345,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ListenForNotification(PageModel pageModel)
     {
-        if (pageModel.getStatus() == 1)
+        if (pageModel.getStatus() == 1||pageModel.getStatus() == 0)
         {
             RefreshFragmentClient_New_Current_Order();
 

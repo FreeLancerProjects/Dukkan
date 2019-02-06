@@ -139,7 +139,7 @@ public class Fragment_Delegate_Collecting_Order_Products extends Fragment implem
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                activity.CancelOrder();
             }
         });
         Bundle bundle = getArguments();

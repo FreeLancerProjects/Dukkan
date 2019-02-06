@@ -320,11 +320,14 @@ public class Fragment_Delivery_Address extends Fragment {
         final Animation image_congratulation_animation = AnimationUtils.loadAnimation(getActivity(),R.anim.image_congtaulation);
 
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setCancelable(false)
+                .setCancelable(true)
                 .create();
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_congratulation,null);
         ImageView image_cup = view.findViewById(R.id.image_cup);
+
         final ImageView image_congratulation = view.findViewById(R.id.image_congratulation);
+        ImageView img_close = view.findViewById(R.id.img_close);
+
         TextView tv_content = view.findViewById(R.id.tv_content);
         final EditText edt_coupon_code = view.findViewById(R.id.edt_coupon_code);
 
@@ -338,13 +341,21 @@ public class Fragment_Delivery_Address extends Fragment {
                 image_congratulation.setImageResource(R.drawable.en_cong);
 
             }
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
             btn_get.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String m_coupon_code = edt_coupon_code.getText().toString().trim();
+                    String m_coupon_code = edt_coupon_code.getText().toString().trim().toLowerCase();
                     if (!TextUtils.isEmpty(m_coupon_code))
                     {
-                        if (m_coupon_code.equals(couponModel.getCoupon_codes().getAr())||m_coupon_code.equals(couponModel.getCoupon_codes().getEn()))
+                        if (m_coupon_code.equals(couponModel.getCoupon_codes().getAr())||m_coupon_code.equals(couponModel.getCoupon_codes().getEn().toLowerCase()))
                         {
                             edt_coupon_code.setError(null);
                             dialog.dismiss();
@@ -488,9 +499,9 @@ public class Fragment_Delivery_Address extends Fragment {
                 m_phone.length()==9&&
                 !TextUtils.isEmpty(m_street_name)&&
                 !TextUtils.isEmpty(address)&&
-                time_type!=-1&&
                 !TextUtils.isEmpty(payment_method)
                 )
+        //time_type!=-1&&
         {
             Common.CloseKeyBoard(getActivity(),edt_phone);
 
@@ -553,13 +564,13 @@ public class Fragment_Delivery_Address extends Fragment {
                     edt_street.setError(null);
                 }
 
-                if (time_type==-1)
+                /*if (time_type==-1)
                 {
                     tv_time.setError(getString(R.string.field_req));
                 }else
                 {
                     tv_time.setError(null);
-                }
+                }*/
 
                 if (TextUtils.isEmpty(address))
                 {

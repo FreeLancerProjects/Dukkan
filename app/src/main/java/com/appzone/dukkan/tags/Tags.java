@@ -21,6 +21,7 @@ public class Tags {
     public static final int status_delegate_already_collect_order = 3;
     public static final int status_delegate_delivering_order = 4;
     public static final int status_delegate_delivered_order = 5;
+    public static final int status_cancel_order = 6;
 
     public static final String order_current = "current";
     public static final String order_new = "new";
@@ -45,8 +46,10 @@ public class Tags {
     public static final int COLLECTED_ORDER_NOTIFICATION  = 4;
     public static final int DELIVERING_ORDER_NOTIFICATION  = 5;
     public static final int DELIVERED_ORDER_NOTIFICATION  = 6;
-    public static final int NEW_MESSAGE_NOTIFICATION = 7;
-    public static final int TYPING_MESSAGE_NOTIFICATION  = 8;
+    public static final int CANCEL_ORDER_NOTIFICATION  = 7;
+    public static final int NEW_MESSAGE_NOTIFICATION = 8;
+    public static final int TYPING_MESSAGE_NOTIFICATION  = 9;
+
     public static final int START_TYPING = 1;
     public static final int END_TYPING   = 0;
 
