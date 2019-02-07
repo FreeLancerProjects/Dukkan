@@ -1,11 +1,14 @@
 package com.appzone.dukkan.activities_fragments.activity_home.client_home.fragment.fragment_cart;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,7 @@ import com.appzone.dukkan.share.Common;
 import com.appzone.dukkan.singletone.UserSingleTone;
 import com.appzone.dukkan.tags.Tags;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
@@ -40,17 +45,20 @@ import retrofit2.Response;
 public class Fragment_Delivery_Address extends Fragment {
     private final static  String TAG = "cost";
     private ImageView image_arrow,image_arrow2,image_arrow_back,image_arrow_continue,image_visa,image_mada,image_cash;
-    private EditText edt_first_name,edt_last_name,edt_phone,edt_alter_phone,edt_street,edt_feedback;
+    private EditText edt_first_name,edt_last_name,edt_phone,edt_alter_phone,edt_street,edt_feedback,edt_coupon;
     private FrameLayout fl_choose_address,fl_continue,fl_back,fl_date;
-    private TextView tv_address,tv_time,tv_cash;
+    private TextView tv_address,tv_time,tv_cash,tv_alert;
     private LinearLayout ll_visa, ll_mada, ll_cash;
     private String payment_method= Tags.payment_cash;
+    private ProgressBar progBar;
+    private ImageView image_correct,image_in_correct;
+    private Button btn_active;
     private HomeActivity activity;
     private int time_type = -1;
     private UserSingleTone userSingleTone;
     private UserModel userModel;
     private String address ="";
-    private CouponModel couponModel,couponModel2= null;
+    private CouponModel couponModel=null,used_coupon= null;
     private String delivery_cost = "";
     private  String current_lang;
     private double total_order = 0.0;
@@ -110,12 +118,19 @@ public class Fragment_Delivery_Address extends Fragment {
         ll_cash = view.findViewById(R.id.ll_cash);
         fl_date = view.findViewById(R.id.fl_date);
         tv_cash = view.findViewById(R.id.tv_cash);
-
+        tv_alert = view.findViewById(R.id.tv_alert);
 
         edt_first_name = view.findViewById(R.id.edt_first_name);
         edt_last_name = view.findViewById(R.id.edt_last_name);
         edt_phone = view.findViewById(R.id.edt_phone);
         edt_alter_phone = view.findViewById(R.id.edt_alter_phone);
+
+        edt_coupon = view.findViewById(R.id.edt_coupon);
+        progBar = view.findViewById(R.id.progBar);
+        image_correct = view.findViewById(R.id.image_correct);
+        image_in_correct = view.findViewById(R.id.image_in_correct);
+        btn_active = view.findViewById(R.id.btn_active);
+
 
         edt_street = view.findViewById(R.id.edt_street);
         edt_feedback = view.findViewById(R.id.edt_feedback);
@@ -182,6 +197,31 @@ public class Fragment_Delivery_Address extends Fragment {
             }
         });*/
 
+      edt_coupon.addTextChangedListener(new TextWatcher() {
+          @Override
+          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+          }
+
+          @Override
+          public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+              String m_coupon = edt_coupon.getText().toString().trim().toLowerCase();
+              if (m_coupon.length()==0)
+              {
+                  used_coupon.setCoupon_codes(null);
+
+                  image_correct.setVisibility(View.GONE);
+                  image_in_correct.setVisibility(View.GONE);
+                  tv_alert.setText(getString(R.string.inactive));
+              }
+          }
+
+          @Override
+          public void afterTextChanged(Editable s) {
+
+          }
+      });
 
         fl_continue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +243,37 @@ public class Fragment_Delivery_Address extends Fragment {
             public void onClick(View v) {
                 Common.CloseKeyBoard(getActivity(),edt_phone);
                 activity.DisplayFragmentMap();
+            }
+        });
+
+        btn_active.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String m_coupon = edt_coupon.getText().toString().trim().toLowerCase();
+                if (couponModel!=null&&couponModel.getCoupon_codes()!=null)
+                {
+                    if (!TextUtils.isEmpty(m_coupon))
+                    {
+                        if (m_coupon.equals(couponModel.getCoupon_codes().getAr()) || m_coupon.equals(couponModel.getCoupon_codes().getEn()))
+                        {
+                            used_coupon = couponModel;
+                            image_correct.setVisibility(View.VISIBLE);
+                            image_in_correct.setVisibility(View.GONE);
+                            tv_alert.setVisibility(View.VISIBLE);
+                            tv_alert.setText(R.string.active2);
+
+                        }else
+                        {
+                            used_coupon.setCoupon_codes(null);
+                            image_correct.setVisibility(View.GONE);
+                            image_in_correct.setVisibility(View.VISIBLE);
+                            tv_alert.setVisibility(View.VISIBLE);
+                            tv_alert.setText(R.string.inactive);
+
+                        }
+                    }
+
+                }
             }
         });
 
@@ -252,7 +323,23 @@ public class Fragment_Delivery_Address extends Fragment {
                 }
 
 
-                getCouponData(total_order);
+                if (userModel.getUser().getCoupon()==1)
+                {
+                    btn_active.setVisibility(View.INVISIBLE);
+                    image_correct.setVisibility(View.GONE);
+                    image_in_correct.setVisibility(View.GONE);
+                    progBar.setVisibility(View.GONE);
+                    edt_coupon.setHint(R.string.coupon_was_used);
+                    edt_coupon.setEnabled(false);
+                }else
+                    {
+                        if (couponModel==null)
+                        {
+                            getCouponData(total_order);
+
+                        }
+
+                    }
 
         }
 
@@ -263,55 +350,120 @@ public class Fragment_Delivery_Address extends Fragment {
         updateUI(total_order_cost);
 
     }
-    private void getCouponData(final double total_order)
+    public void getCouponData(final double total_order)
     {
+        if (!TextUtils.isEmpty(activity.coupon_code))
+        {
+            if (activity.isCouponActive)
+            {
+                edt_coupon.setText(activity.coupon_code);
+                image_correct.setVisibility(View.VISIBLE);
+                btn_active.setVisibility(View.VISIBLE);
+                edt_coupon.setEnabled(true);
+                tv_alert.setText(getString(R.string.active2));
+            }else
+                {
+                    edt_coupon.setText(activity.coupon_code);
+                    tv_alert.setText("");
 
-        Api.getService()
-                .isCouponAvailable()
-                .enqueue(new Callback<CouponModel>() {
-                    @Override
-                    public void onResponse(Call<CouponModel> call, Response<CouponModel> response) {
-                        if (response.isSuccessful())
-                        {
 
-                            if (response.body()!=null)
-                            {
-                                couponModel = response.body();
+                }
 
-                                Log.e("tttt",userModel.getUser().getCoupon()+"");
-                                if (userModel.getUser().getCoupon()== 0)
+        }else
+            {
+                final ProgressDialog dialog = Common.createProgressDialog(getActivity(),getString(R.string.wait));
+                dialog.setCancelable(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                Api.getService()
+                        .isCouponAvailable()
+                        .enqueue(new Callback<CouponModel>() {
+                            @Override
+                            public void onResponse(Call<CouponModel> call, Response<CouponModel> response) {
+                                if (response.isSuccessful())
                                 {
-                                    couponModel2 = couponModel;
+                                    dialog.dismiss();
 
-                                    if (couponModel!=null)
+                                    if (response.body()!=null)
                                     {
-                                        if (total_order >= couponModel.getMinimum_order_cost())
+                                        couponModel = response.body();
+                                        if (couponModel!=null)
                                         {
-                                            CreateCongratulationDialog(couponModel);
+
+                                            if (couponModel.getCoupon_codes()!=null)
+                                            {
+                                                used_coupon = new CouponModel(couponModel.getCoupon_value(),couponModel.getMinimum_order_cost(),couponModel.getClient_point_cost());
+                                                used_coupon.setCoupon_codes(null);
+
+                                                if (total_order >= couponModel.getMinimum_order_cost())
+                                                {
+                                                    btn_active.setVisibility(View.VISIBLE);
+                                                    image_correct.setVisibility(View.GONE);
+                                                    image_in_correct.setVisibility(View.GONE);
+                                                    progBar.setVisibility(View.GONE);
+                                                    edt_coupon.setEnabled(true);
+                                                    edt_coupon.setHint(getString(R.string.enter)+" "+couponModel.getCoupon_codes().getAr()+" "+getString(R.string.or)+" "+couponModel.getCoupon_codes().getEn());
+                                                    edt_coupon.setText("");
+                                                    tv_alert.setText("");
+
+
+
+                                                }else
+                                                {
+                                                    btn_active.setVisibility(View.INVISIBLE);
+                                                    image_correct.setVisibility(View.GONE);
+                                                    image_in_correct.setVisibility(View.GONE);
+                                                    progBar.setVisibility(View.GONE);
+                                                    edt_coupon.setHint(R.string.coupon_nactive);
+                                                    edt_coupon.setEnabled(false);
+                                                    edt_coupon.setHint(getString(R.string.coupon_nactive));
+                                                    tv_alert.setVisibility(View.VISIBLE);
+                                                    tv_alert.setText(getString(R.string.coupon_active_in_order_cost_more_than)+" "+couponModel.getMinimum_order_cost()+" "+getString(R.string.rsa));
+                                                }
+                                            }else
+                                            {
+                                                btn_active.setVisibility(View.INVISIBLE);
+                                                image_correct.setVisibility(View.GONE);
+                                                image_in_correct.setVisibility(View.GONE);
+                                                progBar.setVisibility(View.GONE);
+                                                edt_coupon.setEnabled(false);
+                                                edt_coupon.setHint(R.string.coupon_disabled);
+                                            }
+
                                         }
+
+
+                                    }else
+                                    {
+                                        dialog.dismiss();
+
+                                        Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
                                     }
 
                                 }else
-                                    {
-                                        couponModel2 = new CouponModel(0,couponModel.getMinimum_order_cost(),couponModel.getClient_point_cost());
+                                {
+                                    try {
+                                        dialog.dismiss();
+
+                                        Log.e("Error",response.errorBody().string());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
 
-                            }else
-                                {
-                                    Toast.makeText(activity, R.string.coup_not_active, Toast.LENGTH_LONG).show();
                                 }
+                            }
 
-                        }
-                    }
+                            @Override
+                            public void onFailure(Call<CouponModel> call, Throwable t) {
+                                try {
+                                    dialog.dismiss();
+                                    activity.CreateSnackBar(getString(R.string.something));
+                                    Log.e("Error",t.getMessage());
+                                }catch (Exception e) {}
+                            }
+                        });
+            }
 
-                    @Override
-                    public void onFailure(Call<CouponModel> call, Throwable t) {
-                        try {
-                            activity.CreateSnackBar(getString(R.string.something));
-                            Log.e("Error",t.getMessage());
-                        }catch (Exception e) {}
-                    }
-                });
 
     }
     private void CreateCongratulationDialog(final CouponModel couponModel)
@@ -430,7 +582,6 @@ public class Fragment_Delivery_Address extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                CreateCongratulationDialog(couponModel);
             }
         });
         btn_point.setOnClickListener(new View.OnClickListener() {
@@ -482,6 +633,8 @@ public class Fragment_Delivery_Address extends Fragment {
         this.address = address;
         tv_address.setText(address);
     }
+
+
     private void CheckData()
     {
 
@@ -492,6 +645,8 @@ public class Fragment_Delivery_Address extends Fragment {
 
         String m_street_name = edt_street.getText().toString().trim();
         String m_feedback = edt_feedback.getText().toString().trim();
+
+
 
         if (!TextUtils.isEmpty(m_first_name)&&
                 !TextUtils.isEmpty(m_last_name)&&
@@ -512,17 +667,18 @@ public class Fragment_Delivery_Address extends Fragment {
             edt_phone.setError(null);
             edt_street.setError(null);
 
+
             if (TextUtils.isEmpty(m_alter_phone))
             {
                 String d_name = m_first_name+" "+m_last_name;
-                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, couponModel2,payment_method);
+                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, used_coupon,payment_method);
 
             }
 
             else if (!TextUtils.isEmpty(m_alter_phone)&& m_alter_phone.length()==9)
             {
                 String d_name = m_first_name+" "+m_last_name;
-                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, couponModel2,payment_method);
+                DisplayFragmentPayment_Confirmation(d_name,m_phone,m_alter_phone,m_street_name,m_feedback, used_coupon,payment_method);
 
             }else if (!TextUtils.isEmpty(m_alter_phone)&& m_alter_phone.length()!=9)
                 {
@@ -586,10 +742,11 @@ public class Fragment_Delivery_Address extends Fragment {
 
     }
 
-    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone,String alter_phone, String m_street_name, String m_feedback, CouponModel couponModel, String payment_method)
+    private void DisplayFragmentPayment_Confirmation(String d_name, String p_phone,String alter_phone, String m_street_name, String m_feedback, CouponModel used_coupon, String payment_method)
     {
-        activity.Save_Order_Data(d_name,p_phone,alter_phone,m_street_name,m_feedback,couponModel,payment_method);
-        activity.DisplayFragmentPayment_Confirmation(payment_method,couponModel);
+        activity.Save_Order_Data(d_name,p_phone,alter_phone,m_street_name,m_feedback,used_coupon,payment_method,edt_coupon.getText().toString());
+        activity.DisplayFragmentPayment_Confirmation(payment_method,used_coupon);
 
     }
+
 }

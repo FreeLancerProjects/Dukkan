@@ -99,7 +99,7 @@ public class Fragment_Order_Finish_Congratulation extends Fragment {
         fl_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                activity.getProductsForUpdateOrder(order);
             }
         });
 

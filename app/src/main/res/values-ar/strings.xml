@@ -272,5 +272,14 @@
     <string name="update_order">عدل على طلبك</string>
     <string name="del_for_free">التوصيل مجاني</string>
     <string name="ord_cancel_sent_again">جميع منتجات الطلب غير متوفره تم ارسال الطلب مره اخرى للمندوبين اخرين</string>
+    <string name="sorry">عفوا</string>
+    <string name="you_can_not_complete_the_order">لايمكنك إكمال الطلب. قيمة المنتجات اقل من</string>
+    <string name="coupon_was_used">تم استخدام الكوبون</string>
+    <string name="coupon_disabled">تم تعطيل الكوبون</string>
+    <string name="coupon_nactive">الكوبون غير فعال</string>
+    <string name="coupon_active_in_order_cost_more_than">سيتم تفعيل الكوبون عندما يكون سعر المنتجات اكثر من</string>
+    <string name="active2">مفعل</string>
+    <string name="inactive">غير مفعل</string>
+    <string name="enter">أدخل</string>
 
 </resources>

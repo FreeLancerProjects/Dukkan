@@ -270,4 +270,13 @@
     <string name="update_order">Update order</string>
     <string name="del_for_free">For free</string>
     <string name="ord_cancel_sent_again">All products unavailable order cancelled and sent again</string>
+    <string name="sorry">Sorry</string>
+    <string name="you_can_not_complete_the_order">You can not complete the order.The cost of products is less than</string>
+    <string name="coupon_was_used">Coupon was used</string>
+    <string name="coupon_disabled">Coupon disabled</string>
+    <string name="coupon_nactive">Coupon in active</string>
+    <string name="coupon_active_in_order_cost_more_than">Coupon active in order cost more than</string>
+    <string name="active2">Active</string>
+    <string name="inactive">inactive</string>
+    <string name="enter">Enter</string>
 </resources>

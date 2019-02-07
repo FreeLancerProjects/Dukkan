@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,7 +52,6 @@ public class Fragment_Delegate_SignUp extends Fragment{
     private ImageView image_personal,image_icon1,image_id,image_icon2,image_vehicle_license,image_icon3,image_driving_license,image_icon4,image_front_photo,image_back_photo,image_arrow;
     private CheckBox checkbox_rule;
     private FrameLayout fl_sign_up;
-    private Bitmap bitmap_personal,bitmap_id,bitmap_vehicle_licence,bitmap_driving_license,bitmap_front_photo,bitmap_back_photo;
     private final int IMG1=1,IMG2=2,IMG3=3,IMG4=4,IMG5=5,IMG6=6;
     private Uri uri1=null,uri2=null,uri3=null,uri4=null,uri5=null,uri6=null;
     private int gender = Tags.male;

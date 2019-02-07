@@ -30,6 +30,10 @@ public class CouponModel implements Serializable {
         this.client_point_cost = client_point_cost;
     }
 
+    public void setCoupon_codes(CouponCodes coupon_codes) {
+        this.coupon_codes = coupon_codes;
+    }
+
     public class CouponCodes implements Serializable
    {
        private String ar;

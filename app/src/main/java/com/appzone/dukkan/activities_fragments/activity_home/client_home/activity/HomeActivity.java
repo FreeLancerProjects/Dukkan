@@ -27,6 +27,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,9 +59,10 @@ import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.MainCategory;
 import com.appzone.dukkan.models.OrderItem;
-import com.appzone.dukkan.models.PageModel;
+import com.appzone.dukkan.models.OrderItemListModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
+import com.appzone.dukkan.models.PageModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
@@ -147,9 +149,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     private OrderToUploadModel orderToUploadModel = null;
     public String payment_method="",delivery_cost="0.0";
     public CouponModel couponModel;
+    public String address="";
     public double total_order_cost_after_tax = 0.0;
     private String last_selected_fragment="";
     private MainCategory.MainCategoryItems mainCategoryItems;
+    public  String coupon_code="";
+    public boolean isCouponActive = false;
+    ////////////////////for update order///////////////////
+    public int order_id_for_update = -1;
+    public OrdersModel.Order order_for_update;
 
     @Override
     protected void attachBaseContext(Context base)
@@ -212,15 +220,22 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 switch (position)
                 {
                     case 0:
-                        UpdateBottomNavPos(position);
+                        if (fragment_order_finish_congratulation ==null)
+                        {
+                            UpdateBottomNavPos(position);
+                            DisplayFragmentHome();
+                        }
 
-                        DisplayFragmentHome();
                         break;
                     case 1:
                         if (userModel!=null)
                         {
-                            UpdateBottomNavPos(position);
-                            DisplayFragmentOffer();
+                            if (fragment_order_finish_congratulation ==null)
+                            {
+                                UpdateBottomNavPos(position);
+                                DisplayFragmentOffer();
+                            }
+
 
                         }else
                             {
@@ -230,14 +245,22 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                             }
                         break;
                     case 2:
-                        DisplayFragmentMyCart();
+                        if (fragment_order_finish_congratulation ==null)
+                        {
+                            DisplayFragmentMyCart();
+
+                        }
 
                         break;
                     case 3:
                         if (userModel!=null)
                         {
-                            UpdateBottomNavPos(position);
-                            DisplayFragmentClientOrders();
+                            if (fragment_order_finish_congratulation ==null)
+                            {
+                                UpdateBottomNavPos(position);
+                                DisplayFragmentClientOrders();
+
+                            }
 
                         }else
                             {
@@ -248,8 +271,12 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     case 4:
                         if (userModel!=null)
                         {
-                            UpdateBottomNavPos(position);
-                            DisplayFragmentClientProfile();
+                            if (fragment_order_finish_congratulation ==null)
+                            {
+                                UpdateBottomNavPos(position);
+                                DisplayFragmentClientProfile();
+                            }
+
 
                         }else
                             {
@@ -914,7 +941,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         }
 
     }
-    public void DisplayFragmentDelivery_Address(double total_order_cost)
+    public void DisplayFragmentDelivery_Address(final double total_order_cost)
     {
         if (userModel==null)
         {
@@ -945,10 +972,36 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     {
                         fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
                         fragment_delivery_address.setTotal_order(total_order_cost);
+                        new Handler()
+                                .postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fragment_delivery_address.getCouponData(total_order_cost);
+
+                                        if (!TextUtils.isEmpty(address))
+                                        {
+                                            fragment_delivery_address.UpdateAddress(address);
+
+                                        }
+                                    }
+                                },1);
                     }
                 }else
                 {
                     fragmentManager.beginTransaction().add(R.id.fragment_my_cart_container,fragment_delivery_address,"fragment_delivery_address").addToBackStack("fragment_delivery_address").commit();
+                    new Handler()
+                            .postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fragment_delivery_address.getCouponData(total_order_cost);
+
+                                    if (!TextUtils.isEmpty(address))
+                                    {
+                                        fragment_delivery_address.UpdateAddress(address);
+
+                                    }
+                                }
+                            },1);
                 }
 
 
@@ -1341,7 +1394,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             }
         }
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void ListenForNotification(PageModel pageModel)
     {
@@ -1485,16 +1537,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
 
     }
-
-    private void UpdateFragmentCart(List<OrderItem> orderItemList) {
-        UpdateCartNotification(orderItemList.size());
-        if (orderItemsSingleTone==null)
-        {
-            orderItemsSingleTone = OrderItemsSingleTone.newInstance();
-        }
-        orderItemsSingleTone.AddListOrderItems(orderItemList);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
@@ -1527,129 +1569,73 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             }
         }
     }
-    public void Back()
+    public void getProductsForUpdateOrder(final OrdersModel.Order order)
     {
-
-        if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
-        {
-
-            if (orderItemsSingleTone.getItemsCount()>0)
-            {
-                CreateCartAlertDialog();
-            }else
-                {
-                    if (userModel!=null)
-                    {
-
-
-                        finish();
-                    }else
-                    {
-                        NavigateToSignInActivity();
-                    }
-                }
-
-
-        }else if (fragment_map!=null&&fragment_map.isVisible()) {
-            fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().show(fragment_myCart).commit();
-            fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
-
-        }else if (fragment_date_time!=null&&fragment_date_time.isVisible()) {
-            fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentManager.beginTransaction().show(fragment_myCart).commit();
-            fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
-
-        }
-        else if (fragment_subCategory!=null&&fragment_subCategory.isVisible()) {
-            fragmentManager.popBackStack("fragment_subCategory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            DisplayFragmentHome();
-
-        }else if ((fragment_offers!=null&&fragment_offers.isVisible())||(fragment_myCart!=null&&fragment_myCart.isVisible())||(fragment_client_orders!=null&&fragment_client_orders.isVisible())||(fragment_client_profile!=null&&fragment_client_profile.isVisible()))
-        {
-
-            DisplayFragmentHome();
-
-        }
-        else
-            {
-                if (last_selected_fragment.equals("fragment_home"))
-                {
-                    DisplayFragmentHome();
-
-                }else if (last_selected_fragment.equals("fragment_sub_category"))
-                {
-                    DisplayFragmentSubCategory(mainCategoryItems);
-                }
-            }
-    }
-    public void SignOut()
-    {
-        if (userModel!=null)
-        {
-            final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.sgin_out));
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
-            String user_token = userModel.getToken();
-            Api.getService()
-                    .logout(user_token)
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            Log.e("Error",response.code()+"_");
-                            if (response.isSuccessful())
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        Api.getService()
+                .getProductsToSendAgain(order.getId())
+                .enqueue(new Callback<OrderItemListModel>() {
+                    @Override
+                    public void onResponse(Call<OrderItemListModel> call, Response<OrderItemListModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            dismissSnackBar();
+                            dialog.dismiss();
+                            if (response.body()!=null)
                             {
-                                dismissSnackBar();
-                                dialog.dismiss();
-                                clearData();
+                                HomeActivity.this.order_for_update = order;
+                                HomeActivity.this.order_id_for_update = order.getPayment_method();
+                                UpdateFragmentCart(response.body().getData());
+                            }
+                        }else
+                        {
 
 
-                            }else
-                                {
-                                    dialog.dismiss();
-
-                                    if (response.code() == 401)
-                                    {
-                                        CreateSnackBar(getString(R.string.failed));
-                                    }
-                                }
+                            dialog.dismiss();
+                            Toast.makeText(HomeActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            try {
-                                dialog.dismiss();
-                                CreateSnackBar(getString(R.string.something));
-                                Log.e("Error",t.getMessage());
+                    @Override
+                    public void onFailure(Call<OrderItemListModel> call, Throwable t) {
 
-                            }catch (Exception e){}
-                        }
-                    });
-        }
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                            Log.e("Error",t.getMessage());
+                        }catch (Exception e){}
+                    }
+                });
     }
-    private void clearData()
+    private void UpdateFragmentCart(List<OrderItem> orderItemList)
     {
-        fragmentManager.popBackStack();
 
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (manager!=null)
+        if (fragment_order_finish_congratulation!=null&&fragment_order_finish_congratulation.isVisible())
         {
-            manager.cancelAll();
-        }
-        preferences.ClearData(this);
-        userSingleTone.clear();
-        userModel = null;
-        NavigateToSignInActivity();
-    }
-    public void dismissSnackBar()
-    {
-        if (snackbar!=null)
-        {
-            snackbar.dismiss();
+            UpdateCartNotification(orderItemList.size());
+            if (orderItemsSingleTone==null)
+            {
+                orderItemsSingleTone = OrderItemsSingleTone.newInstance();
+            }
+            orderItemsSingleTone.AddListOrderItems(orderItemList);
 
-        }
+            fragmentManager.popBackStack("fragment_order_finish_congratulation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragment_order_finish_congratulation = null;
+            DisplayFragmentMyCart();
+        }else
+            {
+                UpdateCartNotification(orderItemList.size());
+                if (orderItemsSingleTone==null)
+                {
+                    orderItemsSingleTone = OrderItemsSingleTone.newInstance();
+                }
+                orderItemsSingleTone.AddListOrderItems(orderItemList);
+            }
+
+
     }
     public void ChangeLanguage(String lang)
     {
@@ -1702,8 +1688,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setTax(tax);
         orderToUploadModel.setOrderItemList(orderItemList);
     }
-    public void Save_Order_Data(String name, String phone,String alter_phone, String street_name, String feedback, CouponModel couponModel, String payment_method)
+    public void Save_Order_Data(String name, String phone, String alter_phone, String street_name, String feedback, CouponModel couponModel, String payment_method, String coupon_code)
     {
+        this.coupon_code = coupon_code;
         if (orderToUploadModel==null)
         {
             orderToUploadModel = new OrderToUploadModel();
@@ -1725,12 +1712,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             orderToUploadModel.setCoupon_value(couponModel.getCoupon_value());
             if (couponModel.getCoupon_codes()!=null)
             {
+                isCouponActive = true;
                 orderToUploadModel.setCoupon_code(couponModel.getCoupon_codes().getAr());
 
             }
 
         }else
             {
+                isCouponActive = false;
+
                 orderToUploadModel.setCoupon_value(0);
                 orderToUploadModel.setCoupon_code("");
 
@@ -1744,7 +1734,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     public void UploadOrder(int discount_by_use, double discount_point, double discount_points_cost, double final_total_order_price)
     {
-        Log.e("final_total_order_price",final_total_order_price+"");
         orderToUploadModel.setOrder_total_price(final_total_order_price);
         orderToUploadModel.setDiscount_by_use(discount_by_use);
         orderToUploadModel.setDiscount_point(discount_point);
@@ -1754,6 +1743,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+
         Api.getService()
                 .uploadOrder(orderToUploadModel)
                 .enqueue(new Callback<OrdersModel.Order>() {
@@ -1773,22 +1763,21 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                             }
 
                         }else
-                            {
-                                try {
-                                    Log.e("error",response.raw().message());
+                        {
+                            try {
 
-                                    Log.e("error",response.errorBody().string());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                dialog.dismiss();
-                                if (response.code()==404)
-                                {
-                                    Toast.makeText(HomeActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
-
-                                }
+                                Log.e("error",response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
+
+                            dialog.dismiss();
+                            if (response.code()==404)
+                            {
+                                Toast.makeText(HomeActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
                     }
 
                     @Override
@@ -1801,6 +1790,42 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                         }catch (Exception e){}
                     }
                 });
+
+
+
+    }
+    public void UploadUpdatedOrder(List<OrderItem> orderItemList, double net_total_order_price, double total_order_cost_after_tax, double tax)
+    {
+        if (orderToUploadModel==null)
+        {
+            orderToUploadModel = new OrderToUploadModel();
+        }
+        orderToUploadModel.setOrder_total_price_net(net_total_order_price);
+        orderToUploadModel.setTax(tax);
+        orderToUploadModel.setOrderItemList(orderItemList);
+
+        orderToUploadModel.setClient_id(orderToUploadModel.getClient_id());
+        orderToUploadModel.setClient_name(userModel.getUser().getName());
+        orderToUploadModel.setClient_Phone(userModel.getUser().getPhone());
+        orderToUploadModel.setClient_street(order_for_update.getStreet());
+        orderToUploadModel.setNotes(order_for_update.getNote());
+        orderToUploadModel.setTime_type(order_for_update.getTime_type());
+        orderToUploadModel.setDelivery_cost(0.0);
+        orderToUploadModel.setClient_alternative_phone(order_for_update.getClient_alternative_phone());
+
+        orderToUploadModel.setPayment_method(String.valueOf(order_for_update.getPayment_method()));
+        orderToUploadModel.setClient_address(order_for_update.getAddress());
+        orderToUploadModel.setLat(order_for_update.getLat());
+        orderToUploadModel.setLng(order_for_update.getLng());
+
+        orderToUploadModel.setOrder_total_price(order_for_update.getTotal());
+        orderToUploadModel.setDiscount_by_use(order_for_update.getDiscount_by_use());
+        orderToUploadModel.setDiscount_point(order_for_update.getDiscount_point());
+        orderToUploadModel.setTotal_discount(order_for_update.getTotal_discount());
+
+        orderToUploadModel.setCoupon_value(order_for_update.getCoupon_value());
+        orderToUploadModel.setCoupon_code(order_for_update.getCoupon_code());
+
 
     }
     public void Clear_Order_Object()
@@ -1848,17 +1873,150 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         dialog.setView(view);
         dialog.show();
     }
-
     private void CreateToast(String msg)
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
     }
-
     public void CreateSnackBar(String msg)
     {
         snackbar = Common.CreateSnackBar(this,root,msg);
         snackbar.show();
     }
+    public void dismissSnackBar()
+    {
+        if (snackbar!=null)
+        {
+            snackbar.dismiss();
+
+        }
+    }
+    public void Back()
+    {
+
+        if (fragment_home!=null && fragment_home.isAdded()&& fragment_home.isVisible())
+        {
+
+            if (orderItemsSingleTone.getItemsCount()>0)
+            {
+                CreateCartAlertDialog();
+            }else
+            {
+                if (userModel!=null)
+                {
+
+
+                    finish();
+                }else
+                {
+                    NavigateToSignInActivity();
+                }
+            }
+
+
+        }else if (fragment_map!=null&&fragment_map.isVisible()) {
+            fragmentManager.popBackStack("fragment_map", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().show(fragment_myCart).commit();
+            fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+
+        }else if (fragment_date_time!=null&&fragment_date_time.isVisible()) {
+            fragmentManager.popBackStack("fragment_date_time", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragmentManager.beginTransaction().show(fragment_myCart).commit();
+            fragmentManager.beginTransaction().show(fragment_delivery_address).commit();
+
+        }
+        else if (fragment_delivery_address!=null&&fragment_delivery_address.isVisible()) {
+
+            DisplayFragmentReview_Purchases();
+
+        }
+        else if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isVisible()) {
+
+            DisplayFragmentDelivery_Address(total_order_cost_after_tax);
+
+        }
+        else if (fragment_subCategory!=null&&fragment_subCategory.isVisible()) {
+            fragmentManager.popBackStack("fragment_subCategory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            DisplayFragmentHome();
+
+        }else if ((fragment_offers!=null&&fragment_offers.isVisible())||(fragment_myCart!=null&&fragment_myCart.isVisible())||(fragment_client_orders!=null&&fragment_client_orders.isVisible())||(fragment_client_profile!=null&&fragment_client_profile.isVisible()))
+        {
+
+            DisplayFragmentHome();
+
+        }
+        else
+        {
+            if (last_selected_fragment.equals("fragment_home"))
+            {
+                DisplayFragmentHome();
+
+            }else if (last_selected_fragment.equals("fragment_sub_category"))
+            {
+                DisplayFragmentSubCategory(mainCategoryItems);
+            }
+        }
+    }
+    public void SignOut()
+    {
+        if (userModel!=null)
+        {
+            final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.sgin_out));
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+            String user_token = userModel.getToken();
+            Api.getService()
+                    .logout(user_token)
+                    .enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            Log.e("Error",response.code()+"_");
+                            if (response.isSuccessful())
+                            {
+                                dismissSnackBar();
+                                dialog.dismiss();
+                                clearData();
+
+
+                            }else
+                            {
+                                dialog.dismiss();
+
+                                if (response.code() == 401)
+                                {
+                                    CreateSnackBar(getString(R.string.failed));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            try {
+                                dialog.dismiss();
+                                CreateSnackBar(getString(R.string.something));
+                                Log.e("Error",t.getMessage());
+
+                            }catch (Exception e){}
+                        }
+                    });
+        }
+    }
+    private void clearData()
+    {
+        fragmentManager.popBackStack();
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (manager!=null)
+        {
+            manager.cancelAll();
+        }
+        preferences.ClearData(this);
+        userSingleTone.clear();
+        userModel = null;
+        NavigateToSignInActivity();
+    }
+
     @Override
     public void onBackPressed()
     {

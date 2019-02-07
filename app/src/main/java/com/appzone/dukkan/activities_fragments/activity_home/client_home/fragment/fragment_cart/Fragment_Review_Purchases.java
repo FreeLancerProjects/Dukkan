@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +55,7 @@ public class Fragment_Review_Purchases extends Fragment {
     private List<OrderItem> orderItemList;
     private CartAdapter cartAdapter;
     private int tax = 0;
+    private double minimum_product_cost=0.0;
     private OrderItemsSingleTone orderItemsSingleTone;
     private LinearLayout ll_empty_cart;
     private double total_order_cost_after_tax=0.0,net_total_order_price;
@@ -112,14 +115,29 @@ public class Fragment_Review_Purchases extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (activity.userModel!=null)
+                if (total_order_cost_after_tax >= minimum_product_cost)
                 {
-                    activity.SaveListOf_Order_Order_Total_Cost(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
-                    activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
-                }else
+                    if (activity.userModel!=null)
+                    {
+                        if (activity.order_id_for_update == -1)
+                        {
+                            activity.SaveListOf_Order_Order_Total_Cost(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
+                            activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
+                        }else
+                            {
+
+                            }
+
+                    }else
                     {
                         Common.CreateUserNotSignInAlertDialog(getActivity(),getString(R.string.si_su),orderItemList);
                     }
+
+                }else
+                    {
+                        CreateDialogProductCostLess(minimum_product_cost);
+                    }
+
 
             }
         });
@@ -216,6 +234,7 @@ public class Fragment_Review_Purchases extends Fragment {
                             if (response.body()!=null)
                             {
                                 tax = response.body().getProduct_tax();
+                                minimum_product_cost = response.body().getMinimum_client_order_price();
                                 UpdateTaxUI(tax);
                             }
                         }
@@ -271,6 +290,7 @@ public class Fragment_Review_Purchases extends Fragment {
                 updateCard_ContinueUI(false);
                 activity.UpdateCartNotification(0);
                 ll_empty_cart.setVisibility(View.VISIBLE);
+                activity.order_id_for_update = -1;
             }
     }
 
@@ -285,6 +305,31 @@ public class Fragment_Review_Purchases extends Fragment {
         drawable.setColorFilter(ContextCompat.getColor(activity, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         dialog.setIndeterminateDrawable(drawable);
         return dialog;
+    }
+
+    private void CreateDialogProductCostLess(double minimum)
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setCancelable(true)
+                .create();
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_prodect_less,null);
+        TextView tv_msg = view.findViewById(R.id.tv_msg);
+
+        tv_msg.setText(getString(R.string.you_can_not_complete_the_order)+" "+minimum+" "+getString(R.string.rsa));
+        Button btn_cancel = view.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setView(view);
+        dialog.show();
     }
 
 }

@@ -17,6 +17,8 @@
         android:layout_width="25dp"
         android:layout_height="21dp"
         android:layout_gravity="center"
+        android:visibility="gone"
+
         />
     <LinearLayout
         android:id="@+id/ll_no_order"

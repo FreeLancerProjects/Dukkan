@@ -588,13 +588,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         intent.putExtra("data", (Serializable) orderItemList);
         setResult(RESULT_OK,intent);
         finish();
-        /*ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
-        Intent intent = getIntent();
-        setResult(RESULT_OK,intent);
-        finish();*/
+
     }
 
     public void NavigateToChatActivity()

@@ -3,7 +3,6 @@ package com.appzone.dukkan.activities_fragments.activity_splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -47,7 +46,6 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 String session = preferences.getSession(SplashActivity.this);
-                Log.e("Session",session);
                 if (session.equals(Tags.session_login))
                 {
                     userModel = preferences.getUserData(SplashActivity.this);

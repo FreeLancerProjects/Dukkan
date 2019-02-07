@@ -71,7 +71,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
         this.total_order_cost = activity.total_order_cost_after_tax;
         this.payment_method = activity.payment_method;
         this.couponModel = activity.couponModel;
-        if (couponModel!=null)
+        if (couponModel.getCoupon_codes()!=null)
         {
             coupon_value = couponModel.getCoupon_value();
         }
@@ -183,7 +183,31 @@ public class Fragment_Payment_Confirmation extends Fragment {
             card_cash.setVisibility(View.GONE);
         }
 
-        updateNothingUI();
+
+        if (couponModel.getCoupon_codes()!=null)
+        {
+            card_coupon.setVisibility(View.VISIBLE);
+            card_point.setVisibility(View.GONE);
+            card_nothing.setVisibility(View.GONE);
+            UpdateCouponUI(coupon_value);
+        }else
+            {
+                if (userModel.getUser().getPoints()>0)
+                {
+                    card_coupon.setVisibility(View.GONE);
+                    card_point.setVisibility(View.VISIBLE);
+                    card_nothing.setVisibility(View.VISIBLE);
+                    updateNothingUI();
+                }else
+                    {
+                        card_coupon.setVisibility(View.GONE);
+                        card_point.setVisibility(View.GONE);
+                        card_nothing.setVisibility(View.GONE);
+                        updateNothingUI();
+                    }
+            }
+
+        /*updateNothingUI();
 
         if (userModel.getUser().getCoupon()==0 && userModel.getUser().getPoints()>0.0)
         {
@@ -206,7 +230,7 @@ public class Fragment_Payment_Confirmation extends Fragment {
             card_coupon.setVisibility(View.GONE);
 
 
-        }
+        }*/
 
 
 

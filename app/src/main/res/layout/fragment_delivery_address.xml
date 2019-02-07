@@ -412,7 +412,6 @@
             </LinearLayout>
         </FrameLayout>
 
-<!--
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -437,9 +436,8 @@
                 tools:ignore="RtlCompat" />
 
         </LinearLayout>
--->
 
-       <!-- <LinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="37dp"
             android:background="@drawable/edt_signup_bg"
@@ -477,6 +475,7 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:ignore="RtlCompat"
+                android:enabled="false"
 
                 />
 
@@ -514,8 +513,17 @@
                     />
             </FrameLayout>
 
-        </LinearLayout>-->
+        </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/gray_text"
+            android:textSize="14sp"
+            android:visibility="gone"
+            />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
