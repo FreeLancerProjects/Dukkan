@@ -492,7 +492,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
         Intent intent = new Intent(this, OrderDetailsActivity.class);
         intent.putExtra("order",order);
         intent.putExtra("order_type", Tags.order_current);
-        startActivity(intent);
+        startActivityForResult(intent,3);
     }
 
 
@@ -505,7 +505,25 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
             fragment.onActivityResult(requestCode, resultCode, data);
         }
 
+        if (requestCode ==3 && resultCode == RESULT_OK)
+        {
+            new Handler()
+                    .postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
+                            {
+                                fragment_delegate_orders.RefreshFragment();
+                            }
 
+                            if (fragment_delegate_profile!=null && fragment_delegate_profile.isAdded())
+                            {
+                                fragment_delegate_profile.UpdateProfile();
+                            }
+                        }
+                    },1);
+
+        }
 
 
 
@@ -558,9 +576,11 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
                     @Override
                     public void run() {
 
+                        Log.e("ddd","ddd");
                         if (fragment_delegate_orders!=null && fragment_delegate_orders.isAdded())
                         {
 
+                            Log.e("emaaaaaad","emad");
                             fragment_delegate_orders.RefreshFragment();
 
 
@@ -575,7 +595,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
                         }
 
                     }
-                },1000);
+                },1);
 
     }
 }

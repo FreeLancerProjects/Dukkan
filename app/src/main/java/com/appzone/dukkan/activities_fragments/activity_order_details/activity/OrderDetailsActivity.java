@@ -552,7 +552,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             dialog.dismiss();
                             Toast.makeText(OrderDetailsActivity.this, getString(R.string.succ), Toast.LENGTH_SHORT).show();
                             Intent intent = getIntent();
-                            intent.putExtra("status",2);
                             setResult(RESULT_OK,intent);
                             finish();
                         }else
@@ -590,7 +589,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
         finish();
 
     }
-
+    public void UpdateOrder(OrdersModel.Order order)
+    {
+        Intent intent = getIntent();
+        intent.putExtra("order",order);
+        setResult(RESULT_OK,intent);
+        finish();
+    }
     public void NavigateToChatActivity()
     {
         UserChatModel userChatModel = null;

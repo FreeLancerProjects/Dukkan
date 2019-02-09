@@ -256,8 +256,8 @@ public class Fragment_Payment_Confirmation extends Fragment {
 
             }
         tv_product_cost.setText(new DecimalFormat("##.##").format(total_order_cost)+" "+getString(R.string.rsa));
-        double delivery_order_cost = delivery_cost+total_order_cost;
-        tv_total.setText(new DecimalFormat("##.##").format(delivery_order_cost)+" "+getString(R.string.rsa));
+        final_total_order_price = delivery_cost+total_order_cost;
+        tv_total.setText(new DecimalFormat("##.##").format(final_total_order_price)+" "+getString(R.string.rsa));
 
     }
 

@@ -281,5 +281,6 @@
     <string name="active2">مفعل</string>
     <string name="inactive">غير مفعل</string>
     <string name="enter">أدخل</string>
+    <string name="cannot_update_order">لا يمكنك تعديل طلبك</string>
 
 </resources>

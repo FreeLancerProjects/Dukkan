@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -42,6 +43,7 @@ public class Fragment_Client_Order_Details extends Fragment {
     private RelativeLayout rl;
     private LinearLayout ll;
     private AppBarLayout app_bar;
+    private Button btn_update;
 
     ////////////////////////////////
     private ImageView image1,image2,image3,image4,image5;
@@ -83,6 +85,7 @@ public class Fragment_Client_Order_Details extends Fragment {
         }
         ll_delegate_data_container = view.findViewById(R.id.ll_delegate_data_container);
         tv_not_approved = view.findViewById(R.id.tv_not_approved);
+        btn_update = view.findViewById(R.id.btn_update);
 
         /////////////////////////////////////////////////
         app_bar = view.findViewById(R.id.app_bar);
@@ -164,6 +167,13 @@ public class Fragment_Client_Order_Details extends Fragment {
                 activity.NavigateToChatActivity();
             }
         });
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.UpdateOrder(order);
+            }
+        });
     }
 
 
@@ -219,6 +229,7 @@ public class Fragment_Client_Order_Details extends Fragment {
                 image1.setImageResource(R.drawable.step_green_true);
                 view1.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
                 tv1.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                btn_update.setVisibility(View.GONE);
 
                 break;
             case 2:
@@ -231,6 +242,7 @@ public class Fragment_Client_Order_Details extends Fragment {
                 image2.setImageResource(R.drawable.step_green_list);
                 view2.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
                 tv2.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                btn_update.setVisibility(View.GONE);
 
                 break;
             case 3:
@@ -248,6 +260,7 @@ public class Fragment_Client_Order_Details extends Fragment {
                 image3.setImageResource(R.drawable.step_green_box);
                 view3.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
                 tv3.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                btn_update.setVisibility(View.GONE);
 
                 break;
             case 4:
@@ -270,6 +283,7 @@ public class Fragment_Client_Order_Details extends Fragment {
                 image4.setImageResource(R.drawable.step_green_truck);
                 view4.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.green_text));
                 tv4.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                btn_update.setVisibility(View.GONE);
 
                 break;
             case 5:
@@ -296,6 +310,7 @@ public class Fragment_Client_Order_Details extends Fragment {
                 image5.setBackgroundResource(R.drawable.step_green_circle);
                 image5.setImageResource(R.drawable.step_green_heart);
                 tv5.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorPrimary));
+                btn_update.setVisibility(View.GONE);
 
                 break;
 
@@ -326,6 +341,7 @@ public class Fragment_Client_Order_Details extends Fragment {
         image5.setBackgroundResource(R.drawable.step_gray_circle);
         image5.setImageResource(R.drawable.step_gray_heart);
         tv5.setTextColor(ContextCompat.getColor(getActivity(),R.color.gray3));
+        btn_update.setVisibility(View.VISIBLE);
 
     }
 

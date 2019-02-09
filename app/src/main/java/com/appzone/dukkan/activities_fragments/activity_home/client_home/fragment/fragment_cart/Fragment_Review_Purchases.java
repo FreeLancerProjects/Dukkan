@@ -125,7 +125,7 @@ public class Fragment_Review_Purchases extends Fragment {
                             activity.DisplayFragmentDelivery_Address(total_order_cost_after_tax);
                         }else
                             {
-
+                                activity.UploadUpdatedOrder(orderItemList,net_total_order_price,total_order_cost_after_tax,tax);
                             }
 
                     }else

@@ -34,6 +34,7 @@ public class OrdersModel implements Serializable{
         private int discount_by_use;
         private double total_discount;
         private double discount_point;
+        private double delivery_cost;
         private long milli_time;
         private long accepted_time;
         private String bill_image;
@@ -120,6 +121,10 @@ public class OrdersModel implements Serializable{
 
         public int getChat_room_id() {
             return chat_room_id;
+        }
+
+        public double getDelivery_cost() {
+            return delivery_cost;
         }
 
         public long getMilli_time() {

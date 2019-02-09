@@ -64,6 +64,7 @@ import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.PageModel;
 import com.appzone.dukkan.models.SimilarProductModel;
+import com.appzone.dukkan.models.UpdateOrderStatusModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.preferences.Preferences;
 import com.appzone.dukkan.remote.Api;
@@ -497,8 +498,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
         if (fragment_order_finish_congratulation!=null&&fragment_order_finish_congratulation.isAdded())
         {
-            fragmentManager.popBackStack("fragment_order_finish_congratulation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
+            fragmentManager.popBackStack("fragment_order_finish_congratulation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fragment_order_finish_congratulation = null;
         }
         if (fragment_payment_confirmation!=null&&fragment_payment_confirmation.isAdded())
         {
@@ -1435,9 +1437,12 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             Intent intent = new Intent(this, OrderDetailsActivity.class);
             intent.putExtra("order",order);
             intent.putExtra("order_type",order_type);
-            startActivity(intent);
+            startActivityForResult(intent,4);
+
         }else
         {
+            fragment_order_finish_congratulation = null;
+
             if (order_type.equals(Tags.order_old))
             {
                 Intent intent = new Intent(this, OrderDetailsActivity.class);
@@ -1449,7 +1454,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 Intent intent = new Intent(this, OrderDetailsActivity.class);
                 intent.putExtra("order",order);
                 intent.putExtra("order_type",order_type);
-                startActivity(intent);
+                startActivityForResult(intent,4);
             }
 
         }
@@ -1532,6 +1537,18 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     RefreshFragmentClient_Previous_New_Order();
 
                 }
+        }else if (requestCode ==4 && resultCode ==RESULT_OK && data!=null)
+        {
+
+            if (data.hasExtra("order"))
+            {
+                OrdersModel.Order order = (OrdersModel.Order) data.getSerializableExtra("order");
+                if (order!=null)
+                {
+                    getProductsForUpdateOrder(order);
+                }
+            }
+
         }
 
 
@@ -1734,6 +1751,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     public void UploadOrder(int discount_by_use, double discount_point, double discount_points_cost, double final_total_order_price)
     {
+        Log.e("final_total_order_price",final_total_order_price+"");
         orderToUploadModel.setOrder_total_price(final_total_order_price);
         orderToUploadModel.setDiscount_by_use(discount_by_use);
         orderToUploadModel.setDiscount_point(discount_point);
@@ -1759,6 +1777,18 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                             if (response.body()!=null)
                             {
                                 DisplayFragment_Order_Finish_Congratulation(response.body());
+
+                                new Handler()
+                                        .postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (fragment_client_orders!=null && fragment_client_orders.isAdded())
+                                                {
+                                                    fragment_client_orders.RefreshFragment_New_Current_Order();
+                                                }
+                                            }
+                                        },1);
+
 
                             }
 
@@ -1804,13 +1834,13 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setTax(tax);
         orderToUploadModel.setOrderItemList(orderItemList);
 
-        orderToUploadModel.setClient_id(orderToUploadModel.getClient_id());
-        orderToUploadModel.setClient_name(userModel.getUser().getName());
-        orderToUploadModel.setClient_Phone(userModel.getUser().getPhone());
+        orderToUploadModel.setClient_id(order_for_update.getClient().getId());
+        orderToUploadModel.setClient_name(order_for_update.getClient().getName());
+        orderToUploadModel.setClient_Phone(order_for_update.getClient().getPhone());
         orderToUploadModel.setClient_street(order_for_update.getStreet());
         orderToUploadModel.setNotes(order_for_update.getNote());
         orderToUploadModel.setTime_type(order_for_update.getTime_type());
-        orderToUploadModel.setDelivery_cost(0.0);
+        orderToUploadModel.setDelivery_cost(order_for_update.getDelivery_cost());
         orderToUploadModel.setClient_alternative_phone(order_for_update.getClient_alternative_phone());
 
         orderToUploadModel.setPayment_method(String.valueOf(order_for_update.getPayment_method()));
@@ -1818,7 +1848,31 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setLat(order_for_update.getLat());
         orderToUploadModel.setLng(order_for_update.getLng());
 
-        orderToUploadModel.setOrder_total_price(order_for_update.getTotal());
+        double total = 0.0;
+        if (order_for_update.getDiscount_by_use()==0)
+        {
+            total = total_order_cost_after_tax+order_for_update.getDelivery_cost();
+
+        }else if (order_for_update.getDiscount_by_use()== Tags.discount_by_use_coupon)
+        {
+            total = (total_order_cost_after_tax+order_for_update.getDelivery_cost())-order_for_update.getCoupon_value();
+
+        }else if (order_for_update.getDiscount_by_use() == Tags.discount_by_use_points)
+        {
+            if ((total_order_cost_after_tax+order_for_update.getDelivery_cost())>order_for_update.getDiscount_point())
+            {
+                total = (total_order_cost_after_tax+order_for_update.getDelivery_cost())-order_for_update.getDiscount_point();
+
+            }else
+                {
+                    total = order_for_update.getDiscount_point()-(total_order_cost_after_tax+0.0);
+
+                }
+
+        }
+
+
+        orderToUploadModel.setOrder_total_price(total);
         orderToUploadModel.setDiscount_by_use(order_for_update.getDiscount_by_use());
         orderToUploadModel.setDiscount_point(order_for_update.getDiscount_point());
         orderToUploadModel.setTotal_discount(order_for_update.getTotal_discount());
@@ -1826,6 +1880,85 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         orderToUploadModel.setCoupon_value(order_for_update.getCoupon_value());
         orderToUploadModel.setCoupon_code(order_for_update.getCoupon_code());
 
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .updateOrder(order_for_update.getId(),orderToUploadModel)
+                .enqueue(new Callback<UpdateOrderStatusModel>() {
+                    @Override
+                    public void onResponse(Call<UpdateOrderStatusModel> call, Response<UpdateOrderStatusModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            dismissSnackBar();
+                            dialog.dismiss();
+
+                            if (response.body()!=null)
+                            {
+                                orderItemsSingleTone.ClearCart();
+                                orderToUploadModel = null;
+                                UpdateCartNotification(0);
+                                order_for_update = null;
+                                order_id_for_update = -1;
+                                DisplayFragmentHome();
+                                new Handler()
+                                        .postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (fragment_client_orders!=null && fragment_client_orders.isAdded())
+                                                {
+                                                    fragment_client_orders.RefreshFragment_New_Current_Order();
+                                                }
+                                            }
+                                        },1);
+
+                            }
+                        }else
+                            {
+
+                                try {
+                                    Log.e("error",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                dismissSnackBar();
+                                dialog.dismiss();
+                                Toast.makeText(HomeActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+
+
+                                if (response.code() == 404)
+                                {
+                                    if (response.body()!=null)
+                                    {
+                                        if (response.body().getStatus() == Tags.status_delegate_collect_order)
+                                        {
+                                            Common.CreateSignAlertDialog(HomeActivity.this,getString(R.string.cannot_update_order)+" "+getString(R.string.collecting_order));
+                                        }else if (response.body().getStatus() == Tags.status_delegate_already_collect_order)
+                                        {
+                                            Common.CreateSignAlertDialog(HomeActivity.this,getString(R.string.cannot_update_order)+" "+getString(R.string.order_collected));
+
+                                        }
+                                        else if (response.body().getStatus() == Tags.status_delegate_delivering_order)
+                                        {
+                                            Common.CreateSignAlertDialog(HomeActivity.this,getString(R.string.cannot_update_order)+" "+getString(R.string.delivering_order));
+
+                                        }
+                                    }
+
+                                }
+
+                                }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UpdateOrderStatusModel> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+                            CreateSnackBar(getString(R.string.something));
+                        }catch (Exception e){}
+                    }
+                });
 
     }
     public void Clear_Order_Object()
@@ -1857,6 +1990,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 orderItemsSingleTone.ClearCart();
                 Clear_Order_Object();
                 UpdateCartNotification(0);
+                order_for_update = null;
+                order_id_for_update = -1;
                 dialog.dismiss();
             }
         });
@@ -1877,6 +2012,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();
     }
+
     public void CreateSnackBar(String msg)
     {
         snackbar = Common.CreateSnackBar(this,root,msg);

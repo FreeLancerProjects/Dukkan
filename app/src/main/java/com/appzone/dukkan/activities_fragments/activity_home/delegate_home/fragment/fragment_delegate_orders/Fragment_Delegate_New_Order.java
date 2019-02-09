@@ -139,6 +139,7 @@ public class Fragment_Delegate_New_Order extends Fragment {
             if (data.hasExtra("status"))
             {
                 listener.onUpdated();
+                Log.e("ddd","ddd");
 
             }else
                 {

@@ -16,6 +16,7 @@ import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.TaxModel;
 import com.appzone.dukkan.models.Terms_Condition_Model;
 import com.appzone.dukkan.models.TypingModel;
+import com.appzone.dukkan.models.UpdateOrderStatusModel;
 import com.appzone.dukkan.models.UserModel;
 import com.appzone.dukkan.models.WeekOfferModel;
 
@@ -169,13 +170,13 @@ public interface Services {
     @POST("/api/order-update_status/{order_id}")
     Call<ResponseBody> updateOrderStatus(@Path("order_id") int order_id,
                                          @Field("token") String token,
-                                         @Field ("status")int order_status);
+                                         @Field("status") int order_status);
 
     @Multipart
     @POST("/api/order-update_status/{order_id}")
     Call<ResponseBody> uploadBillPhoto_OrderStatus(@Path("order_id") int order_id,
                                                    @Part("token") RequestBody token,
-                                                   @Part ("status")RequestBody order_status,
+                                                   @Part("status") RequestBody order_status,
                                                    @Part MultipartBody.Part bill_photo
 
     );
@@ -192,14 +193,16 @@ public interface Services {
                                       @Query("page") int page_index
 
     );
+
     @POST("/api/send-chat-message")
     Call<MessageModel> sendMessage(@Body MessageModel messageModel,
                                    @Query("token") String token
-                                   );
+    );
+
     @POST("/api/chat-typing")
     Call<ResponseModel> typing(@Body TypingModel typingModel,
                                @Query("token") String token
-                               );
+    );
 
     @FormUrlEncoded
     @POST("/api/me")
@@ -207,4 +210,9 @@ public interface Services {
 
     @GET("/api/get-max-gain")
     Call<GainModel> getMaxGain();
+
+    @POST("/api/orders/{order_id}")
+    Call<UpdateOrderStatusModel> updateOrder(@Path("order_id") int order_id,
+                                             @Body OrderToUploadModel orderToUploadModel
+    );
 }

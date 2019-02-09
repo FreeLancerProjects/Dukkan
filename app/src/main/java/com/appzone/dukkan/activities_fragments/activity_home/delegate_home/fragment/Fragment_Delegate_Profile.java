@@ -888,6 +888,8 @@ public class Fragment_Delegate_Profile extends Fragment {
                         {
                             if (response.body()!=null)
                             {
+                                Log.e("skip",response.body().getUser().getEscaped_orders_count()+"");
+                                Log.e("skip2",response.body().getUser().getUser_orders_count()+"");
 
                                 Log.e("avatar",response.body().getUser().getAvatar()+"_");
                                 UpdateUserData(response.body());
