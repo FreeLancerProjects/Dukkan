@@ -279,5 +279,5 @@
     <string name="active2">Active</string>
     <string name="inactive">inactive</string>
     <string name="enter">Enter</string>
-    <string name="cannot_update_order">Cannot update order your order</string>
+    <string name="cannot_update_order">Cannot update order now. a delegate receive order</string>
 </resources>

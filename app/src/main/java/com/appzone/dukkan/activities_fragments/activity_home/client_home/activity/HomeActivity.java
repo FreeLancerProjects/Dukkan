@@ -1929,7 +1929,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                                 if (response.code() == 404)
                                 {
-                                    if (response.body()!=null)
+                                    /*if (response.body()!=null)
                                     {
                                         if (response.body().getStatus() == Tags.status_delegate_collect_order)
                                         {
@@ -1944,7 +1944,10 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                                             Common.CreateSignAlertDialog(HomeActivity.this,getString(R.string.cannot_update_order)+" "+getString(R.string.delivering_order));
 
                                         }
-                                    }
+                                    }*/
+
+                                    Common.CreateSignAlertDialog(HomeActivity.this,getString(R.string.cannot_update_order));
+
 
                                 }
 
