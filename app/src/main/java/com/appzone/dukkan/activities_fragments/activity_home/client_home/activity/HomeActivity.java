@@ -1896,6 +1896,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                             if (response.body()!=null)
                             {
+                                Toast.makeText(HomeActivity.this, R.string.order_updated_successfully, Toast.LENGTH_LONG).show();
                                 orderItemsSingleTone.ClearCart();
                                 orderToUploadModel = null;
                                 UpdateCartNotification(0);

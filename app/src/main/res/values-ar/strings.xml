@@ -282,5 +282,6 @@
     <string name="inactive">غير مفعل</string>
     <string name="enter">أدخل</string>
     <string name="cannot_update_order">لا يمكنك تعديل طلبك الان تم استلام طلبك من المندوب</string>
+    <string name="order_updated_successfully">تم تعديل الطلب بنجاح</string>
 
 </resources>
