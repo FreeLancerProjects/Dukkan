@@ -32,7 +32,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,11 +61,13 @@ import com.appzone.dukkan.activities_fragments.product_details.activity.ProductD
 import com.appzone.dukkan.language_helper.LanguageHelper;
 import com.appzone.dukkan.models.CouponModel;
 import com.appzone.dukkan.models.MainCategory;
+import com.appzone.dukkan.models.NotificationRateModel;
 import com.appzone.dukkan.models.OrderItem;
 import com.appzone.dukkan.models.OrderItemListModel;
 import com.appzone.dukkan.models.OrderToUploadModel;
 import com.appzone.dukkan.models.OrdersModel;
 import com.appzone.dukkan.models.PageModel;
+import com.appzone.dukkan.models.ResponseModel;
 import com.appzone.dukkan.models.SimilarProductModel;
 import com.appzone.dukkan.models.UpdateOrderStatusModel;
 import com.appzone.dukkan.models.UserModel;
@@ -80,6 +85,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -91,6 +97,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -159,6 +166,8 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     ////////////////////for update order///////////////////
     public int order_id_for_update = -1;
     public OrdersModel.Order order_for_update;
+    private double rate=0.0;
+    private String comment="";
 
     @Override
     protected void attachBaseContext(Context base)
@@ -299,7 +308,6 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
             orderItemsSingleTone.AddListOrderItems(orderItemList);
         }
 
-
     }
     public void UpdateUserData(UserModel userModel)
     {
@@ -342,15 +350,23 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                 }else if (intent.getIntExtra("status",0) == 3)
                 {
+
                     DisplayFragmentClientOrders();
                     new Handler()
                             .postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+
                                     fragment_client_orders.setPage(2);
 
                                 }
                             },100);
+
+                    if (intent.hasExtra("rate_data"))
+                    {
+                        NotificationRateModel notificationRateModel = (NotificationRateModel) intent.getSerializableExtra("rate_data");
+                        CreateAddRateAlertDialog(notificationRateModel);
+                    }
                 }
                 else if (intent.getIntExtra("status",0) == 4)
                 {
@@ -1407,7 +1423,14 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
 
             RefreshFragmentClient_Current_Previous_Order();
+
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void  listenForRate(NotificationRateModel notificationRateModel)
+    {
+        CreateAddRateAlertDialog(notificationRateModel);
     }
     ///////////////////////////////////
     public void NavigateToProductDetailsActivity(MainCategory.Products product, List<MainCategory.Products> similarProducts)
@@ -2012,6 +2035,136 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         dialog.setView(view);
         dialog.show();
     }
+    public void CreateAddRateAlertDialog(final NotificationRateModel notificationRateModel)
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .create();
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_rate,null);
+        ImageView  img_close = view.findViewById(R.id.img_close);
+        CircleImageView image = view.findViewById(R.id.image);
+        TextView tv_name = view.findViewById(R.id.tv_name);
+        final ImageView image_love = view.findViewById(R.id.image_love);
+        final ImageView image_smile = view.findViewById(R.id.image_smile);
+        final ImageView image_angry = view.findViewById(R.id.image_angry);
+        final LinearLayout ll_comment = view.findViewById(R.id.ll_comment);
+        final EditText edt_comment = view.findViewById(R.id.edt_comment);
+        final TextView tv_rate = view.findViewById(R.id.tv_rate);
+        final Button btn_rate = view.findViewById(R.id.btn_rate);
+        Picasso.with(this).load(Uri.parse(Tags.IMAGE_URL+notificationRateModel.getDelegate_avatar())).fit().into(image);
+        tv_name.setText(notificationRateModel.getDelegate_name());
+
+
+
+
+        image_love.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rate = 5.0;
+                image_love.setImageResource(R.drawable.emoji_love_sel);
+                image_smile.setImageResource(R.drawable.emoji_smile_unsel);
+                image_angry.setImageResource(R.drawable.emoji_ang_unsel);
+                tv_rate.setText(R.string.excellent);
+                ll_comment.setVisibility(View.GONE);
+                btn_rate.setVisibility(View.VISIBLE);
+            }
+        });
+
+        image_smile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rate = 3.0;
+
+                image_love.setImageResource(R.drawable.emoji_love_unsel);
+                image_smile.setImageResource(R.drawable.emoji_smile_sel);
+                image_angry.setImageResource(R.drawable.emoji_ang_unsel);
+                tv_rate.setText(R.string.moderate);
+                ll_comment.setVisibility(View.VISIBLE);
+                btn_rate.setVisibility(View.VISIBLE);
+            }
+        });
+
+        image_angry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rate = 1.5;
+
+                image_love.setImageResource(R.drawable.emoji_love_unsel);
+                image_smile.setImageResource(R.drawable.emoji_smile_unsel);
+                image_angry.setImageResource(R.drawable.emoji_ang_sel);
+                tv_rate.setText(R.string.bad);
+                ll_comment.setVisibility(View.VISIBLE);
+                btn_rate.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comment = edt_comment.getText().toString().trim();
+                AddRate(dialog,notificationRateModel.getReceiver_id(),notificationRateModel.getDelegate_id(),rate,comment);
+            }
+        });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().getAttributes().windowAnimations=R.style.dialog_congratulation_animation;
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setView(view);
+        dialog.show();
+    }
+
+    private void AddRate(final AlertDialog alertDialog, int client_id, int delegate_id, double rate, String comment) {
+
+        final ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        Api.getService()
+                .addRate(client_id,delegate_id,rate,comment)
+                .enqueue(new Callback<ResponseModel>() {
+                    @Override
+                    public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                        if (response.isSuccessful())
+                        {
+                            alertDialog.dismiss();
+                            dialog.dismiss();
+                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                            if (manager!=null)
+                            {
+                                manager.cancelAll();
+                            }
+                        }else
+                            {
+                                try {
+                                    Log.e("error_code",response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
+                                Toast.makeText(HomeActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseModel> call, Throwable t) {
+
+                        try {
+                            dialog.dismiss();
+                            Log.e("Error",t.getMessage());
+                            Toast.makeText(HomeActivity.this,getString(R.string.something), Toast.LENGTH_SHORT).show();
+                        }catch (Exception re){}
+                    }
+                });
+    }
+
     private void CreateToast(String msg)
     {
         Toast.makeText(this,msg, Toast.LENGTH_LONG).show();

@@ -49,7 +49,7 @@
     <string name="cnt_sign_up">You cannot sign up without accepting terms and conditions</string>
     <string name="recover_password">Recover password</string>
     <string name="email_address">Email address</string>
-    <string name="we_will_send_you_a_link_to_on_the_email_recover_your_password">We will send you a link on the email to recover your password</string>
+    <string name="we_will_send_you_a_link_to_on_the_email_recover_your_password">We will send you a new password on your phone number</string>
     <string name="inv_email">Invalid email</string>
     <string name="wait">Wait...</string>
     <string name="search">Search...</string>
@@ -281,4 +281,10 @@
     <string name="enter">Enter</string>
     <string name="cannot_update_order">Cannot update order now. a delegate receive order</string>
     <string name="order_updated_successfully">Order updated successfully</string>
+    <string name="rate_of_delegate">Rate of delegate</string>
+    <string name="comment">Comment</string>
+    <string name="add_rate">Add rate</string>
+    <string name="excellent">Excellent</string>
+    <string name="moderate">Moderate</string>
+    <string name="bad">Bad</string>
 </resources>

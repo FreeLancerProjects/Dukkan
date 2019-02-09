@@ -24,6 +24,7 @@ import com.appzone.dukkan.activities_fragments.activity_home.client_home.activit
 import com.appzone.dukkan.activities_fragments.activity_home.delegate_home.DelegateHomeActivity;
 import com.appzone.dukkan.models.ChatRoom_UserIdModel;
 import com.appzone.dukkan.models.MessageModel;
+import com.appzone.dukkan.models.NotificationRateModel;
 import com.appzone.dukkan.models.OrderStatusModel;
 import com.appzone.dukkan.models.PageModel;
 import com.appzone.dukkan.models.TypingModel;
@@ -452,13 +453,22 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ///////////////////////////////////////delivered order/////////////////////
         else if (notification_type.equals(String.valueOf(Tags.DELIVERED_ORDER_NOTIFICATION))) {
 
+            String delegate_name = map.get("delegate_name");
+            String delegate_avatar = map.get("delegate_avatar");
+            int receiver_id = Integer.parseInt(map.get("receiver_id"));
+            int delegate_id = Integer.parseInt(map.get("delegate_id"));
+
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
             builder.setContentText(getString(R.string.order_delivered));
 
+            final NotificationRateModel notificationRateModel = new NotificationRateModel(delegate_name,delegate_avatar,receiver_id,delegate_id);
+
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra("status", 3);
+            intent.putExtra("rate_data",notificationRateModel);
+
             final OrderStatusModel orderStatusModel = new OrderStatusModel(Tags.status_delegate_delivered_order);
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -473,6 +483,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
                         manager.createNotificationChannel(channel);
                         manager.notify(1, builder.build());
                         EventBus.getDefault().post(new PageModel(2));
+                        EventBus.getDefault().post(notificationRateModel);
                         EventBus.getDefault().post(orderStatusModel);
 
                     }
@@ -1057,11 +1068,21 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+            String delegate_name = map.get("delegate_name");
+            String delegate_avatar = map.get("delegate_avatar");
+            int receiver_id = Integer.parseInt(map.get("receiver_id"));
+            int delegate_id = Integer.parseInt(map.get("delegate_id"));
+
+
             builder.setContentTitle(map.get("delegate_name"));
             builder.setContentText(getString(R.string.order_delivered));
 
+            final NotificationRateModel notificationRateModel = new NotificationRateModel(delegate_name,delegate_avatar,receiver_id,delegate_id);
+
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra("status", 3);
+            intent.putExtra("rate_data",notificationRateModel);
+
             final OrderStatusModel orderStatusModel = new OrderStatusModel(Tags.status_delegate_delivered_order);
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -1075,6 +1096,7 @@ public class FireBaseMessaging extends FirebaseMessagingService {
                     if (manager != null) {
                         manager.notify(1, builder.build());
                         EventBus.getDefault().post(new PageModel(2));
+                        EventBus.getDefault().post(notificationRateModel);
                         EventBus.getDefault().post(orderStatusModel);
 
                     }

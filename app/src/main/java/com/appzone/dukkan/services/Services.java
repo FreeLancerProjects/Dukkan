@@ -215,4 +215,12 @@ public interface Services {
     Call<UpdateOrderStatusModel> updateOrder(@Path("order_id") int order_id,
                                              @Body OrderToUploadModel orderToUploadModel
     );
+
+    @FormUrlEncoded
+    @POST("/api/set-rate")
+    Call<ResponseModel> addRate(@Field("client_id") int client_id,
+                                @Field("delegate_id") int delegate_id,
+                                @Field("rate") double rate,
+                                @Field("comment") String comment
+                                );
 }
