@@ -323,8 +323,10 @@ public class Fragment_Delivery_Address extends Fragment {
                 }
 
 
-                if (userModel.getUser().getCoupon()==1)
+                Log.e("value",userModel.getUser().getCoupon()+"_");
+                if (userModel.getUser().getCoupon()== 1)
                 {
+                    Log.e("ddsfdsf","dfsdfsd");
                     btn_active.setVisibility(View.INVISIBLE);
                     image_correct.setVisibility(View.GONE);
                     image_in_correct.setVisibility(View.GONE);
@@ -397,14 +399,18 @@ public class Fragment_Delivery_Address extends Fragment {
 
                                                 if (total_order >= couponModel.getMinimum_order_cost())
                                                 {
-                                                    btn_active.setVisibility(View.VISIBLE);
-                                                    image_correct.setVisibility(View.GONE);
-                                                    image_in_correct.setVisibility(View.GONE);
-                                                    progBar.setVisibility(View.GONE);
-                                                    edt_coupon.setEnabled(true);
-                                                    edt_coupon.setHint(getString(R.string.enter)+" "+couponModel.getCoupon_codes().getAr()+" "+getString(R.string.or)+" "+couponModel.getCoupon_codes().getEn());
-                                                    edt_coupon.setText("");
-                                                    tv_alert.setText("");
+                                                    if (userModel.getUser().getCoupon() == 0)
+                                                    {
+                                                        btn_active.setVisibility(View.VISIBLE);
+                                                        image_correct.setVisibility(View.GONE);
+                                                        image_in_correct.setVisibility(View.GONE);
+                                                        progBar.setVisibility(View.GONE);
+                                                        edt_coupon.setEnabled(true);
+                                                        edt_coupon.setHint(getString(R.string.enter)+" "+couponModel.getCoupon_codes().getAr()+" "+getString(R.string.or)+" "+couponModel.getCoupon_codes().getEn());
+                                                        edt_coupon.setText("");
+                                                        tv_alert.setText("");
+                                                    }
+
 
 
 

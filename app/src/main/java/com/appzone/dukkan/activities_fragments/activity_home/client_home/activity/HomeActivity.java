@@ -249,7 +249,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+                                if (orderItemsSingleTone.getOrderItemList().size()>0)
+                                {
+                                    Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),orderItemsSingleTone.getOrderItemList());
+
+                                }else
+                                    {
+                                        Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+
+                                    }
 
 
                             }
@@ -274,8 +282,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+                                if (orderItemsSingleTone.getOrderItemList().size()>0)
+                                {
+                                    Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),orderItemsSingleTone.getOrderItemList());
 
+                                }else
+                                {
+                                    Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+
+                                }
                             }
                         break;
                     case 4:
@@ -290,7 +305,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
                         }else
                             {
-                                Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+                                if (orderItemsSingleTone.getOrderItemList().size()>0)
+                                {
+                                    Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),orderItemsSingleTone.getOrderItemList());
+
+                                }else
+                                {
+                                    Common.CreateUserNotSignInAlertDialog(HomeActivity.this,getString(R.string.si_su),new ArrayList<OrderItem>());
+
+                                }
                             }
                         break;
                 }
@@ -387,7 +410,7 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
     }
     private void CreateWelcomeNotification()
     {
-        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.not;
+        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.client;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             String CHANNEL_ID = "my_channel_01";
@@ -1570,7 +1593,17 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                 {
                     getProductsForUpdateOrder(order);
                 }
+
+                new Handler()
+                        .postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                DisplayFragmentMyCart();
+
+                            }
+                        },1);
             }
+
 
         }
 
@@ -1664,7 +1697,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
 
             fragmentManager.popBackStack("fragment_order_finish_congratulation",FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragment_order_finish_congratulation = null;
-            DisplayFragmentMyCart();
+
+            new Handler()
+                    .postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            DisplayFragmentMyCart();
+
+                        }
+                    },1);
         }else
             {
                 UpdateCartNotification(orderItemList.size());
@@ -1673,6 +1714,15 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
                     orderItemsSingleTone = OrderItemsSingleTone.newInstance();
                 }
                 orderItemsSingleTone.AddListOrderItems(orderItemList);
+
+                new Handler()
+                        .postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                DisplayFragmentMyCart();
+
+                            }
+                        },1);
             }
 
 
@@ -1723,6 +1773,9 @@ public class HomeActivity extends AppCompatActivity implements Fragment_Date_Tim
         {
             orderToUploadModel = new OrderToUploadModel();
         }
+        Log.e("total__after_tax",total_order_cost_after_tax+"_");
+        Log.e("net_total_order_price",net_total_order_price+"_");
+
         this.total_order_cost_after_tax = total_order_cost_after_tax;
         orderToUploadModel.setOrder_total_price_net(net_total_order_price);
         orderToUploadModel.setTax(tax);

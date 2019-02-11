@@ -170,29 +170,44 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         UserModel userModel = getUserData();
 
         String notification_type = map.get("type");
-        String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.not;
 
-        String CHANNEL_ID = "channel_id_02";
-        CharSequence CHANNEL_NAME = "my_channel_name";
-        int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
 
-        final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
-        channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
-                .build()
-        );
 
-        channel.setShowBadge(true);
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setSound(Uri.parse(sound_path));
-        builder.setChannelId(CHANNEL_ID);
+
 
         /////////////////////////////////////// chat ////////////////////////////////
         if (notification_type.equals(String.valueOf(Tags.NEW_MESSAGE_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+            if (userModel.getUser().getId() == Integer.parseInt(map.get("receiver_id"))) {
+
+                if (userModel.getUser().getRole().equals(Tags.user_client))
+                {
+                    sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+                }else
+                {
+                    sound_path = "android.resource://" + getPackageName() + "/" + R.raw.delegate;
+
+                }
+            }
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
 
             ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
             ChatRoom_UserIdModel model = getChatRoomData();
@@ -229,6 +244,28 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
         /////////////////////////////////////////////client_send_new_order/////////////////////////
         else if (notification_type.equals(String.valueOf(Tags.NEW_ORDER_NOTIFICATION))) {
+
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.delegate;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
+
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("client_name"));
@@ -250,6 +287,26 @@ public class FireBaseMessaging extends FirebaseMessagingService {
             ///////////////////delegate_accepted_order///////////////////////////
         } else if (notification_type.equals(String.valueOf(Tags.ACCEPTED_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
 
             builder.setContentTitle(map.get("delegate_name"));
             builder.setContentText(getString(R.string.delegate_accept_order));
@@ -306,6 +363,27 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         /////////////////////////////////////collecting order///////////////////////
         else if (notification_type.equals(String.valueOf(Tags.COLLECTING_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
+
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
@@ -355,6 +433,27 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ////////////////////////order_collected/////////////////////
 
         else if (notification_type.equals(String.valueOf(Tags.COLLECTED_ORDER_NOTIFICATION))) {
+
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
 
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -406,6 +505,27 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ///////////////////////////////////////delivering/////////////////////
         else if (notification_type.equals(String.valueOf(Tags.DELIVERING_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
+
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
@@ -452,6 +572,27 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
         ///////////////////////////////////////delivered order/////////////////////
         else if (notification_type.equals(String.valueOf(Tags.DELIVERED_ORDER_NOTIFICATION))) {
+
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
 
             String delegate_name = map.get("delegate_name");
             String delegate_avatar = map.get("delegate_avatar");
@@ -513,6 +654,26 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
         else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            String CHANNEL_ID = "channel_id_02";
+            CharSequence CHANNEL_NAME = "my_channel_name";
+            int IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
+
+            final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.setSound(Uri.parse(sound_path), new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                    .build()
+            );
+
+            channel.setShowBadge(true);
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+            builder.setChannelId(CHANNEL_ID);
 
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -802,15 +963,31 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         UserModel userModel = getUserData();
 
         String notification_type = map.get("type");
-        String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.not;
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setSound(Uri.parse(sound_path));
+
+
+
 
         /////////////////////////////////////// chat ////////////////////////////////
         if (notification_type.equals(String.valueOf(Tags.NEW_MESSAGE_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+            if (userModel.getUser().getId() == Integer.parseInt(map.get("receiver_id"))) {
+
+                if (userModel.getUser().getRole().equals(Tags.user_client))
+                {
+                    sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+                }else
+                {
+                    sound_path = "android.resource://" + getPackageName() + "/" + R.raw.delegate;
+
+                }
+            }
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
 
             ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
             ChatRoom_UserIdModel model = getChatRoomData();
@@ -847,6 +1024,13 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
         /////////////////////////////////////////////client_send_new_order/////////////////////////
         else if (notification_type.equals(String.valueOf(Tags.NEW_ORDER_NOTIFICATION))) {
+
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.delegate;
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("client_name"));
@@ -867,6 +1051,12 @@ public class FireBaseMessaging extends FirebaseMessagingService {
             ///////////////////delegate_accepted_order///////////////////////////
         } else if (notification_type.equals(String.valueOf(Tags.ACCEPTED_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
 
             builder.setContentTitle(map.get("delegate_name"));
             builder.setContentText(getString(R.string.delegate_accept_order));
@@ -922,6 +1112,12 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         /////////////////////////////////////collecting order///////////////////////
         else if (notification_type.equals(String.valueOf(Tags.COLLECTING_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
@@ -970,6 +1166,13 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ////////////////////////order_collected/////////////////////
 
         else if (notification_type.equals(String.valueOf(Tags.COLLECTED_ORDER_NOTIFICATION))) {
+
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
 
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -1020,6 +1223,12 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ///////////////////////////////////////delivering/////////////////////
         else if (notification_type.equals(String.valueOf(Tags.DELIVERING_ORDER_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
+
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
@@ -1066,13 +1275,18 @@ public class FireBaseMessaging extends FirebaseMessagingService {
         ///////////////////////////////////////delivered order/////////////////////
         else if (notification_type.equals(String.valueOf(Tags.DELIVERED_ORDER_NOTIFICATION))) {
 
-            final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
 
             String delegate_name = map.get("delegate_name");
             String delegate_avatar = map.get("delegate_avatar");
             int receiver_id = Integer.parseInt(map.get("receiver_id"));
             int delegate_id = Integer.parseInt(map.get("delegate_id"));
 
+            final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             builder.setContentTitle(map.get("delegate_name"));
             builder.setContentText(getString(R.string.order_delivered));
@@ -1126,6 +1340,12 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
         else if (notification_type.equals(String.valueOf(Tags.TYPING_MESSAGE_NOTIFICATION))) {
 
+            String sound_path = "android.resource://" + getPackageName() + "/" + R.raw.client;
+
+
+            final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSound(Uri.parse(sound_path));
 
             final NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -1189,7 +1409,13 @@ public class FireBaseMessaging extends FirebaseMessagingService {
 
 
         }
+
+
+
     }
+
+
+
 
 
     private String getSession() {

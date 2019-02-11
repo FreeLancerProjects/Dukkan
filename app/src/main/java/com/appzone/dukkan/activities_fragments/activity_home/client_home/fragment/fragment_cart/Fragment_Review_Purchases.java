@@ -283,6 +283,8 @@ public class Fragment_Review_Purchases extends Fragment {
             ll_empty_cart.setVisibility(View.GONE);
             updateCard_ContinueUI(true);
             updateProductCost(getTotalOrderPrice(orderItemList));
+            activity.UpdateCartNotification(orderItemList.size());
+
 
         }else
             {

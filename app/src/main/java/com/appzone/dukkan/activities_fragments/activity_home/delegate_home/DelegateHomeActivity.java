@@ -170,7 +170,7 @@ public class DelegateHomeActivity extends AppCompatActivity implements Fragment_
 
     private void CreateWelcomeNotification()
     {
-        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.not;
+        String sound_path = "android.resource://"+getPackageName()+"/"+R.raw.delegate;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             String CHANNEL_ID = "my_channel_01";

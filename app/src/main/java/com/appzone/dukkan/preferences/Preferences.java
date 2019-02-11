@@ -32,7 +32,7 @@ public class Preferences {
 
     public void create_update_userData(Context context, UserModel userModel)
     {
-        SharedPreferences preferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data",Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String userData = gson.toJson(userModel);
         SharedPreferences.Editor editor = preferences.edit();
@@ -44,7 +44,7 @@ public class Preferences {
 
     public UserModel getUserData(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data",Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String user_data = preferences.getString("user_data","");
         UserModel userModel = gson.fromJson(user_data,UserModel.class);
@@ -53,7 +53,7 @@ public class Preferences {
 
     public void create_update_session(Context context,String session)
     {
-        SharedPreferences preferences = context.getSharedPreferences("session",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_session",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("state",session);
         editor.apply();
@@ -62,14 +62,14 @@ public class Preferences {
 
     public String getSession(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences("session",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_session",Context.MODE_PRIVATE);
         String session = preferences.getString("state", Tags.session_logout);
         return session;
     }
     public void addRecentSearchQuery(Context context ,String query)
     {
 
-        SharedPreferences preferences = context.getSharedPreferences("search",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_query",Context.MODE_PRIVATE);
         String queries = preferences.getString("queries","");
         if (!TextUtils.isEmpty(queries))
         {
@@ -113,7 +113,7 @@ public class Preferences {
     public List<String> getAllQueries(Context context)
     {
         List<String> queriesList = new ArrayList<>();
-        SharedPreferences preferences = context.getSharedPreferences("search",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_query",Context.MODE_PRIVATE);
         String queries = preferences.getString("queries","");
         if (!TextUtils.isEmpty(queries))
         {
@@ -129,7 +129,7 @@ public class Preferences {
     }
     public void saveVisitedProductIds(Context context,String id)
     {
-        SharedPreferences preferences = context.getSharedPreferences("visited",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_id",Context.MODE_PRIVATE);
         String gson = preferences.getString("ids","");
         if (!TextUtils.isEmpty(gson))
         {
@@ -158,7 +158,7 @@ public class Preferences {
     public List<String> getAllVisitedIds(Context context)
     {
         List<String> idsList = new ArrayList<>();
-        SharedPreferences preferences = context.getSharedPreferences("visited",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_id",Context.MODE_PRIVATE);
         String gson = preferences.getString("ids","");
         if (!TextUtils.isEmpty(gson))
         {
@@ -175,30 +175,34 @@ public class Preferences {
 
     public void ClearData(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.apply();
 
-        SharedPreferences preferences_session = context.getSharedPreferences("session",Context.MODE_PRIVATE);
+        SharedPreferences preferences_session = context.getSharedPreferences("data_session",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_session = preferences_session.edit();
         editor_session.clear();
         editor_session.apply();
 
-        SharedPreferences preferences_search = context.getSharedPreferences("search",Context.MODE_PRIVATE);
+        SharedPreferences preferences_search = context.getSharedPreferences("data_query",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_search = preferences_search.edit();
         editor_search.clear();
         editor_search.apply();
 
-        SharedPreferences preferences_visited = context.getSharedPreferences("visited",Context.MODE_PRIVATE);
+        SharedPreferences preferences_visited = context.getSharedPreferences("data_id",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_visited = preferences_visited.edit();
         editor_visited.clear();
         editor_visited.apply();
 
-        SharedPreferences preferences_chat = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        SharedPreferences preferences_chat = context.getSharedPreferences("data_chat",Context.MODE_PRIVATE);
         SharedPreferences.Editor preferences_chat_editor = preferences_chat.edit();
         preferences_chat_editor.clear();
         preferences_chat_editor.apply();
+
+
+
+
 
         clearCart(context);
 
@@ -209,7 +213,7 @@ public class Preferences {
 
     public void create_update_chat_user_id_room_id(Context context, ChatRoom_UserIdModel chatRoom_userIdModel)
     {
-        SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_chat",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         String data = new Gson().toJson(chatRoom_userIdModel);
         editor.putString("data",data);
@@ -218,14 +222,14 @@ public class Preferences {
 
     public ChatRoom_UserIdModel getChatUserData(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences("chat_user",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_chat",Context.MODE_PRIVATE);
         ChatRoom_UserIdModel model = new Gson().fromJson(preferences.getString("data",""),ChatRoom_UserIdModel.class);
         return model ;
     }
 
     public void SaveCartItemProducts(Context context,List<OrderItem> orderItemList)
     {
-        SharedPreferences preferences = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_cart",Context.MODE_PRIVATE);
 
         String gson = new Gson().toJson(orderItemList);
 
@@ -238,7 +242,7 @@ public class Preferences {
     public List<OrderItem> getCartItems(Context context)
     {
         List<OrderItem> orderItemList = new ArrayList<>();
-        SharedPreferences preferences = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences("data_cart",Context.MODE_PRIVATE);
 
         String gson = preferences.getString("items","");
 
@@ -249,7 +253,7 @@ public class Preferences {
         return orderItemList;
     }
     public void clearCart(Context context) {
-        SharedPreferences preferences_cart = context.getSharedPreferences("cart",Context.MODE_PRIVATE);
+        SharedPreferences preferences_cart = context.getSharedPreferences("data_cart",Context.MODE_PRIVATE);
         SharedPreferences.Editor edit_cart = preferences_cart.edit();
         edit_cart.clear();
         edit_cart.apply();

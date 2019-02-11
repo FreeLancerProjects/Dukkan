@@ -166,7 +166,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             >
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -185,7 +185,7 @@
                                     android:layout_weight="1"
                                     app:cardCornerRadius="5dp"
                                     app:cardElevation="1dp"
-                                    app:cardBackgroundColor="@color/colorPrimary"
+                                    app:cardBackgroundColor="@color/green_text"
                                     android:layout_marginEnd="5dp"
                                     tools:ignore="RtlCompat">
                                     <Button
@@ -205,7 +205,7 @@
                                     android:layout_weight="1"
                                     app:cardCornerRadius="5dp"
                                     app:cardElevation="1dp"
-                                    app:cardBackgroundColor="@color/white"
+                                    app:cardBackgroundColor="@color/colorPrimary"
                                     android:layout_marginEnd="5dp"
                                     tools:ignore="RtlCompat">
                                     <Button
@@ -213,7 +213,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:background="@color/transparent"
-                                        android:textColor="@color/black"
+                                        android:textColor="@color/white"
                                         android:textSize="15sp"
                                         android:text="@string/not_need_an_alternative"
                                         android:textAllCaps="false"
